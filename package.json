@@ -1,0 +1,38 @@
+{
+  "name": "v-owl-admin",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm --filter adp dev",
+    "build": "pnpm --filter adp build",
+    "lint": "eslint . --fix",
+    "format": "prettier --write .",
+    "prepare": "husky"
+  },
+  "engines": {
+    "node": ">= 18"
+  },
+  "devDependencies": {
+    "@types/node": "^24.12.0",
+    "@typescript-eslint/eslint-plugin": "^8.57.2",
+    "@typescript-eslint/parser": "^8.57.2",
+    "eslint": "^8.57.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.5",
+    "eslint-plugin-vue": "^9.33.0",
+    "husky": "^9.1.7",
+    "less": "^4.6.4",
+    "lint-staged": "^16.4.0",
+    "prettier": "^3.8.1",
+    "typescript": "~5.9.3"
+  },
+  "dependencies": {
+    "@types/lodash-es": "^4.17.12",
+    "antdv-next": "^1.1.7",
+    "axios": "^1.14.0",
+    "lodash-es": "^4.17.23",
+    "pinia": "^3.0.4",
+    "vue": "^3.5.31",
+    "vue-router": "^5.0.4"
+  }
+}
