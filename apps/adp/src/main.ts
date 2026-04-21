@@ -1,21 +1,17 @@
 import { createApp } from 'vue';
-import { createPinia } from 'pinia';
-import Antd from 'antdv-next';
 import 'antdv-next/dist/reset.css';
 import App from './App.vue';
 import './styles/index.less';
-import router from './router';
-
-// 引入本地 monorepo 包测试
-import { sayHello } from '@owl/utils';
-import { componentName } from '@owl/components';
-
-console.log(sayHello(), componentName);
+import { setupRouter } from './router';
+import { pinia } from './store';
+import { useAppStore } from './store/modules/app';
 
 const app = createApp(App);
-const pinia = createPinia();
 
 app.use(pinia);
-app.use(Antd);
-app.use(router);
+
+const appStore = useAppStore(pinia);
+appStore.bootstrap();
+
+setupRouter(app);
 app.mount('#app');

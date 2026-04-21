@@ -1,16 +1,22 @@
-import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router';
-
-const routes: RouteRecordRaw[] = [
-  {
-    path: '/',
-    name: 'dashboard',
-    component: () => import('@/views/dashboard/index.vue')
-  }
-];
+import type { App } from 'vue';
+import { createRouter, createWebHistory } from 'vue-router';
+import { setupRouterGuard } from './guards';
+import { constantRoutes } from './static-routes';
+import { useAppPageParams } from '@/composables/use-app-page-params';
 
 const router = createRouter({
   history: createWebHistory(),
-  routes
+  routes: constantRoutes,
+  scrollBehavior: () => ({
+    left: 0,
+    top: 0
+  })
 });
+
+export function setupRouter(app: App) {
+  setupRouterGuard(router);
+  useAppPageParams(router);
+  app.use(router);
+}
 
 export default router;
