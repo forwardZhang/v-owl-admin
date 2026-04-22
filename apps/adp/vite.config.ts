@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
+import vueJsx from '@vitejs/plugin-vue-jsx';
 import { resolve } from 'path';
 import type { Connect, Plugin } from 'vite';
 import { AntdvNextResolver } from '@antdv-next/auto-import-resolver';
@@ -97,6 +98,7 @@ function createMockApiPlugin(): Plugin {
 export default defineConfig({
   plugins: [
     vue(),
+    vueJsx(),
     createMockApiPlugin(),
     Components({
       resolvers: [AntdvNextResolver()]
