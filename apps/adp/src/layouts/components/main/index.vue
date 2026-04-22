@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import Spinner from '@/components/spinner/spinner.vue';
+import Spinner from '@/components/spinner/index.vue';
 import { useContentSpinner } from '@/composables/use-content-spinner';
 
 defineOptions({

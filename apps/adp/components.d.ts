@@ -40,6 +40,6 @@ declare module 'vue' {
     ATag: typeof import('antdv-next')['Tag']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
-    Spinner: typeof import('./src/components/spinner/spinner.vue')['default']
+    Spinner: typeof import('./src/components/spinner/index.vue')['default']
   }
 }

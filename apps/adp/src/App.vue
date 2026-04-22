@@ -9,7 +9,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import Spinner from '@/components/spinner/spinner.vue';
+import Spinner from '@/components/spinner/index.vue';
 import { useAppStore } from '@/store/modules/app';
 
 const appStore = useAppStore();
