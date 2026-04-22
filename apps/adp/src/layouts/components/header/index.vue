@@ -25,7 +25,7 @@ import Settings from './settings.vue';
   justify-content: space-between;
   gap: 18px;
   min-height: var(--app-header-height);
-  padding: 0 24px;
+  padding: 0 16px;
   border-bottom: 1px solid var(--app-border);
   background: rgba(255, 255, 255, 0.82);
   backdrop-filter: blur(18px);
@@ -39,17 +39,5 @@ import Settings from './settings.vue';
 
 .header__right {
   flex: none;
-}
-
-@media (max-width: 960px) {
-  .header {
-    flex-wrap: wrap;
-    min-height: auto;
-    padding: 14px 18px;
-  }
-
-  .header__right {
-    width: 100%;
-  }
 }
 </style>

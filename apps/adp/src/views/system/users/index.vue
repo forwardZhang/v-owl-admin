@@ -186,17 +186,4 @@ onMounted(async () => {
 .view-page__search {
   max-width: 320px;
 }
-
-@media (max-width: 960px) {
-  .view-page__hero,
-  .view-page__toolbar {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .view-page__search {
-    width: 100%;
-    max-width: none;
-  }
-}
 </style>

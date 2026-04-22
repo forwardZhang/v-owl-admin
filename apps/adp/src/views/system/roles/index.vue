@@ -179,15 +179,4 @@ onMounted(async () => {
 .role-card__actions {
   margin-top: 18px;
 }
-
-@media (max-width: 960px) {
-  .view-page__hero {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .role-card__meta {
-    grid-template-columns: 1fr;
-  }
-}
 </style>

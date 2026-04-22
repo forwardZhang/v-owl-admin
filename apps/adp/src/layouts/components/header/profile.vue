@@ -172,6 +172,7 @@ async function handleLogout() {
   flex-direction: column;
   min-width: 0;
   text-align: left;
+  gap: 2px;
 }
 
 .profile__meta strong,
@@ -297,12 +298,5 @@ async function handleLogout() {
 
 :deep(.profile-dropdown) {
   padding: 4px 0;
-}
-
-@media (max-width: 960px) {
-  .profile__trigger {
-    flex: 1;
-    justify-content: space-between;
-  }
 }
 </style>

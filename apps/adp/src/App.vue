@@ -1,5 +1,5 @@
 <template>
-  <a-config-provider :theme="themeConfig">
+  <a-config-provider :theme="themeConfig" :get-popup-container="getPopupContainer">
     <a-layout>
       <RouterView />
       <Spinner class-name="app-boot-spinner" :spinning="appStore.booting"> </Spinner>
@@ -33,9 +33,17 @@ const themeConfig = computed(() => ({
     }
   }
 }));
+
+const appNode = document.querySelector('#app');
+function getPopupContainer() {
+  if (appNode) {
+    return appNode as HTMLElement;
+  }
+  return document.body;
+}
 </script>
 
-<style lang="less">
+<style scoped lang="less">
 .app-shell {
   min-height: 100vh;
 }

@@ -130,40 +130,4 @@ function handleSidebarCollapse(collapsed: boolean) {
   width: 100vw;
   height: 100vh;
 }
-
-@media (max-width: 960px) {
-  .app-layout {
-    display: block;
-    height: 100vh;
-  }
-
-  .app-layout__sidebar {
-    position: fixed;
-    left: 0;
-    width: 280px;
-    transform: translateX(-100%);
-    transition: transform 0.25s ease;
-  }
-
-  .app-layout__backdrop {
-    position: fixed;
-    inset: 0;
-    display: block;
-    border: 0;
-    opacity: 0;
-    pointer-events: none;
-    background: rgba(7, 14, 28, 0.42);
-    transition: opacity 0.25s ease;
-    z-index: 10;
-  }
-
-  .app-layout.is-mobile-open .app-layout__sidebar {
-    transform: translateX(0);
-  }
-
-  .app-layout.is-mobile-open .app-layout__backdrop {
-    opacity: 1;
-    pointer-events: auto;
-  }
-}
 </style>

@@ -161,11 +161,4 @@ onMounted(async () => {
   color: var(--app-text-secondary);
   line-height: 1.8;
 }
-
-@media (max-width: 960px) {
-  .view-page__hero {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-}
 </style>

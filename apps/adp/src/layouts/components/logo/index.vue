@@ -67,7 +67,12 @@ defineProps<{
 
 .logo.is-collapsed {
   justify-content: center;
+  gap: 0;
   padding-inline: 0;
+}
+
+.logo.is-collapsed .logo__mark {
+  margin-inline: auto;
 }
 
 .logo.is-collapsed .logo__meta-wrap {
