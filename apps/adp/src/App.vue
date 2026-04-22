@@ -1,11 +1,15 @@
 <template>
   <a-config-provider :theme="themeConfig">
-    <RouterView />
+    <a-layout>
+      <RouterView />
+      <Spinner class-name="app-boot-spinner" :spinning="appStore.booting"> </Spinner>
+    </a-layout>
   </a-config-provider>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue';
+import Spinner from '@/components/spinner/spinner.vue';
 import { useAppStore } from '@/store/modules/app';
 
 const appStore = useAppStore();
@@ -23,9 +27,22 @@ const themeConfig = computed(() => ({
     Layout: {
       lightTriggerBg: 'transparent',
       triggerHeight: 42
+    },
+    Menu: {
+      subMenuItemBg: 'transparent'
     }
   }
 }));
 </script>
 
-<style scoped></style>
+<style lang="less">
+.app-shell {
+  min-height: 100vh;
+}
+
+.app-boot-spinner {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+}
+</style>

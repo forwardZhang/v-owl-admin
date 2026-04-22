@@ -13,13 +13,15 @@
       collapsible
       :theme="'light'"
       :width="220"
-      @collapse="appStore.toggleSidebar()"
+      @collapse="handleSidebarCollapse"
     >
-      <AppLogo :collapsed="appStore.sidebarCollapsed" />
-      <AppMenu :menus="permissionStore.visibleMenus" :collapsed="appStore.sidebarCollapsed" />
+      <Logo :collapsed="appStore.sidebarCollapsed" />
+      <Menu :menus="permissionStore.visibleMenus" :collapsed="appStore.sidebarCollapsed" />
       <template #trigger>
-        <menu-unfold-outlined v-if="appStore.sidebarCollapsed" />
-        <menu-fold-outlined v-else />
+        <span class="app-layout__trigger">
+          <menu-unfold-outlined v-if="appStore.sidebarCollapsed" />
+          <menu-fold-outlined v-else />
+        </span>
       </template>
     </a-layout-sider>
 
@@ -31,23 +33,27 @@
     />
 
     <a-layout class="app-layout__main">
-      <AppHeader />
-      <AppMain />
+      <Header />
+      <Main />
     </a-layout>
   </a-layout>
 </template>
 
 <script setup lang="ts">
-import AppHeader from '@/layouts/components/app-header.vue';
-import AppLogo from '@/layouts/components/app-logo.vue';
-import AppMain from '@/layouts/components/app-main.vue';
-import AppMenu from '@/layouts/components/app-menu.vue';
+import Header from '@/layouts/components/header/index.vue';
+import Logo from '@/layouts/components/logo/index.vue';
+import Main from '@/layouts/components/main/index.vue';
+import Menu from '@/layouts/components/menu/index.vue';
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@antdv-next/icons';
 import { useAppStore } from '@/store/modules/app';
 import { usePermissionStore } from '@/store/modules/permission';
 
 const appStore = useAppStore();
 const permissionStore = usePermissionStore();
+
+function handleSidebarCollapse(collapsed: boolean) {
+  appStore.setSidebarCollapsed(collapsed);
+}
 </script>
 
 <style scoped lang="less">
@@ -74,8 +80,30 @@ const permissionStore = usePermissionStore();
     height: 100%;
   }
   :deep(.ant-layout-sider-trigger) {
+    display: grid;
+    place-items: center;
+    height: 52px;
     border-top: 1px solid rgba(18, 36, 61, 0.07);
   }
+}
+
+.app-layout__trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--ant-border-radius-lg);
+  color: var(--app-primary);
+  background: rgba(var(--app-primary-rgb), 0.1);
+  transition:
+    transform 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.app-layout__trigger:hover {
+  transform: translateY(-1px);
+  background: rgba(var(--app-primary-rgb), 0.16);
 }
 
 .app-layout__main {

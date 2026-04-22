@@ -1,14 +1,12 @@
 <template>
-  <a-layout-content class="app-layout__content">
+  <a-layout-content class="main">
     <RouterView v-slot="{ Component, route }">
       <KeepAlive>
         <component :is="Component" v-if="route.meta.keepAlive" :key="route.fullPath" />
       </KeepAlive>
       <component :is="Component" v-if="!route.meta.keepAlive" :key="route.fullPath" />
     </RouterView>
-    <div v-show="spinning" class="spinner-wrap">
-      <Spinner :spinning="spinning" />
-    </div>
+    <Spinner class-name="main__spinner" :spinning="spinning" />
   </a-layout-content>
 </template>
 
@@ -17,14 +15,14 @@ import Spinner from '@/components/spinner/spinner.vue';
 import { useContentSpinner } from '@/composables/use-content-spinner';
 
 defineOptions({
-  name: 'AppMain'
+  name: 'LayoutMain'
 });
 
 const { spinning } = useContentSpinner();
 </script>
 
 <style scoped lang="less">
-.app-layout__content {
+.main {
   position: relative;
   flex: 1;
   min-height: 0;
@@ -35,7 +33,7 @@ const { spinning } = useContentSpinner();
   overscroll-behavior: contain;
 }
 
-.spinner-wrap {
+:deep(.main__spinner) {
   position: absolute;
   top: 0;
   left: 0;

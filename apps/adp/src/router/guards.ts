@@ -31,8 +31,6 @@ export function setupRouterGuard(router: Router) {
     const permissionStore = usePermissionStore(pinia);
     const appStore = useAppStore(pinia);
 
-    updateDocumentTitle(to.meta.title);
-
     if (!userStore.isAuthenticated) {
       if (WHITE_LIST.includes(to.path)) {
         return true;
@@ -94,5 +92,9 @@ export function setupRouterGuard(router: Router) {
         replace: true
       };
     }
+  });
+
+  router.afterEach((to) => {
+    updateDocumentTitle(typeof to.meta.title === 'string' ? to.meta.title : undefined);
   });
 }

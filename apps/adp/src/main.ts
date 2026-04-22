@@ -2,7 +2,7 @@ import { createApp } from 'vue';
 import 'antdv-next/dist/reset.css';
 import App from './App.vue';
 import './styles/index.less';
-import { setupRouter } from './router';
+import router, { setupRouter } from './router';
 import { pinia } from './store';
 import { useAppStore } from './store/modules/app';
 
@@ -14,4 +14,7 @@ const appStore = useAppStore(pinia);
 appStore.bootstrap();
 
 setupRouter(app);
+router.isReady().finally(() => {
+  appStore.setBooting(false);
+});
 app.mount('#app');

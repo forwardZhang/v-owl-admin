@@ -1,12 +1,11 @@
 <template>
-  <div class="app-menu">
+  <div class="menu">
     <a-menu
       v-model:open-keys="openKeys"
       :inline-collapsed="collapsed"
       mode="inline"
       :items="menuItems"
       :selected-keys="selectedKeys"
-      :expand-icon="CaretDownOutlined"
       @click="handleMenuClick"
     >
     </a-menu>
@@ -14,18 +13,11 @@
 </template>
 
 <script setup lang="ts">
-import {
-  AppstoreOutlined,
-  CaretDownOutlined,
-  DashboardOutlined,
-  SettingOutlined,
-  TeamOutlined,
-  UserOutlined
-} from '@antdv-next/icons';
 import type { MenuProps } from 'antdv-next';
-import { computed, h, ref, watch, type Component } from 'vue';
+import { computed, h, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import type { MenuRecord } from '@/types/menu';
+import { resolveNavIcon } from '../shared/nav-icons';
 
 const props = defineProps<{
   collapsed: boolean;
@@ -38,26 +30,19 @@ const openKeys = ref<string[]>([]);
 
 type MenuItem = Exclude<MenuProps['items'], undefined>[number];
 
-const menuIconMap: Record<string, Component> = {
-  dashboard: DashboardOutlined,
-  menus: AppstoreOutlined,
-  roles: TeamOutlined,
-  system: SettingOutlined,
-  users: UserOutlined
-};
-
 function renderMenuIcon(item: MenuRecord) {
   const iconKey = String(item.icon || item.meta.icon || '');
+  const iconComponent = resolveNavIcon(iconKey);
 
-  if (menuIconMap[iconKey]) {
-    return h(menuIconMap[iconKey], {
-      class: 'app-menu__icon-svg'
+  if (iconComponent) {
+    return h(iconComponent, {
+      class: 'menu__icon-svg'
     });
   }
 
   return h(
     'span',
-    { class: 'app-menu__icon' },
+    { class: 'menu__icon' },
     item.icon || item.meta.icon || item.meta.title.slice(0, 2)
   );
 }
@@ -117,51 +102,60 @@ function handleMenuClick(info: { key: string }) {
 </script>
 
 <style scoped lang="less">
-.app-menu {
+.menu {
   flex: 1;
-  padding: 8px 16px;
+  padding: 10px 12px 14px;
   overflow: hidden;
 }
 
-.app-menu__icon {
+.menu__icon {
   display: inline-grid;
   place-items: center;
   width: 24px;
   height: 24px;
-  border-radius: 8px;
+  border-radius: var(--ant-border-radius-lg);
   color: var(--app-primary);
   font-size: 11px;
   font-weight: 700;
   background: rgba(var(--app-primary-rgb), 0.12);
 }
 
-.app-menu__expand,
-.app-menu__icon-svg {
+.menu__icon-svg {
   color: var(--app-primary);
   font-size: 14px;
 }
 
-.app-menu :deep(.ant-menu) {
+.menu__expand {
+  color: var(--app-primary);
+  font-size: 12px;
+  transition: transform 0.2s ease;
+}
+
+.menu :deep(.ant-menu) {
   height: 100%;
   border-inline-end: 0;
   background: transparent;
   overflow-y: auto;
 }
 
-.app-menu :deep(.ant-menu-item),
-.app-menu :deep(.ant-menu-submenu-title) {
-  height: 46px;
-  line-height: 46px;
-  margin-block: 6px;
-  border-radius: 14px;
+.menu :deep(.ant-menu-item),
+.menu :deep(.ant-menu-submenu-title) {
+  height: 40px;
+  line-height: 40px;
+  margin-block: 4px;
+  border-radius: var(--ant-border-radius-lg);
 }
 
-.app-menu :deep(.ant-menu-item-selected) {
+.menu :deep(.ant-menu-item-selected) {
   background: rgba(var(--app-primary-rgb), 0.12);
 }
 
-.app-menu :deep(.ant-menu-submenu-expand-icon) {
+.menu :deep(.ant-menu-submenu-expand-icon) {
   display: inline-flex;
   align-items: center;
+}
+
+.menu :deep(.ant-menu-submenu-open .menu__expand) {
+  transform: rotate(180deg);
 }
 </style>

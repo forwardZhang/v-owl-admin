@@ -1,16 +1,9 @@
-<script lang="ts" setup>
-import { ref, watch } from 'vue';
+<script setup lang="ts">
+import { onBeforeUnmount, ref, watch } from 'vue';
 
 interface Props {
   className?: string;
-  /**
-   * @zh_CN 最小加载时间
-   * @en_US Minimum loading time
-   */
   minLoadingTime?: number;
-  /**
-   * @zh_CN loading状态开启
-   */
   spinning?: boolean;
 }
 
@@ -19,26 +12,44 @@ defineOptions({
 });
 
 const props = withDefaults(defineProps<Props>(), {
-  minLoadingTime: 50
+  className: '',
+  minLoadingTime: 50,
+  spinning: false
 });
-const showSpinner = ref(false);
-const renderSpinner = ref(false);
-const timer = ref<ReturnType<typeof setTimeout>>();
+
+const isVisible = ref(false);
+const shouldRender = ref(false);
+let showTimer: ReturnType<typeof setTimeout> | undefined;
+let hideTimer: ReturnType<typeof setTimeout> | undefined;
+
+function clearTimers() {
+  if (showTimer) {
+    clearTimeout(showTimer);
+    showTimer = undefined;
+  }
+
+  if (hideTimer) {
+    clearTimeout(hideTimer);
+    hideTimer = undefined;
+  }
+}
 
 watch(
   () => props.spinning,
   (show) => {
+    clearTimers();
+
     if (!show) {
-      showSpinner.value = false;
-      clearTimeout(timer.value);
+      isVisible.value = false;
+      hideTimer = setTimeout(() => {
+        shouldRender.value = false;
+      }, 180);
       return;
     }
 
-    timer.value = setTimeout(() => {
-      showSpinner.value = true;
-      if (showSpinner.value) {
-        renderSpinner.value = true;
-      }
+    shouldRender.value = true;
+    showTimer = setTimeout(() => {
+      isVisible.value = true;
     }, props.minLoadingTime);
   },
   {
@@ -46,77 +57,87 @@ watch(
   }
 );
 
-function onTransitionEnd() {
-  if (!showSpinner.value) {
-    renderSpinner.value = false;
-  }
-}
+onBeforeUnmount(() => {
+  clearTimers();
+});
 </script>
 
 <template>
   <div
-    :class="{
-      spinning: true,
-      [props.className ?? '']: !!props.className
-    }"
-    @transitionend="onTransitionEnd"
+    v-if="shouldRender"
+    :class="[
+      'app-spinner',
+      props.className,
+      {
+        'is-visible': isVisible
+      }
+    ]"
   >
-    <div v-if="renderSpinner" :class="{ paused: !renderSpinner }" class="loader"></div>
+    <div class="app-spinner__loader"></div>
+    <div class="app-spinner__text">
+      <slot name="text"> 加载中... </slot>
+    </div>
   </div>
 </template>
 
 <style scoped>
-.spinning {
-  width: 100%;
-  height: 100%;
-  animation-duration: 500ms;
-  transition-property: all;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  backdrop-filter: blur(4px);
-  background-color: rgb(242 242 242 / 45%);
+.app-spinner {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  backdrop-filter: blur(4px);
+  background-color: rgb(242 242 242 / 45%);
+  transition: opacity 180ms ease;
+  gap: 1rem;
 }
 
-.paused {
-  &::before {
-    animation-play-state: paused !important;
-  }
-
-  &::after {
-    animation-play-state: paused !important;
-  }
+.app-spinner.is-visible {
+  opacity: 1;
 }
 
-.loader {
+.app-spinner__loader {
+  position: relative;
   width: 3rem;
   height: 3rem;
-  position: relative;
+}
 
-  &::before {
-    position: absolute;
-    content: '';
-    background-color: rgba(var(--app-primary-rgb), 0.5);
-    border-radius: var(--ant-border-radius-lg);
-    width: 3rem;
-    height: 5px;
-    top: 60px;
-    left: 0;
-    animation: loader-shadow-ani 0.5s linear infinite;
-  }
+.app-spinner__loader::before {
+  position: absolute;
+  top: 60px;
+  left: 0;
+  width: 3rem;
+  height: 5px;
+  content: '';
+  border-radius: var(--ant-border-radius-lg);
+  background-color: rgba(var(--app-primary-rgb), 0.5);
+  animation: loader-shadow-ani 0.5s linear infinite;
+}
 
-  &::after {
-    background-color: var(--app-primary);
-    content: '';
-    border-radius: var(--ant-border-radius-lg);
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    left: 0;
-    top: 0;
-    animation: loader-jump-ani 0.5s linear infinite;
-  }
+.app-spinner__loader::after {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  content: '';
+  border-radius: var(--ant-border-radius-lg);
+  background-color: var(--app-primary);
+  animation: loader-jump-ani 0.5s linear infinite;
+}
+
+.app-spinner__text {
+  margin-top: 1.25rem;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--app-text-secondary);
+  text-align: center;
+  letter-spacing: 0.02em;
+  text-shadow: 0 1px 2px rgb(255 255 255 / 35%);
 }
 
 @keyframes loader-jump-ani {

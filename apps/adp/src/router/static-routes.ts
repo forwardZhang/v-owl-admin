@@ -12,7 +12,7 @@ export const constantRoutes: RouteRecordRaw[] = [
   {
     path: '/',
     name: 'root',
-    component: () => import('@/layouts/vertical/index.vue'),
+    component: () => import('@/layouts/index.vue'),
     children: [],
     redirect: '/dashboard',
     meta: {

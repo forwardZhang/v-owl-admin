@@ -134,7 +134,7 @@ onMounted(async () => {
 
 .view-page__hero,
 .view-page__card {
-  border-radius: 24px;
+  border-radius: var(--ant-border-radius-lg);
   box-shadow: var(--app-shadow-soft);
 }
 
@@ -153,7 +153,7 @@ onMounted(async () => {
   align-items: center;
   height: 28px;
   padding: 0 12px;
-  border-radius: 999px;
+  border-radius: var(--ant-border-radius-lg);
   color: var(--app-primary);
   font-size: 12px;
   font-weight: 700;

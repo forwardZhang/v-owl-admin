@@ -4,7 +4,10 @@ import { DEFAULT_THEME } from '@/constants/app';
 import { APP_STORAGE_KEY } from '@/constants/storage';
 import { getStorage, setStorage } from '@/utils/storage';
 
+export type LayoutMode = 'vertical';
+
 interface AppSettings {
+  layoutMode: LayoutMode;
   sidebarCollapsed: boolean;
   mobileMenuVisible: boolean;
   primaryColor: string;
@@ -14,6 +17,7 @@ interface AppSettings {
 }
 
 const defaultSettings: AppSettings = {
+  layoutMode: 'vertical',
   sidebarCollapsed: false,
   mobileMenuVisible: false,
   primaryColor: DEFAULT_THEME.primaryColor,
@@ -33,7 +37,10 @@ function applyThemeVariables(settings: AppSettings) {
 
 export const useAppStore = defineStore('app', () => {
   const settings = ref<AppSettings>(getStorage(APP_STORAGE_KEY, defaultSettings));
+  const booting = ref(true);
 
+  const isBooting = computed(() => booting.value);
+  const layoutMode = computed(() => settings.value.layoutMode);
   const sidebarCollapsed = computed(() => settings.value.sidebarCollapsed);
   const mobileMenuVisible = computed(() => settings.value.mobileMenuVisible);
   const primaryColor = computed(() => settings.value.primaryColor);
@@ -46,9 +53,22 @@ export const useAppStore = defineStore('app', () => {
     applyThemeVariables(settings.value);
   }
 
-  function toggleSidebar() {
-    settings.value.sidebarCollapsed = !settings.value.sidebarCollapsed;
+  function setBooting(value: boolean) {
+    booting.value = value;
+  }
+
+  function setSidebarCollapsed(collapsed: boolean) {
+    settings.value.sidebarCollapsed = collapsed;
     persistSettings();
+  }
+
+  function setLayoutMode(mode: LayoutMode) {
+    settings.value.layoutMode = mode;
+    persistSettings();
+  }
+
+  function toggleSidebar() {
+    setSidebarCollapsed(!settings.value.sidebarCollapsed);
   }
 
   function setMobileMenuVisible(visible: boolean) {
@@ -72,12 +92,17 @@ export const useAppStore = defineStore('app', () => {
   }
 
   return {
+    booting: isBooting,
+    layoutMode,
     mobileMenuVisible,
     primaryColor,
     sidebarCollapsed,
     bootstrap,
+    setBooting,
+    setLayoutMode,
     setMobileMenuVisible,
     setPrimaryColor,
+    setSidebarCollapsed,
     toggleSidebar
   };
 });

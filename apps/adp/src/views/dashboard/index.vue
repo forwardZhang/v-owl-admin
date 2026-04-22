@@ -132,7 +132,7 @@ function formatMetricValue(value: string) {
   align-items: center;
   justify-content: space-between;
   gap: 24px;
-  border-radius: 28px;
+  border-radius: var(--ant-border-radius-lg);
   background:
     radial-gradient(circle at top left, rgba(var(--app-primary-rgb), 0.16) 0%, transparent 34%),
     linear-gradient(135deg, rgba(255, 255, 255, 0.94) 0%, rgba(241, 247, 255, 0.92) 100%);
@@ -164,7 +164,7 @@ function formatMetricValue(value: string) {
 
 .dashboard-hero__badge {
   min-width: 260px;
-  border-radius: 24px;
+  border-radius: var(--ant-border-radius-lg);
 }
 
 .dashboard-hero__badge strong {
@@ -182,7 +182,7 @@ function formatMetricValue(value: string) {
 
 .metric-card,
 .dashboard-card {
-  border-radius: 24px;
+  border-radius: var(--ant-border-radius-lg);
   box-shadow: var(--app-shadow-soft);
 }
 
@@ -204,7 +204,7 @@ function formatMetricValue(value: string) {
 }
 
 .quick-link {
-  border-radius: 20px;
+  border-radius: var(--ant-border-radius-lg);
   cursor: pointer;
 }
 
@@ -243,32 +243,6 @@ function formatMetricValue(value: string) {
   display: flex;
   flex-direction: column;
   gap: 8px;
-}
-
-.todo-item__tag {
-  flex: none;
-  min-width: 72px;
-  padding: 6px 10px;
-  border-radius: 999px;
-  font-size: 12px;
-  font-style: normal;
-  font-weight: 700;
-  text-align: center;
-}
-
-.todo-item__tag--high {
-  color: #b42318;
-  background: rgba(180, 35, 24, 0.12);
-}
-
-.todo-item__tag--medium {
-  color: #b54708;
-  background: rgba(181, 71, 8, 0.12);
-}
-
-.todo-item__tag--low {
-  color: #155eef;
-  background: rgba(21, 94, 239, 0.12);
 }
 
 @media (max-width: 1180px) {

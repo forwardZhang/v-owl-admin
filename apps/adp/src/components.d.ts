@@ -3,6 +3,7 @@ declare module 'vue' {
     AAlert: (typeof import('antdv-next'))['Alert'];
     AAvatar: (typeof import('antdv-next'))['Avatar'];
     ABreadcrumb: (typeof import('antdv-next'))['Breadcrumb'];
+    ABreadcrumbItem: (typeof import('antdv-next'))['BreadcrumbItem'];
     AButton: (typeof import('antdv-next'))['Button'];
     ACard: (typeof import('antdv-next'))['Card'];
     AColorPicker: (typeof import('antdv-next'))['ColorPicker'];

@@ -190,7 +190,7 @@ async function handleSubmit() {
   width: fit-content;
   height: 34px;
   padding: 0 14px;
-  border-radius: 999px;
+  border-radius: var(--ant-border-radius-lg);
   color: var(--app-primary);
   font-size: 12px;
   font-weight: 700;
@@ -228,7 +228,7 @@ async function handleSubmit() {
   gap: 10px;
   padding: 22px 20px;
   border: 1px solid rgba(255, 255, 255, 0.56);
-  border-radius: 24px;
+  border-radius: var(--ant-border-radius-lg);
   background: rgba(255, 255, 255, 0.72);
   box-shadow: var(--app-shadow-soft);
   backdrop-filter: blur(18px);
@@ -254,7 +254,7 @@ async function handleSubmit() {
 .login-card {
   width: 100%;
   max-width: 440px;
-  border-radius: 30px;
+  border-radius: var(--ant-border-radius-lg);
   box-shadow: var(--app-shadow-medium);
   overflow: hidden;
 }
@@ -310,7 +310,7 @@ async function handleSubmit() {
   }
 
   .login-card {
-    border-radius: 24px;
+    border-radius: var(--ant-border-radius-lg);
   }
 }
 </style>
