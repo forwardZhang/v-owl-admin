@@ -1,1 +1,1 @@
-export const componentName = 'OwlComponent';
+export * from './pro';

@@ -1,5 +1,9 @@
 <template>
-  <a-config-provider :theme="themeConfig" :get-popup-container="getPopupContainer">
+  <a-config-provider
+    :theme="themeConfig"
+    :get-popup-container="getPopupContainer"
+    v-bind="sharedConfig"
+  >
     <a-layout>
       <RouterView />
       <Spinner class-name="app-boot-spinner" :spinning="appStore.booting"> </Spinner>
@@ -11,7 +15,7 @@
 import { computed } from 'vue';
 import Spinner from '@/components/spinner/index.vue';
 import { useAppStore } from '@/store/modules/app';
-
+import type { ConfigProviderProps } from 'antdv-next';
 const appStore = useAppStore();
 
 const themeConfig = computed(() => ({
@@ -20,7 +24,8 @@ const themeConfig = computed(() => ({
     colorInfo: appStore.primaryColor,
     colorLink: appStore.primaryColor,
     colorPrimary: appStore.primaryColor,
-    controlHeight: 40,
+    controlHeight: 28,
+    fontSize: 12,
     fontFamily: "'SF Pro Display', 'PingFang SC', 'Segoe UI', sans-serif"
   },
   components: {
@@ -30,6 +35,9 @@ const themeConfig = computed(() => ({
     },
     Menu: {
       subMenuItemBg: 'transparent'
+    },
+    Button: {
+      fontSize: 12
     }
   }
 }));
@@ -41,6 +49,8 @@ function getPopupContainer() {
   }
   return document.body;
 }
+
+const sharedConfig: ConfigProviderProps = {};
 </script>
 
 <style scoped lang="less">

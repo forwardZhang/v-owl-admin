@@ -106,6 +106,9 @@ function handleMenuClick(info: { key: string }) {
   flex: 1;
   padding: 10px 12px 14px;
   overflow: hidden;
+  :deep(.ant-menu) {
+    font-size: 13px;
+  }
 }
 
 .menu__icon {

@@ -1,6 +1,6 @@
 <template>
   <div class="logo" :class="{ 'is-collapsed': collapsed }">
-    <a-avatar class="logo__mark" :size="40">VO</a-avatar>
+    <a-avatar class="logo__mark" :size="38">VO</a-avatar>
     <div class="logo__meta-wrap">
       <div class="logo__meta">
         <strong>Owl Admin</strong>
@@ -54,7 +54,7 @@ defineProps<{
 
 .logo__meta strong {
   color: var(--app-text-primary);
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 700;
   white-space: nowrap;
 }

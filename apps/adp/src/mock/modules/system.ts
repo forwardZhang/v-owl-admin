@@ -98,9 +98,19 @@ export const systemMockRoutes: MockRoute[] = [
             type: 'menu'
           },
           {
-            component: 'system/menus/index',
+            component: 'system/page-container/index',
             id: 'menu_3',
             order: 2,
+            path: '/system/page-container',
+            permission: 'system:page-container:view',
+            status: 'enabled',
+            title: 'PageContainer',
+            type: 'menu'
+          },
+          {
+            component: 'system/menus/index',
+            id: 'menu_4',
+            order: 3,
             path: '/system/menus',
             permission: 'system:menu:list',
             status: 'enabled',
@@ -109,8 +119,8 @@ export const systemMockRoutes: MockRoute[] = [
           },
           {
             component: 'system/roles/index',
-            id: 'menu_4',
-            order: 3,
+            id: 'menu_5',
+            order: 4,
             path: '/system/roles',
             permission: 'system:role:list',
             status: 'enabled',
@@ -119,7 +129,7 @@ export const systemMockRoutes: MockRoute[] = [
           },
           {
             component: '--',
-            id: 'menu_5',
+            id: 'menu_6',
             order: 1,
             path: '/system/users/create',
             permission: 'system:user:create',

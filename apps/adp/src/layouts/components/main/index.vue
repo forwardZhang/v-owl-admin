@@ -28,8 +28,7 @@ const { spinning } = useContentSpinner();
   min-height: 0;
   min-width: 0;
   width: 100%;
-  padding: 16px;
-  overflow: auto;
+  overflow: hidden;
   overscroll-behavior: contain;
 }
 

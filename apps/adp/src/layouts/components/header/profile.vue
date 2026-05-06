@@ -7,7 +7,7 @@
     @open-change="handleOpenChange"
   >
     <button type="button" class="profile__trigger">
-      <a-avatar class="profile__avatar" :size="38">
+      <a-avatar class="profile__avatar" size="small">
         {{ initials }}
       </a-avatar>
       <div class="profile__meta">
@@ -21,7 +21,7 @@
       <div class="panel">
         <div class="panel__summary">
           <div class="panel__avatar-wrap">
-            <a-avatar class="panel__avatar" :size="48">
+            <a-avatar class="panel__avatar" :size="38">
               {{ initials }}
             </a-avatar>
             <span class="panel__status"></span>
@@ -152,7 +152,7 @@ async function handleLogout() {
   align-items: center;
   gap: 12px;
   min-width: 0;
-  padding: 8px 10px 8px 8px;
+  padding: 6px;
   border: 0;
   border-radius: var(--ant-border-radius-lg);
   background: rgba(255, 255, 255, 0.86);
@@ -162,7 +162,7 @@ async function handleLogout() {
 
 .profile__avatar,
 .panel__avatar {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 700;
   background: linear-gradient(135deg, var(--app-primary) 0%, #67d7ff 100%);
 }
@@ -181,7 +181,7 @@ async function handleLogout() {
 }
 
 .profile__meta strong {
-  font-size: 14px;
+  font-size: 13px;
   white-space: nowrap;
 }
 
@@ -208,7 +208,7 @@ async function handleLogout() {
 .panel__summary {
   display: flex;
   gap: 14px;
-  padding: 0 18px 16px;
+  padding: 0 12px 12px;
 }
 
 .panel__avatar-wrap {
@@ -243,7 +243,7 @@ async function handleLogout() {
 }
 
 .panel__headline strong {
-  font-size: 18px;
+  font-size: 14px;
 }
 
 .panel__identity span,
@@ -279,7 +279,7 @@ async function handleLogout() {
   border: 0;
   border-radius: var(--ant-border-radius-lg);
   color: var(--app-text-primary);
-  font-size: 14px;
+  font-size: 13px;
   background: transparent;
   cursor: pointer;
   transition:
