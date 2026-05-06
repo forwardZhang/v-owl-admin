@@ -1,46 +1,32 @@
 <template>
   <div class="playground-pane">
-    <PageContainer
-      description="在 tab 内容里继续嵌套单标题模式，可以很自然地承接二级模块或概览卡片。"
-      title="单内容模式嵌套示例"
-    >
-      <template #extra>
-        <a-space wrap>
-          <a-tag color="success">Default Slot</a-tag>
-          <a-button size="small" type="primary">保存配置</a-button>
-        </a-space>
-      </template>
+    <a-row :gutter="[18, 18]">
+      <a-col :xs="24" :lg="14">
+        <a-card class="playground-pane__card" variant="borderless">
+          <span class="playground-pane__eyebrow">Scenario</span>
+          <h3>适合接住二级页面内容</h3>
+          <p>
+            比如“用户详情”“角色配置”“策略中心”这类页面，外层是多
+            tabs，内层某个面板依然可以保持统一的标题和操作区。
+          </p>
+        </a-card>
+      </a-col>
 
-      <a-row :gutter="[18, 18]">
-        <a-col :xs="24" :lg="14">
-          <a-card class="playground-pane__card" variant="borderless">
-            <span class="playground-pane__eyebrow">Scenario</span>
-            <h3>适合接住二级页面内容</h3>
-            <p>
-              比如“用户详情”“角色配置”“策略中心”这类页面，外层是多
-              tabs，内层某个面板依然可以保持统一的标题和操作区。
-            </p>
-          </a-card>
-        </a-col>
-
-        <a-col :xs="24" :lg="10">
-          <a-card class="playground-pane__card" variant="borderless">
-            <span class="playground-pane__eyebrow">Strategy</span>
-            <h3>组合而不是耦合</h3>
-            <p>
-              `PageContainer`
-              不抢业务状态，只负责结构。真正的列表、表单、详情组件可以继续各写各的，边界很清爽。
-            </p>
-          </a-card>
-        </a-col>
-      </a-row>
-    </PageContainer>
+      <a-col :xs="24" :lg="10">
+        <a-card class="playground-pane__card" variant="borderless">
+          <span class="playground-pane__eyebrow">Strategy</span>
+          <h3>组合而不是耦合</h3>
+          <p>
+            `PageContainer`
+            不抢业务状态，只负责结构。真正的列表、表单、详情组件可以继续各写各的，边界很清爽。
+          </p>
+        </a-card>
+      </a-col>
+    </a-row>
   </div>
 </template>
 
-<script setup lang="ts">
-import { PageContainer } from '@owl/components';
-</script>
+<script setup lang="ts"></script>
 
 <style scoped lang="less">
 .playground-pane {

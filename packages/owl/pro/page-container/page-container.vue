@@ -1,10 +1,10 @@
 <template>
-  <div class="owl-page-container">
-    <div v-if="showHeader" class="owl-page-container__header">
-      <div class="owl-page-container__tabs-shell">
+  <div class="page-container">
+    <div v-if="showHeader" class="page-container__header">
+      <div class="page-container__tabs-shell">
         <Tabs
           :active-key="mergedActiveKey"
-          class="owl-page-container__tabs"
+          class="page-container__tabs"
           @update:active-key="handleTabChange"
         >
           <TabPane v-for="tab in normalizedTabs" :key="tab.key">
@@ -16,13 +16,13 @@
           </TabPane>
         </Tabs>
 
-        <div v-if="$slots.extra" class="owl-page-container__extra">
+        <div v-if="$slots.extra" class="page-container__extra">
           <slot name="extra" />
         </div>
       </div>
     </div>
 
-    <div class="owl-page-container__body">
+    <div class="page-container__body">
       <template v-if="hasTabs && activeTab">
         <slot :name="`tab-${activeTab.key}`" :tab="activeTab">
           <component
@@ -131,16 +131,15 @@ function handleTabChange(nextActiveKey: string) {
 </script>
 
 <style scoped lang="less">
-.owl-page-container {
+.page-container {
   display: flex;
   flex-direction: column;
   min-height: 0;
   height: 100%;
-  gap: 12px;
   overflow: hidden;
 }
 
-.owl-page-container__header {
+.page-container__header {
   flex: none;
   overflow: hidden;
   border-radius: 0;
@@ -149,40 +148,39 @@ function handleTabChange(nextActiveKey: string) {
     radial-gradient(circle at top left, rgba(var(--app-primary-rgb), 0.16) 0%, transparent 34%),
     linear-gradient(135deg, rgba(255, 255, 255, 0.96) 0%, rgba(243, 248, 255, 0.96) 100%);
   gap: 24px;
-  padding: 8px 16px;
+  padding: 0 12px;
 }
 
-.owl-page-container__tabs-shell {
+.page-container__tabs-shell {
   display: flex;
   justify-content: space-between;
 }
 
-.owl-page-container__tabs {
+.page-container__tabs {
   min-width: 0;
   flex: 1;
 }
 
-.owl-page-container__tabs :deep(.ant-tabs-nav) {
+.page-container__tabs :deep(.ant-tabs-nav) {
   margin: 0;
 }
 
-.owl-page-container__tabs :deep(.ant-tabs-tab) {
-  padding: 6px 0 12px;
+.page-container__tabs :deep(.ant-tabs-tab) {
   font-size: 13px;
   font-weight: 600;
 }
 
-.owl-page-container__tabs :deep(.ant-tabs-tab-btn) {
+.page-container__tabs :deep(.ant-tabs-tab-btn) {
   display: inline-flex;
   align-items: center;
   gap: 8px;
 }
 
-.owl-page-container__tabs :deep(.ant-tabs-content-holder) {
+.page-container__tabs :deep(.ant-tabs-content-holder) {
   display: none;
 }
 
-.owl-page-container__extra {
+.page-container__extra {
   display: flex;
   flex: none;
   align-items: center;
@@ -190,9 +188,10 @@ function handleTabChange(nextActiveKey: string) {
   margin-left: auto;
 }
 
-.owl-page-container__body {
+.page-container__body {
   flex: 1;
   min-height: 0;
+  padding: 12px;
   overflow-y: auto;
   overflow-x: hidden;
   overscroll-behavior: contain;

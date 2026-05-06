@@ -69,7 +69,7 @@ const setupSteps = [
 .overview-pane {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 12px;
 }
 
 .overview-pane__card {
