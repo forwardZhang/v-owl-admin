@@ -20,7 +20,6 @@ const appStore = useAppStore();
 
 const themeConfig = computed(() => ({
   token: {
-    borderRadius: 16,
     colorInfo: appStore.primaryColor,
     colorLink: appStore.primaryColor,
     colorPrimary: appStore.primaryColor,

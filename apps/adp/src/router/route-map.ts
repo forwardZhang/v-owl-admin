@@ -1,3 +1,4 @@
+import { markRaw } from 'vue';
 import type { RouteRecordRaw } from 'vue-router';
 import RouteView from '@/layouts/route-view.vue';
 import type { MenuRecord } from '@/types/menu';
@@ -6,7 +7,7 @@ const viewModules = import.meta.glob('../views/**/*.vue');
 
 function resolveRouteComponent(component?: string) {
   if (!component || component === 'layout.routeView') {
-    return RouteView;
+    return markRaw(RouteView);
   }
 
   const matched = viewModules[`../views/${component}.vue`];

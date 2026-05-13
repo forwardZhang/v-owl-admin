@@ -110,7 +110,7 @@ export const systemMockRoutes: MockRoute[] = [
           {
             component: 'system/menus/index',
             id: 'menu_4',
-            order: 3,
+            order: 4,
             path: '/system/menus',
             permission: 'system:menu:list',
             status: 'enabled',
@@ -118,9 +118,19 @@ export const systemMockRoutes: MockRoute[] = [
             type: 'menu'
           },
           {
+            component: 'system/pro-form-demo/index',
+            id: 'menu_7',
+            order: 3,
+            path: '/system/pro-form-demo',
+            permission: 'system:pro-form-demo:view',
+            status: 'enabled',
+            title: 'ProForm Demo',
+            type: 'menu'
+          },
+          {
             component: 'system/roles/index',
             id: 'menu_5',
-            order: 4,
+            order: 5,
             path: '/system/roles',
             permission: 'system:role:list',
             status: 'enabled',

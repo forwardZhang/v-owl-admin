@@ -73,6 +73,19 @@ export const menuMockRoutes: MockRoute[] = [
                 }
               },
               {
+                id: 'system-pro-form-demo',
+                name: 'SystemProFormDemo',
+                path: '/system/pro-form-demo',
+                component: 'system/pro-form-demo/index',
+                icon: 'system',
+                meta: {
+                  title: 'ProForm Demo',
+                  order: 3,
+                  icon: 'system',
+                  requiresAuth: true
+                }
+              },
+              {
                 id: 'system-menus',
                 name: 'SystemMenus',
                 path: '/system/menus',
@@ -80,7 +93,7 @@ export const menuMockRoutes: MockRoute[] = [
                 icon: 'menus',
                 meta: {
                   title: '菜单管理',
-                  order: 3,
+                  order: 4,
                   icon: 'menus',
                   requiresAuth: true
                 }
@@ -93,7 +106,7 @@ export const menuMockRoutes: MockRoute[] = [
                 icon: 'roles',
                 meta: {
                   title: '角色管理',
-                  order: 4,
+                  order: 5,
                   icon: 'roles',
                   requiresAuth: true
                 }
