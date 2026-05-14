@@ -66,7 +66,7 @@ export const menuMockRoutes: MockRoute[] = [
                 component: 'system/page-container/index',
                 icon: 'system',
                 meta: {
-                  title: 'PageContainer',
+                  title: 'ProPage',
                   order: 2,
                   icon: 'system',
                   requiresAuth: true
@@ -95,6 +95,48 @@ export const menuMockRoutes: MockRoute[] = [
                 meta: {
                   title: '角色管理',
                   order: 5,
+                  icon: 'roles',
+                  requiresAuth: true
+                }
+              }
+            ]
+          },
+          {
+            id: 'examples',
+            name: 'Examples',
+            path: '/examples',
+            component: 'layout.routeView',
+            redirect: '/examples/pro-page',
+            icon: 'menus',
+            meta: {
+              title: '示例中心',
+              order: 3,
+              icon: 'menus',
+              requiresAuth: true
+            },
+            children: [
+              {
+                id: 'examples-pro-page',
+                name: 'ExamplesProPage',
+                path: '/examples/pro-page',
+                component: 'examples/pro-page/index',
+                icon: 'system',
+                meta: {
+                  title: 'ProPage',
+                  order: 1,
+                  icon: 'system',
+                  requiresAuth: true
+                }
+              },
+              {
+                id: 'examples-pro-form',
+                name: 'ExamplesProForm',
+                path: '/examples/pro-form',
+                component: 'examples/pro-form/index',
+                icon: 'roles',
+                meta: {
+                  title: 'ProForm',
+                  order: 2,
                   icon: 'roles',
                   requiresAuth: true
                 }

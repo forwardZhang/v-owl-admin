@@ -9,7 +9,7 @@ import type {
 import type { FormInstance } from 'antdv-next';
 import type { Ref } from 'vue';
 
-import { cloneDeep, get, isArray, isEqual, mergeWith, set } from 'lodash-es';
+import { cloneDeep, isArray, isEqual, mergeWith, set } from 'lodash-es';
 import { reactive, ref, toRaw } from 'vue';
 
 function normalizeNamePath(name: ProFormNamePath): Array<string | number> {

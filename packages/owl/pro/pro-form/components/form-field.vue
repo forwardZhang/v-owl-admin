@@ -60,6 +60,28 @@ const RenderContent = defineComponent({
   }
 });
 
+const FieldControl = defineComponent({
+  name: 'ProFormFieldControl',
+  props: {
+    component: {
+      type: [Object, Function, String] as PropType<Component>,
+      required: true
+    },
+    componentProps: {
+      type: Object as PropType<Record<string, unknown>>,
+      default: () => ({})
+    },
+    componentSlots: {
+      type: Object as PropType<Record<string, ((props?: unknown) => VNodeChild) | undefined>>,
+      default: () => ({})
+    }
+  },
+  setup(controlProps) {
+    return () =>
+      h(controlProps.component, controlProps.componentProps, controlProps.componentSlots);
+  }
+});
+
 const {
   dynamicComponentProps,
   dynamicRules,
@@ -230,11 +252,11 @@ const helpContent = computed(() => {
           <RenderContent :content="helpContent" />
         </slot>
       </template>
-      <component
-        :is="FieldComponent"
+      <FieldControl
         v-if="FieldComponent"
-        v-slots="componentSlots"
-        v-bind="controlProps"
+        :component="FieldComponent"
+        :component-props="controlProps"
+        :component-slots="componentSlots"
       />
     </FormItem>
   </Col>
@@ -249,11 +271,11 @@ const helpContent = computed(() => {
         <RenderContent :content="helpContent" />
       </slot>
     </template>
-    <component
-      :is="FieldComponent"
+    <FieldControl
       v-if="FieldComponent"
-      v-slots="componentSlots"
-      v-bind="controlProps"
+      :component="FieldComponent"
+      :component-props="controlProps"
+      :component-slots="componentSlots"
     />
   </FormItem>
 </template>

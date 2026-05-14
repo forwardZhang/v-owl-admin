@@ -35,6 +35,7 @@ declare module 'vue' {
     AMenu: typeof import('antdv-next')['Menu']
     AResult: typeof import('antdv-next')['Result']
     ARow: typeof import('antdv-next')['Row']
+    ASkeleton: typeof import('antdv-next')['Skeleton']
     ASpace: typeof import('antdv-next')['Space']
     AStatistic: typeof import('antdv-next')['Statistic']
     ASwitch: typeof import('antdv-next')['Switch']
@@ -71,6 +72,7 @@ declare global {
   const AMenu: (typeof import('antdv-next'))['Menu'];
   const AResult: (typeof import('antdv-next'))['Result'];
   const ARow: (typeof import('antdv-next'))['Row'];
+  const ASkeleton: (typeof import('antdv-next'))['Skeleton'];
   const ASpace: (typeof import('antdv-next'))['Space'];
   const AStatistic: (typeof import('antdv-next'))['Statistic'];
   const ASwitch: (typeof import('antdv-next'))['Switch'];

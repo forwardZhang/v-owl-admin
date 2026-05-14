@@ -1,8 +1,8 @@
 <template>
-  <PageContainer v-model:active-key="activeKey" :tabs="tabs">
+  <ProPage v-model:active-key="activeKey" :tabs="tabs">
     <template #extra>
       <a-space wrap>
-        <a-tag color="processing">PageContainer</a-tag>
+        <a-tag color="processing">ProPage</a-tag>
         <a-button>查看 README</a-button>
         <a-button type="primary">复制接入方式</a-button>
       </a-space>
@@ -69,13 +69,13 @@
         </a-card>
       </div>
     </template>
-  </PageContainer>
+  </ProPage>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { PageContainer } from '@owl/components';
-import type { PageContainerTabItem } from '@owl/components';
+import { ProPage } from '@owl/components';
+import type { ProPageTabItem } from '@owl/components';
 import OverviewPane from './components/overview-pane.vue';
 import PlaygroundPane from './components/playground-pane.vue';
 
@@ -112,7 +112,7 @@ const useCases = [
   }
 ];
 
-const tabs: PageContainerTabItem[] = [
+const tabs: ProPageTabItem[] = [
   {
     component: OverviewPane,
     key: 'overview',

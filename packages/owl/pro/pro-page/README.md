@@ -1,4 +1,4 @@
-# PageContainer
+# ProPage
 
 用于统一页面顶部结构，支持单标题模式和整顶栏 `Tabs` 模式。
 
@@ -15,17 +15,17 @@
 
 ```vue
 <script setup lang="ts">
-import { PageContainer } from '@owl/components';
+import { ProPage } from '@owl/components';
 </script>
 
 <template>
-  <PageContainer title="用户管理" description="统一管理后台账号与权限协作。">
+  <ProPage title="用户管理" description="统一管理后台账号与权限协作。">
     <template #extra>
       <a-button type="primary">新增用户</a-button>
     </template>
 
     <a-card variant="borderless">这里是页面内容</a-card>
-  </PageContainer>
+  </ProPage>
 </template>
 ```
 
@@ -34,19 +34,19 @@ import { PageContainer } from '@owl/components';
 ```vue
 <script setup lang="ts">
 import { ref } from 'vue';
-import { PageContainer } from '@owl/components';
-import type { PageContainerTabItem } from '@owl/components';
+import { ProPage } from '@owl/components';
+import type { ProPageTabItem } from '@owl/components';
 
 const activeKey = ref('users');
 
-const tabs: PageContainerTabItem[] = [
+const tabs: ProPageTabItem[] = [
   { key: 'users', title: '用户列表', component: UsersPane },
   { key: 'roles', title: '角色权限', component: RolesPane }
 ];
 </script>
 
 <template>
-  <PageContainer v-model:activeKey="activeKey" :tabs="tabs">
+  <ProPage v-model:activeKey="activeKey" :tabs="tabs">
     <template #extra>
       <a-button>刷新</a-button>
     </template>
@@ -59,18 +59,18 @@ const tabs: PageContainerTabItem[] = [
     <template #tab-users>
       <UsersPane />
     </template>
-  </PageContainer>
+  </ProPage>
 </template>
 ```
 
 ## Props
 
-| 属性          | 类型                     | 默认值      | 说明                                   |
-| ------------- | ------------------------ | ----------- | -------------------------------------- |
-| `title`       | `string`                 | `''`        | 单内容模式标题                         |
-| `description` | `string`                 | `''`        | 单内容模式描述文案                     |
-| `tabs`        | `PageContainerTabItem[]` | `[]`        | 顶部 tabs 配置                         |
-| `activeKey`   | `string`                 | `undefined` | 当前激活 tab，支持 `v-model:activeKey` |
+| 属性          | 类型               | 默认值      | 说明                                   |
+| ------------- | ------------------ | ----------- | -------------------------------------- |
+| `title`       | `string`           | `''`        | 单内容模式标题                         |
+| `description` | `string`           | `''`        | 单内容模式描述文案                     |
+| `tabs`        | `ProPageTabItem[]` | `[]`        | 顶部 tabs 配置                         |
+| `activeKey`   | `string`           | `undefined` | 当前激活 tab，支持 `v-model:activeKey` |
 
 ## TabItem
 

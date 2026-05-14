@@ -1,2 +1,2 @@
-export * from './page-container';
+export * from './pro-page';
 export * from './pro-form';

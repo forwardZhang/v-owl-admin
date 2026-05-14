@@ -17,7 +17,7 @@
           <span class="playground-pane__eyebrow">Strategy</span>
           <h3>组合而不是耦合</h3>
           <p>
-            `PageContainer`
+            `ProPage`
             不抢业务状态，只负责结构。真正的列表、表单、详情组件可以继续各写各的，边界很清爽。
           </p>
         </a-card>
@@ -34,7 +34,7 @@
   flex-direction: column;
 }
 
-.playground-pane :deep(.owl-page-container__header) {
+.playground-pane :deep(.pro-page__header) {
   box-shadow: none;
   background:
     radial-gradient(circle at top left, rgba(var(--app-primary-rgb), 0.12) 0%, transparent 34%),

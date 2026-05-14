@@ -1,10 +1,10 @@
 <template>
-  <div class="page-container">
-    <div v-if="showHeader" class="page-container__header">
-      <div class="page-container__tabs-shell">
+  <div class="pro-page">
+    <div v-if="showHeader" class="pro-page__header">
+      <div class="pro-page__tabs-shell">
         <Tabs
           :active-key="mergedActiveKey"
-          class="page-container__tabs"
+          class="pro-page__tabs"
           @update:active-key="handleTabChange"
         >
           <TabPane v-for="tab in normalizedTabs" :key="tab.key">
@@ -16,13 +16,13 @@
           </TabPane>
         </Tabs>
 
-        <div v-if="$slots.extra" class="page-container__extra">
+        <div v-if="$slots.extra" class="pro-page__extra">
           <slot name="extra" />
         </div>
       </div>
     </div>
 
-    <div class="page-container__body">
+    <div class="pro-page__body">
       <template v-if="hasTabs && activeTab">
         <slot :name="`tab-${activeTab.key}`" :tab="activeTab">
           <component
@@ -43,17 +43,17 @@
 import { find } from 'lodash-es';
 import { Empty, TabPane, Tabs } from 'antdv-next';
 import { computed, ref, watch } from 'vue';
-import type { PageContainerTabItem } from './types';
+import type { ProPageTabItem } from './types';
 
 defineOptions({
-  name: 'PageContainer'
+  name: 'ProPage'
 });
 
 const props = withDefaults(
   defineProps<{
     activeKey?: string;
     description?: string;
-    tabs?: PageContainerTabItem[];
+    tabs?: ProPageTabItem[];
     title?: string;
   }>(),
   {
@@ -65,7 +65,7 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{
-  change: [activeKey: string, tab?: PageContainerTabItem];
+  change: [activeKey: string, tab?: ProPageTabItem];
   'update:activeKey': [activeKey: string];
 }>();
 
@@ -131,7 +131,7 @@ function handleTabChange(nextActiveKey: string) {
 </script>
 
 <style scoped lang="less">
-.page-container {
+.pro-page {
   display: flex;
   flex-direction: column;
   min-height: 0;
@@ -139,7 +139,7 @@ function handleTabChange(nextActiveKey: string) {
   overflow: hidden;
 }
 
-.page-container__header {
+.pro-page__header {
   flex: none;
   overflow: hidden;
   border-radius: 0;
@@ -151,36 +151,36 @@ function handleTabChange(nextActiveKey: string) {
   padding: 0 12px;
 }
 
-.page-container__tabs-shell {
+.pro-page__tabs-shell {
   display: flex;
   justify-content: space-between;
 }
 
-.page-container__tabs {
+.pro-page__tabs {
   min-width: 0;
   flex: 1;
 }
 
-.page-container__tabs :deep(.ant-tabs-nav) {
+.pro-page__tabs :deep(.ant-tabs-nav) {
   margin: 0;
 }
 
-.page-container__tabs :deep(.ant-tabs-tab) {
+.pro-page__tabs :deep(.ant-tabs-tab) {
   font-size: 13px;
   font-weight: 600;
 }
 
-.page-container__tabs :deep(.ant-tabs-tab-btn) {
+.pro-page__tabs :deep(.ant-tabs-tab-btn) {
   display: inline-flex;
   align-items: center;
   gap: 8px;
 }
 
-.page-container__tabs :deep(.ant-tabs-content-holder) {
+.pro-page__tabs :deep(.ant-tabs-content-holder) {
   display: none;
 }
 
-.page-container__extra {
+.pro-page__extra {
   display: flex;
   flex: none;
   align-items: center;
@@ -188,7 +188,7 @@ function handleTabChange(nextActiveKey: string) {
   margin-left: auto;
 }
 
-.page-container__body {
+.pro-page__body {
   flex: 1;
   min-height: 0;
   padding: 12px;

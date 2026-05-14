@@ -2,6 +2,7 @@ import { find } from 'lodash-es';
 import type { ApiResponse } from '../types/api';
 import { authMockRoutes } from './modules/auth';
 import { dashboardMockRoutes } from './modules/dashboard';
+import { examplesMockRoutes } from './modules/examples';
 import { menuMockRoutes } from './modules/menu';
 import { systemMockRoutes } from './modules/system';
 
@@ -41,6 +42,7 @@ export const mockRoutes: MockRoute[] = [
   ...authMockRoutes,
   ...menuMockRoutes,
   ...dashboardMockRoutes,
+  ...examplesMockRoutes,
   ...systemMockRoutes
 ];
 

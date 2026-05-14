@@ -104,7 +104,7 @@ export const systemMockRoutes: MockRoute[] = [
             path: '/system/page-container',
             permission: 'system:page-container:view',
             status: 'enabled',
-            title: 'PageContainer',
+            title: 'ProPage',
             type: 'menu'
           },
           {
@@ -115,6 +115,36 @@ export const systemMockRoutes: MockRoute[] = [
             permission: 'system:menu:list',
             status: 'enabled',
             title: '菜单管理',
+            type: 'menu'
+          },
+          {
+            component: 'layout.routeView',
+            id: 'menu_7',
+            order: 3,
+            path: '/examples',
+            permission: 'examples:view',
+            status: 'enabled',
+            title: '示例中心',
+            type: 'directory'
+          },
+          {
+            component: 'examples/pro-page/index',
+            id: 'menu_8',
+            order: 1,
+            path: '/examples/pro-page',
+            permission: 'examples:pro-page:view',
+            status: 'enabled',
+            title: 'ProPage',
+            type: 'menu'
+          },
+          {
+            component: 'examples/pro-form/index',
+            id: 'menu_9',
+            order: 2,
+            path: '/examples/pro-form',
+            permission: 'examples:pro-form:view',
+            status: 'enabled',
+            title: 'ProForm',
             type: 'menu'
           },
 
