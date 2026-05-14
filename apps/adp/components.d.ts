@@ -24,6 +24,7 @@ declare module 'vue' {
     ADivider: typeof import('antdv-next')['Divider']
     ADrawer: typeof import('antdv-next')['Drawer']
     ADropdown: typeof import('antdv-next')['Dropdown']
+    AEmpty: typeof import('antdv-next')['Empty']
     AForm: typeof import('antdv-next')['Form']
     AFormItem: typeof import('antdv-next')['FormItem']
     AInput: typeof import('antdv-next')['Input']
@@ -59,6 +60,7 @@ declare global {
   const ADivider: (typeof import('antdv-next'))['Divider'];
   const ADrawer: (typeof import('antdv-next'))['Drawer'];
   const ADropdown: (typeof import('antdv-next'))['Dropdown'];
+  const AEmpty: (typeof import('antdv-next'))['Empty'];
   const AForm: (typeof import('antdv-next'))['Form'];
   const AFormItem: (typeof import('antdv-next'))['FormItem'];
   const AInput: (typeof import('antdv-next'))['Input'];

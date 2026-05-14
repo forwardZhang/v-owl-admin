@@ -27,3 +27,4 @@ dist-ssr
 *.sw?
 
 test-components
+test-components/*

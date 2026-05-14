@@ -117,16 +117,7 @@ export const systemMockRoutes: MockRoute[] = [
             title: '菜单管理',
             type: 'menu'
           },
-          {
-            component: 'system/pro-form-demo/index',
-            id: 'menu_7',
-            order: 3,
-            path: '/system/pro-form-demo',
-            permission: 'system:pro-form-demo:view',
-            status: 'enabled',
-            title: 'ProForm Demo',
-            type: 'menu'
-          },
+
           {
             component: 'system/roles/index',
             id: 'menu_5',

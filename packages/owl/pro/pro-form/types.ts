@@ -1,250 +1,276 @@
-import type { Component, Ref, ShallowRef, VNodeChild } from 'vue';
-import type { FormInstance, FormItemProps, FormProps } from 'antdv-next';
+import type {
+  AutoCompleteProps,
+  ButtonProps,
+  CascaderProps,
+  CheckboxGroupProps,
+  CheckboxProps,
+  ColProps,
+  DatePickerProps,
+  FormInstance,
+  FormItemProps,
+  FormProps,
+  InputPasswordProps,
+  InputProps,
+  InputNumberProps,
+  RadioGroupProps,
+  RadioProps,
+  RangePickerProps,
+  RowProps,
+  SelectProps,
+  SwitchProps,
+  TextAreaProps,
+  TimePickerProps,
+  TreeSelectProps
+} from 'antdv-next';
+import type { Component, Ref, VNodeChild } from 'vue';
 
-/**
- * 表单字段路径，兼容 antdv-next Form 的 name path 设计。
- */
 export type ProFormNamePath = string | number | Array<string | number>;
 
-export interface ProFormFinishFailedInfo {
-  errorFields?: Array<{
-    errors?: string[];
-    name?: ProFormNamePath;
-    warnings?: string[];
-  }>;
-  outOfDate?: boolean;
-  values?: Record<string, unknown>;
-}
+export type BaseFormComponentType =
+  | 'ApiCascader'
+  | 'ApiSelect'
+  | 'ApiTreeSelect'
+  | 'AutoComplete'
+  | 'Cascader'
+  | 'Checkbox'
+  | 'CheckboxGroup'
+  | 'DatePicker'
+  | 'Input'
+  | 'InputNumber'
+  | 'InputPassword'
+  | 'Radio'
+  | 'RadioGroup'
+  | 'RangePicker'
+  | 'Select'
+  | 'Switch'
+  | 'TextArea'
+  | 'Textarea'
+  | 'TimePicker'
+  | 'TreeSelect'
+  | (Record<never, never> & string);
 
-export type ProFieldType =
-  | 'input'
-  | 'password'
-  | 'textarea'
-  | 'checkbox'
-  | 'checkbox-group'
-  | 'radio'
-  | 'radio-group'
-  | 'select';
-
-/**
- * 在 antdv-next FormItem 的基础上新增的扩展属性。
- */
-export interface ProFormItemProps extends FormItemProps {
-  /**
-   * title 作为 label 的别名，便于和业务字段配置保持一致。
-   */
-  title?: string;
-  /**
-   * 预留给 FormItem 的 tooltip 配置，统一从 ProFormItem 这一层透传。
-   */
-  tooltip?: FormItemProps['tooltip'];
-}
-
-export interface ProFieldOption {
-  label: VNodeChild;
-  value: unknown;
+export type ApiComponentOptionsItem = {
+  [name: string]: unknown;
+  children?: ApiComponentOptionsItem[];
   disabled?: boolean;
-  title?: string;
-  class?: string;
-  style?: Record<string, unknown>;
-  id?: string;
-}
-
-export interface ProFieldRequestContext<
-  TValues extends Record<string, unknown> = Record<string, unknown>
-> {
-  form: CreateProFormReturn<TValues>;
-  values: TValues;
-  dependencyValues: Record<string, unknown>;
-}
-
-export type ProFieldRequest<
-  TOption = ProFieldOption,
-  TValues extends Record<string, unknown> = Record<string, unknown>
-> = (context: ProFieldRequestContext<TValues>) => Promise<TOption[]> | TOption[];
-
-export interface ProFieldComponentProps<TFieldProps = Record<string, unknown>> {
-  /**
-   * 透传给具体输入控件的属性，例如 Input / Select / Checkbox 的原生 props。
-   */
-  fieldProps?: TFieldProps;
-  /**
-   * 透传给 ProFormItem 的属性，用于控制 label、rules、extra、tooltip 等行为。
-   */
-  formItemProps?: Partial<ProFormItemProps>;
-  /**
-   * 字段隐藏时不渲染整个 FormItem。
-   */
-  hidden?: boolean;
-  /**
-   * 字段标题，默认同时作为 FormItem 的 label 文案来源。
-   */
   label?: string;
-  /**
-   * 对应 Form model 的字段路径。
-   */
-  name: ProFormNamePath;
-  /**
-   * 自定义占位文案；未传时会根据 label 自动生成。
-   */
-  placeholder?: string;
+  value?: number | string;
+};
+
+export type ApiComponentLabelFn = (item: ApiComponentOptionsItem) => string;
+
+export interface ApiComponentProps {
+  afterFetch?: (value: unknown) => PromiseLike<unknown> | unknown;
+  alwaysLoad?: boolean;
+  api?: (
+    arg?: Record<string, unknown>
+  ) =>
+    | Promise<ApiComponentOptionsItem[] | Record<string, unknown>>
+    | ApiComponentOptionsItem[]
+    | Record<string, unknown>;
+  autoSelect?:
+    | 'first'
+    | 'last'
+    | 'one'
+    | ((item: ApiComponentOptionsItem[]) => ApiComponentOptionsItem)
+    | false;
+  beforeFetch?: (
+    value: Record<string, unknown>
+  ) => PromiseLike<Record<string, unknown>> | Record<string, unknown>;
+  childrenField?: string;
+  component: Component;
+  disabledField?: string;
+  immediate?: boolean;
+  labelField?: string;
+  labelFn?: ApiComponentLabelFn;
+  loadingSlot?: string;
+  modelPropName?: string;
+  numberToString?: boolean;
+  options?: ApiComponentOptionsItem[];
+  optionsPropName?: string;
+  params?: Record<string, unknown>;
+  resultField?: string;
+  shouldFetch?: (value: Record<string, unknown>) => PromiseLike<boolean> | boolean;
+  valueField?: string;
+  visibleEvent?: string;
 }
 
-export interface ProChoiceFieldProps<
-  TFieldProps = Record<string, unknown>,
-  TOption = ProFieldOption
-> extends ProFieldComponentProps<TFieldProps> {
-  /**
-   * 直接配置静态选项，适用于 select / checkbox-group / radio-group 等场景。
-   */
-  options?: TOption[];
-  /**
-   * 组件内部请求远程选项；依赖项变化后会自动重新拉取。
-   */
-  request?: ProFieldRequest<TOption>;
-  /**
-   * 选项请求依赖的字段路径列表。
-   */
-  dependencies?: ProFormNamePath[];
+export type ApiComponentSharedProps = Omit<ApiComponentProps, 'component'>;
+
+export interface BuiltinComponentProps {
+  ApiCascader: ApiComponentSharedProps & CascaderProps;
+  ApiSelect: ApiComponentSharedProps & SelectProps;
+  ApiTreeSelect: ApiComponentSharedProps & TreeSelectProps;
+  AutoComplete: AutoCompleteProps;
+  Cascader: CascaderProps;
+  Checkbox: CheckboxProps;
+  CheckboxGroup: CheckboxGroupProps;
+  DatePicker: DatePickerProps;
+  Input: InputProps;
+  InputNumber: InputNumberProps;
+  InputPassword: InputPasswordProps;
+  Radio: RadioProps;
+  RadioGroup: RadioGroupProps;
+  RangePicker: RangePickerProps;
+  Select: SelectProps;
+  Switch: SwitchProps;
+  TextArea: TextAreaProps;
+  Textarea: TextAreaProps;
+  TimePicker: TimePickerProps;
+  TreeSelect: TreeSelectProps;
 }
 
-export interface ProFieldProps extends ProChoiceFieldProps {
-  /**
-   * 自定义渲染组件，优先级高于内置 type 映射。
-   */
-  component?: Component;
-  /**
-   * 内置字段类型，通过类型映射选择具体组件。
-   */
-  type?: ProFieldType;
-}
+export type FormLayout = NonNullable<FormProps['layout']>;
 
-export interface SetInitialValuesOptions {
-  /**
-   * 更新初始值后，是否同步把当前字段值重置为最新初始值。
-   */
-  updateFields?: boolean;
-}
+export type FormRules = FormProps['rules'];
 
-export interface CreateProFormOptions<
-  TValues extends Record<string, unknown> = Record<string, unknown>
-> {
-  /**
-   * 表单初始化快照，同时也是 restore/reset 的回退基准。
-   */
-  initialValues?: Partial<TValues>;
-  /**
-   * 提交成功回调，对应 antdv-next Form 的 finish。
-   */
-  onFinish?: (values: TValues) => void | Promise<void>;
-  /**
-   * 提交失败回调，对应 antdv-next Form 的 finishFailed。
-   */
-  onFinishFailed?: (errorInfo: ProFormFinishFailedInfo) => void;
-  /**
-   * 字段或整表恢复到初始值后的统一回调。
-   */
-  onReset?: () => void;
-}
+export type FormSchemaRule = NonNullable<FormItemProps['rules']>;
 
-export interface ProFormHook<TPayload> {
-  /**
-   * 注册事件订阅，返回取消订阅函数。
-   */
-  (handler: (payload: TPayload) => void): () => void;
-}
+export type FormActionButtonOptions = ButtonProps & {
+  show?: boolean;
+  text?: string;
+};
 
-export interface CreateProFormReturn<
-  TValues extends Record<string, unknown> = Record<string, unknown>
-> {
-  /**
-   * 当前挂载的 Form 实例引用，供内部校验、重置、提交复用。
-   */
-  formRef: Readonly<ShallowRef<FormInstance | undefined>>;
-  /**
-   * 初始值快照，用于 restore/reset 相关能力。
-   */
-  initialValues: Readonly<Ref<Partial<TValues>>>;
-  /**
-   * 提交态开关，常用于防止重复提交。
-   */
-  loading: Readonly<Ref<boolean>>;
-  /**
-   * 响应式表单值对象，推荐页面层直接消费这一份 model。
-   */
+export type DynamicFormContext<TValues extends Record<string, unknown>> = {
+  api: FormApi<TValues>;
+  fieldName?: ProFormNamePath;
+  schema?: FormSchema<BaseFormComponentType, BuiltinComponentProps, TValues>;
+  value?: unknown;
   values: TValues;
-  /**
-   * 清空指定字段或整表的校验状态。
-   */
-  clearValidate: (nameList?: ProFormNamePath[]) => void;
-  /**
-   * 获取指定字段当前值。
-   */
-  getFieldValue: <TValue = unknown>(name: ProFormNamePath) => TValue | undefined;
-  /**
-   * 与 restoreFieldsValue 语义保持一致的重置入口。
-   */
-  resetFields: (nameList?: ProFormNamePath[]) => void;
-  /**
-   * 把单字段恢复到初始值，并清掉该字段校验状态。
-   */
-  restoreFieldValue: (name: ProFormNamePath) => void;
-  /**
-   * 把指定字段或整表恢复到初始值，并清掉对应校验状态。
-   */
-  restoreFieldsValue: (nameList?: ProFormNamePath[]) => void;
-  /**
-   * 设置单字段值，同时同步写回到底层 Form 实例。
-   */
-  setFieldValue: (name: ProFormNamePath, value: unknown) => void;
-  /**
-   * 批量设置字段值，同时同步写回到底层 Form 实例。
-   */
-  setFieldsValue: (nextValues: Partial<TValues>) => void;
-  /**
-   * 更新初始值快照，可选择是否立刻覆盖当前值。
-   */
-  setInitialValues: (
-    nextInitialValues: Partial<TValues>,
-    options?: SetInitialValuesOptions
-  ) => void;
-  /**
-   * 外部手动控制提交态。
-   */
-  setLoading: (loading: boolean) => void;
-  /**
-   * 触发表单提交，最终复用 antdv-next Form 的 submit 流程。
-   */
-  submit: () => void;
-  /**
-   * 校验整个表单并返回当前值。
-   */
-  validate: () => Promise<TValues>;
-  /**
-   * 校验指定字段，未挂载 Form 实例时回退返回当前 values 快照。
-   */
-  validateFields: (nameList?: ProFormNamePath[], options?: unknown) => Promise<Partial<TValues>>;
-  onFinish: ProFormHook<TValues>;
-  onFinishFailed: ProFormHook<ProFormFinishFailedInfo>;
-  onReset: ProFormHook<void>;
-  /**
-   * 内部桥接对象，给 ProForm 容器和字段层注册真实 Form 实例与事件触发器。
-   */
-  __INTERNAL__: {
-    setFormInstance: (instance?: FormInstance) => void;
-    triggerFinish: (values: TValues) => void;
-    triggerFinishFailed: (errorInfo: ProFormFinishFailedInfo) => void;
-    triggerReset: () => void;
-  };
+};
+
+export type MaybeDynamic<TValue, TValues extends Record<string, unknown>> =
+  | TValue
+  | ((ctx: DynamicFormContext<TValues>) => TValue);
+
+export type RenderContent = string | (() => VNodeChild) | VNodeChild;
+
+export type ComponentPropsGetter<TProps extends object, TValues extends Record<string, unknown>> = (
+  ctx: DynamicFormContext<TValues>
+) => Partial<TProps> & Record<string, unknown>;
+
+export type ComponentProps<
+  TProps extends object = Record<string, unknown>,
+  TValues extends Record<string, unknown> = Record<string, unknown>
+> = (Partial<TProps> & Record<string, unknown>) | ComponentPropsGetter<TProps, TValues>;
+
+export type DependencyResolver<TValue, TValues extends Record<string, unknown>> =
+  | TValue
+  | ((ctx: DynamicFormContext<TValues>) => PromiseLike<TValue> | TValue);
+
+export interface FormItemDependencies<
+  TProps extends object = Record<string, unknown>,
+  TValues extends Record<string, unknown> = Record<string, unknown>
+> {
+  componentProps?: DependencyResolver<Partial<TProps> & Record<string, unknown>, TValues>;
+  disabled?: DependencyResolver<boolean, TValues>;
+  if?: DependencyResolver<boolean, TValues>;
+  required?: DependencyResolver<boolean, TValues>;
+  rules?: DependencyResolver<FormSchemaRule | undefined, TValues>;
+  show?: DependencyResolver<boolean, TValues>;
+  trigger?: (ctx: DynamicFormContext<TValues>) => PromiseLike<void> | void;
+  triggerFields: ProFormNamePath[];
 }
 
-export interface ProFormProps extends Omit<FormProps, 'model'> {
-  /**
-   * createProForm 返回的控制器实例。
-   */
-  form: CreateProFormReturn;
-  /**
-   * 提交中状态，会同步写入 form.loading。
-   */
-  loading?: boolean;
+export interface FormCommonConfig<
+  TValues extends Record<string, unknown> = Record<string, unknown>
+> {
+  colProps?: ColProps;
+  componentProps?: ComponentProps<Record<string, unknown>, TValues>;
+  disabled?: boolean;
+  formItemProps?: Partial<FormItemProps>;
+  hideLabel?: boolean;
+  labelCol?: FormProps['labelCol'];
+  labelWidth?: number | string;
+  modelPropName?: string;
+  wrapperCol?: FormProps['wrapperCol'];
+}
+
+export interface FormSchemaBody<
+  TProps extends object,
+  TValues extends Record<string, unknown>
+> extends Omit<FormCommonConfig<TValues>, 'componentProps'> {
+  colProps?: ColProps;
+  componentProps?: ComponentProps<TProps, TValues>;
+  defaultValue?: unknown;
+  dependencies?: FormItemDependencies<TProps, TValues>;
+  fieldName: ProFormNamePath;
+  formItemProps?: Partial<FormItemProps>;
+  help?: MaybeDynamic<VNodeChild, TValues>;
+  hidden?: MaybeDynamic<boolean, TValues>;
+  label?: MaybeDynamic<VNodeChild, TValues>;
+  renderComponentContent?: (ctx: DynamicFormContext<TValues>) => Record<string, () => VNodeChild>;
+  required?: MaybeDynamic<boolean, TValues>;
+  rules?: FormSchemaRule;
+  show?: MaybeDynamic<boolean, TValues>;
+}
+
+type FormSchemaDiscriminated<
+  T extends BaseFormComponentType,
+  P extends object,
+  TValues extends Record<string, unknown>
+> = {
+  [K in Extract<keyof P, T>]: {
+    component: K;
+  } & FormSchemaBody<P[K] extends object ? P[K] : Record<string, unknown>, TValues>;
+}[Extract<keyof P, T>];
+
+type FormSchemaFallback<
+  T extends BaseFormComponentType,
+  TValues extends Record<string, unknown>
+> = {
+  component: Component | T;
+} & FormSchemaBody<Record<string, unknown>, TValues>;
+
+export type FormSchema<
+  T extends BaseFormComponentType = BaseFormComponentType,
+  P extends object = BuiltinComponentProps,
+  TValues extends Record<string, unknown> = Record<string, unknown>
+> = FormSchemaDiscriminated<T, P, TValues> | FormSchemaFallback<T, TValues>;
+
+export interface ProFormProps<
+  TValues extends Record<string, unknown> = Record<string, unknown>
+> extends Omit<FormProps, 'model'> {
+  actionButtonsReverse?: boolean;
+  actionPosition?: 'center' | 'left' | 'right';
+  commonConfig?: FormCommonConfig<TValues>;
+  formApi: FormApi<TValues>;
+  resetButtonOptions?: FormActionButtonOptions;
+  rowProps?: RowProps;
+  schema?: FormSchema<BaseFormComponentType, BuiltinComponentProps, TValues>[];
+  showDefaultActions?: boolean;
+  submitButtonOptions?: FormActionButtonOptions;
+}
+
+export interface UseProFormOptions<
+  TValues extends Record<string, unknown> = Record<string, unknown>
+> extends Omit<ProFormProps<TValues>, 'formApi'> {
+  handleReset?: (values: TValues) => void | Promise<void>;
+  handleSubmit?: (values: TValues) => void | Promise<void>;
+  handleValuesChange?: (values: TValues, changedFields: ProFormNamePath[]) => void;
+  initialValues?: Partial<TValues>;
+}
+
+export interface FormApi<TValues extends Record<string, unknown> = Record<string, unknown>> {
+  formRef: Ref<FormInstance | undefined>;
+  values: TValues;
+  getState: () => UseProFormOptions<TValues>;
+  getValues: () => TValues;
+  removeSchemaByFields: (fields: ProFormNamePath[]) => void;
+  resetForm: () => void;
+  setFormInstance: (instance?: FormInstance) => void;
+  setFieldValue: (field: ProFormNamePath, value: unknown) => void;
+  setFieldsValue: (fields: Partial<TValues>) => void;
+  setState: (
+    stateOrFn:
+      | ((prev: UseProFormOptions<TValues>) => Partial<UseProFormOptions<TValues>>)
+      | Partial<UseProFormOptions<TValues>>
+  ) => void;
+  setValues: (fields: Partial<TValues>) => void;
+  submitForm: () => Promise<TValues>;
+  updateSchema: (
+    schema: Partial<FormSchema<BaseFormComponentType, BuiltinComponentProps, TValues>>[]
+  ) => void;
+  validate: () => Promise<TValues>;
+  validateField: (fieldName: ProFormNamePath) => Promise<unknown>;
 }
