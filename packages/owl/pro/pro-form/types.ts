@@ -126,6 +126,8 @@ export type FormRules = FormProps['rules'];
 
 export type FormSchemaRule = NonNullable<FormItemProps['rules']>;
 
+export type FormItemClass = string | string[] | Record<string, boolean>;
+
 export type FormActionButtonOptions = ButtonProps & {
   show?: boolean;
   text?: string;
@@ -144,6 +146,10 @@ export type MaybeDynamic<TValue, TValues extends Record<string, unknown>> =
   | ((ctx: DynamicFormContext<TValues>) => TValue);
 
 export type RenderContent = string | (() => VNodeChild) | VNodeChild;
+
+export type FormComponentSlot<TValues extends Record<string, unknown> = Record<string, unknown>> = (
+  ctx: DynamicFormContext<TValues> & { slotProps?: unknown }
+) => VNodeChild;
 
 export type ComponentPropsGetter<TProps extends object, TValues extends Record<string, unknown>> = (
   ctx: DynamicFormContext<TValues>
@@ -178,6 +184,7 @@ export interface FormCommonConfig<
   colProps?: ColProps;
   componentProps?: ComponentProps<Record<string, unknown>, TValues>;
   disabled?: boolean;
+  formItemClass?: MaybeDynamic<FormItemClass, TValues>;
   formItemProps?: Partial<FormItemProps>;
   hideLabel?: boolean;
   labelCol?: FormProps['labelCol'];
@@ -191,7 +198,17 @@ export interface FormSchemaBody<
   TValues extends Record<string, unknown>
 > extends Omit<FormCommonConfig<TValues>, 'componentProps'> {
   colProps?: ColProps;
+  /**
+   * 传给字段组件的 props，支持对象或基于当前表单上下文动态返回。
+   * 表单值和 `onUpdate:*` 会由 ProForm 自动注入，这里只放业务组件自己的配置。
+   */
   componentProps?: ComponentProps<TProps, TValues>;
+  /**
+   * 传给字段组件内部的插槽内容。
+   * 这里直接声明组件支持的插槽，例如 Input 的 `prefix`、Select 的 `suffixIcon`。
+   * 这是组件自己的插槽，不是 FormItem 内容区的 template 插槽。
+   */
+  componentSlots?: Record<string, FormComponentSlot<TValues>>;
   defaultValue?: unknown;
   dependencies?: FormItemDependencies<TProps, TValues>;
   fieldName: ProFormNamePath;
@@ -199,7 +216,6 @@ export interface FormSchemaBody<
   help?: MaybeDynamic<VNodeChild, TValues>;
   hidden?: MaybeDynamic<boolean, TValues>;
   label?: MaybeDynamic<VNodeChild, TValues>;
-  renderComponentContent?: (ctx: DynamicFormContext<TValues>) => Record<string, () => VNodeChild>;
   required?: MaybeDynamic<boolean, TValues>;
   rules?: FormSchemaRule;
   show?: MaybeDynamic<boolean, TValues>;
@@ -211,22 +227,54 @@ type FormSchemaDiscriminated<
   TValues extends Record<string, unknown>
 > = {
   [K in Extract<keyof P, T>]: {
-    component: K;
+    /**
+     * 字段类型。传内置组件名时，会从 ProForm 组件适配器里取真实组件。
+     */
+    type: K;
   } & FormSchemaBody<P[K] extends object ? P[K] : Record<string, unknown>, TValues>;
 }[Extract<keyof P, T>];
 
-type FormSchemaFallback<
-  T extends BaseFormComponentType,
-  TValues extends Record<string, unknown>
-> = {
-  component: Component | T;
+type FormCustomComponentSchema<TValues extends Record<string, unknown>> = {
+  /**
+   * 自定义字段类型。只有 custom 才支持 component。
+   */
+  type: 'custom';
+  /**
+   * 自定义字段组件。ProForm 仍会自动注入值和 `onUpdate:*`。
+   */
+  component: Component;
+  slot?: never;
 } & FormSchemaBody<Record<string, unknown>, TValues>;
+
+type FormSlotSchemaBody<TValues extends Record<string, unknown>> = Omit<
+  FormSchemaBody<Record<string, unknown>, TValues>,
+  'componentProps' | 'componentSlots' | 'modelPropName'
+>;
+
+type FormCustomSlotSchema<TValues extends Record<string, unknown>> = {
+  /**
+   * 自定义字段类型。只有 custom 才支持 slot。
+   */
+  type: 'custom';
+  component?: never;
+  /**
+   * FormItem 内容区使用的父级 template 插槽名。
+   * 例如 schema 声明 `slot: 'test-component'` 时，父级可写
+   * `<template #test-component="{ schema, api }">...</template>` 渲染该字段内容。
+   * slot 渲染的是 FormItem 内容区，不接收 componentProps、componentSlots、modelPropName。
+   */
+  slot: string;
+} & FormSlotSchemaBody<TValues>;
+
+type FormCustomSchema<TValues extends Record<string, unknown>> =
+  | FormCustomComponentSchema<TValues>
+  | FormCustomSlotSchema<TValues>;
 
 export type FormSchema<
   T extends BaseFormComponentType = BaseFormComponentType,
   P extends object = BuiltinComponentProps,
   TValues extends Record<string, unknown> = Record<string, unknown>
-> = FormSchemaDiscriminated<T, P, TValues> | FormSchemaFallback<T, TValues>;
+> = FormSchemaDiscriminated<T, P, TValues> | FormCustomSchema<TValues>;
 
 export interface ProFormProps<
   TValues extends Record<string, unknown> = Record<string, unknown>
@@ -240,6 +288,7 @@ export interface ProFormProps<
   schema?: FormSchema<BaseFormComponentType, BuiltinComponentProps, TValues>[];
   showDefaultActions?: boolean;
   submitButtonOptions?: FormActionButtonOptions;
+  wrapperClass?: FormItemClass;
 }
 
 export interface UseProFormOptions<

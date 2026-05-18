@@ -1,21 +1,29 @@
 <template>
-  <div class="scenario-switch" :class="{ 'is-disabled': disabled }">
-    <div class="scenario-switch__options">
+  <div class="flex flex-col gap-2.5">
+    <div class="grid grid-cols-1 gap-2.5 md:grid-cols-3">
       <button
         v-for="item in options"
         :key="item.value"
-        class="scenario-switch__option"
-        :class="{ 'is-active': modelValue === item.value }"
+        class="min-h-[82px] cursor-pointer rounded-ant-lg border border-app-border bg-white p-3 text-left transition duration-200 disabled:cursor-not-allowed disabled:opacity-[0.58]"
+        :class="{
+          'border-app-primary shadow-[0_0_0_2px_rgba(var(--app-primary-rgb),0.12)]':
+            modelValue === item.value
+        }"
         :disabled="disabled"
         type="button"
         @click="modelValue = item.value"
       >
-        <strong>{{ item.label }}</strong>
-        <span>{{ item.description }}</span>
+        <strong class="block text-sm text-app-text-primary">{{ item.label }}</strong>
+        <span class="mt-1.5 block text-xs leading-normal text-app-text-secondary">
+          {{ item.description }}
+        </span>
       </button>
     </div>
-
-    <div v-if="$slots.note || $slots.action" class="scenario-switch__footer">
+    <a-input v-model:value="modelValue"></a-input>
+    <div
+      v-if="$slots.note || $slots.action"
+      class="flex items-center justify-between gap-3 text-xs text-app-text-secondary"
+    >
       <slot name="note" />
       <slot name="action" />
     </div>
@@ -23,13 +31,15 @@
 </template>
 
 <script setup lang="ts">
+import { useAttrs } from 'vue';
+
 interface ScenarioOption {
   description: string;
   label: string;
   value: string;
 }
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     disabled?: boolean;
     options?: ScenarioOption[];
@@ -40,76 +50,11 @@ withDefaults(
   }
 );
 
+const attrs = useAttrs();
+console.log('attr', attrs);
+console.log('attpropsr', props);
+
 const modelValue = defineModel<string>('modelValue', {
   default: ''
 });
 </script>
-
-<style scoped lang="less">
-.scenario-switch {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.scenario-switch__options {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
-}
-
-.scenario-switch__option {
-  min-height: 82px;
-  padding: 12px;
-  border: 1px solid var(--app-border);
-  border-radius: var(--ant-border-radius-lg);
-  text-align: left;
-  background: #fff;
-  cursor: pointer;
-  transition:
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
-}
-
-.scenario-switch__option strong,
-.scenario-switch__option span {
-  display: block;
-}
-
-.scenario-switch__option strong {
-  color: var(--app-text-primary);
-  font-size: 14px;
-}
-
-.scenario-switch__option span {
-  margin-top: 6px;
-  color: var(--app-text-secondary);
-  font-size: 12px;
-  line-height: 1.5;
-}
-
-.scenario-switch__option.is-active {
-  border-color: var(--app-primary);
-  box-shadow: 0 0 0 2px rgba(var(--app-primary-rgb), 0.12);
-}
-
-.scenario-switch__option:disabled {
-  cursor: not-allowed;
-  opacity: 0.58;
-}
-
-.scenario-switch__footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  color: var(--app-text-secondary);
-  font-size: 12px;
-}
-
-@media (max-width: 768px) {
-  .scenario-switch__options {
-    grid-template-columns: 1fr;
-  }
-}
-</style>

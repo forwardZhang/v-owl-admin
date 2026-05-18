@@ -14,56 +14,80 @@
     </template>
 
     <template #tab-slots>
-      <div class="page-container-demo__panel">
+      <div class="flex flex-col gap-[18px]">
         <a-row :gutter="[18, 18]">
           <a-col :xs="24" :lg="14">
-            <a-card class="page-container-demo__card" variant="borderless">
-              <span class="page-container-demo__eyebrow">Dynamic Slots</span>
-              <h3>顶部和内容都能插</h3>
-              <p>
+            <a-card class="rounded-ant-lg shadow-app-soft" variant="borderless">
+              <span
+                class="inline-flex h-[26px] items-center rounded-full bg-[rgba(var(--app-primary-rgb),0.1)] px-2.5 text-xs font-bold uppercase tracking-[0.08em] text-app-primary"
+              >
+                Dynamic Slots
+              </span>
+              <h3 class="mb-2.5 mt-3.5 text-[22px] text-app-text-primary">顶部和内容都能插</h3>
+              <p class="leading-[1.8] text-app-text-secondary">
                 这个组件给多 tabs 模式留了两类动态插槽：`tab-label-[key]` 控 tab 标题，`tab-[key]`
                 控 tab 内容。复杂页面可以局部定制，简单页面继续走配置式。
               </p>
 
-              <div class="page-container-demo__code">
-                <code>&lt;template #tab-label-users&gt;用户列表&lt;/template&gt;</code>
-                <code>&lt;template #tab-users&gt;&lt;UsersPane /&gt;&lt;/template&gt;</code>
+              <div
+                class="mt-[18px] flex flex-col gap-2.5 rounded-[18px] border border-app-border bg-slate-900 px-[18px] py-4"
+              >
+                <code class="text-[13px] leading-[1.7] text-blue-100">
+                  &lt;template #tab-label-users&gt;用户列表&lt;/template&gt;
+                </code>
+                <code class="text-[13px] leading-[1.7] text-blue-100">
+                  &lt;template #tab-users&gt;&lt;UsersPane /&gt;&lt;/template&gt;
+                </code>
               </div>
             </a-card>
           </a-col>
 
           <a-col :xs="24" :lg="10">
-            <a-card class="page-container-demo__card" variant="borderless">
-              <span class="page-container-demo__eyebrow">Resolution</span>
-              <h3>内容优先级</h3>
-              <p>为了避免配置和插槽打架，tab 内容按下面顺序解析：</p>
+            <a-card class="rounded-ant-lg shadow-app-soft" variant="borderless">
+              <span
+                class="inline-flex h-[26px] items-center rounded-full bg-[rgba(var(--app-primary-rgb),0.1)] px-2.5 text-xs font-bold uppercase tracking-[0.08em] text-app-primary"
+              >
+                Resolution
+              </span>
+              <h3 class="mb-2.5 mt-3.5 text-[22px] text-app-text-primary">内容优先级</h3>
+              <p class="leading-[1.8] text-app-text-secondary">
+                为了避免配置和插槽打架，tab 内容按下面顺序解析：
+              </p>
 
-              <div class="page-container-demo__priority">
+              <div class="mt-4 flex flex-col gap-3">
                 <div
                   v-for="item in priorities"
                   :key="item.title"
-                  class="page-container-demo__priority-item"
+                  class="flex flex-col gap-1.5 rounded-[18px] border border-app-border bg-white/75 px-[18px] py-4"
                 >
-                  <strong>{{ item.title }}</strong>
-                  <span>{{ item.description }}</span>
+                  <strong class="text-base text-app-text-primary">{{ item.title }}</strong>
+                  <span class="leading-[1.7] text-app-text-secondary">{{ item.description }}</span>
                 </div>
               </div>
             </a-card>
           </a-col>
         </a-row>
 
-        <a-card class="page-container-demo__card" variant="borderless">
-          <div class="page-container-demo__section-head">
+        <a-card class="rounded-ant-lg shadow-app-soft" variant="borderless">
+          <div class="mb-5">
             <div>
-              <span class="page-container-demo__eyebrow">Use Case</span>
-              <h3>适合这几类页面</h3>
+              <span
+                class="inline-flex h-[26px] items-center rounded-full bg-[rgba(var(--app-primary-rgb),0.1)] px-2.5 text-xs font-bold uppercase tracking-[0.08em] text-app-primary"
+              >
+                Use Case
+              </span>
+              <h3 class="mb-2.5 mt-3.5 text-[22px] text-app-text-primary">适合这几类页面</h3>
             </div>
           </div>
 
-          <div class="page-container-demo__cases">
-            <div v-for="item in useCases" :key="item.title" class="page-container-demo__case">
-              <strong>{{ item.title }}</strong>
-              <p>{{ item.description }}</p>
+          <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
+            <div
+              v-for="item in useCases"
+              :key="item.title"
+              class="flex flex-col gap-1.5 rounded-[18px] border border-app-border bg-white/75 px-[18px] py-4"
+            >
+              <strong class="text-base text-app-text-primary">{{ item.title }}</strong>
+              <p class="leading-[1.8] text-app-text-secondary">{{ item.description }}</p>
             </div>
           </div>
         </a-card>
@@ -129,104 +153,3 @@ const tabs: ProPageTabItem[] = [
   }
 ];
 </script>
-
-<style scoped lang="less">
-.page-container-demo__panel {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
-
-.page-container-demo__card {
-  border-radius: var(--ant-border-radius-lg);
-  box-shadow: var(--app-shadow-soft);
-}
-
-.page-container-demo__eyebrow {
-  display: inline-flex;
-  align-items: center;
-  height: 26px;
-  padding: 0 10px;
-  border-radius: 999px;
-  color: var(--app-primary);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  background: rgba(var(--app-primary-rgb), 0.1);
-}
-
-.page-container-demo__card h3 {
-  margin: 14px 0 10px;
-  color: var(--app-text-primary);
-  font-size: 22px;
-}
-
-.page-container-demo__card p {
-  margin: 0;
-  color: var(--app-text-secondary);
-  line-height: 1.8;
-}
-
-.page-container-demo__code {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 18px;
-  padding: 16px 18px;
-  border: 1px solid var(--app-border);
-  border-radius: 18px;
-  background: #0f172a;
-}
-
-.page-container-demo__code code {
-  color: #dbeafe;
-  font-size: 13px;
-  line-height: 1.7;
-}
-
-.page-container-demo__priority {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-top: 16px;
-}
-
-.page-container-demo__priority-item,
-.page-container-demo__case {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  padding: 16px 18px;
-  border: 1px solid var(--app-border);
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.76);
-}
-
-.page-container-demo__priority-item strong,
-.page-container-demo__case strong {
-  color: var(--app-text-primary);
-  font-size: 16px;
-}
-
-.page-container-demo__priority-item span {
-  color: var(--app-text-secondary);
-  line-height: 1.7;
-}
-
-.page-container-demo__section-head {
-  margin-bottom: 20px;
-}
-
-.page-container-demo__cases {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
-}
-
-@media (max-width: 992px) {
-  .page-container-demo__cases {
-    grid-template-columns: 1fr;
-  }
-}
-</style>

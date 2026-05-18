@@ -6,42 +6,59 @@
     :trigger="['click']"
     @open-change="handleOpenChange"
   >
-    <button type="button" class="profile__trigger">
-      <a-avatar class="profile__avatar" size="small">
+    <button
+      type="button"
+      class="flex min-w-0 cursor-pointer items-center gap-3 rounded-ant-lg border-0 bg-white/85 p-1.5 shadow-[0_10px_26px_rgba(18,36,61,0.08)]"
+    >
+      <a-avatar class="bg-app-avatar-gradient text-sm font-bold" size="small">
         {{ initials }}
       </a-avatar>
-      <div class="profile__meta">
-        <strong>{{ userStore.profile?.nickname || '访客' }}</strong>
-        <span>{{ userStore.profile?.department || '未设置部门' }}</span>
+      <div class="flex min-w-0 flex-col gap-0.5 text-left">
+        <strong class="whitespace-nowrap text-[13px] text-app-text-primary">
+          {{ userStore.profile?.nickname || '访客' }}
+        </strong>
+        <span class="whitespace-nowrap text-xs text-app-text-tertiary">
+          {{ userStore.profile?.department || '未设置部门' }}
+        </span>
       </div>
-      <down-outlined class="profile__arrow" />
+      <down-outlined class="text-xs text-app-text-quaternary" />
     </button>
 
     <template #popupRender>
-      <div class="panel">
-        <div class="panel__summary">
-          <div class="panel__avatar-wrap">
-            <a-avatar class="panel__avatar" :size="38">
+      <div
+        class="w-60 rounded-ant-lg border border-app-border bg-white/95 py-3.5 shadow-[0_18px_42px_rgba(18,36,61,0.14)]"
+      >
+        <div class="flex gap-3.5 px-3 pb-3">
+          <div class="relative flex-none">
+            <a-avatar class="bg-app-avatar-gradient text-sm font-bold" :size="38">
               {{ initials }}
             </a-avatar>
-            <span class="panel__status"></span>
+            <span
+              class="absolute bottom-0.5 right-0.5 h-3.5 w-3.5 rounded-full border-2 border-white bg-[#52c41a]"
+            ></span>
           </div>
 
-          <div class="panel__identity">
-            <div class="panel__headline">
-              <strong>{{ userStore.profile?.nickname || '访客' }}</strong>
+          <div class="flex min-w-0 flex-1 flex-col justify-center gap-1">
+            <div class="flex items-center gap-2.5">
+              <strong class="text-sm text-app-text-primary">
+                {{ userStore.profile?.nickname || '访客' }}
+              </strong>
               <a-tag color="success">Pro</a-tag>
             </div>
-            <em>{{ userStore.profile?.position || '未设置岗位' }}</em>
+            <em
+              class="overflow-hidden text-ellipsis whitespace-nowrap text-[13px] not-italic text-app-text-secondary"
+            >
+              {{ userStore.profile?.position || '未设置岗位' }}
+            </em>
           </div>
         </div>
 
-        <div class="panel__section">
+        <div class="flex flex-col gap-0.5 px-2">
           <button
             v-for="item in primaryActions"
             :key="item.key"
             type="button"
-            class="panel__action"
+            class="flex min-h-[30px] w-full cursor-pointer items-center gap-3.5 rounded-ant-lg border-0 bg-transparent px-3 py-2 text-[13px] text-app-text-primary transition duration-200 hover:bg-[rgba(var(--app-primary-rgb),0.08)]"
             @click="handleAction(item.key)"
           >
             <component :is="item.icon" />
@@ -51,8 +68,12 @@
 
         <a-divider size="small" />
 
-        <div class="panel__section">
-          <button type="button" class="panel__action is-danger" @click="handleAction('logout')">
+        <div class="flex flex-col gap-0.5 px-2">
+          <button
+            type="button"
+            class="flex min-h-[30px] w-full cursor-pointer items-center gap-3.5 rounded-ant-lg border-0 bg-transparent px-3 py-2 text-[13px] text-app-text-primary transition duration-200 hover:bg-[rgba(207,19,34,0.08)] hover:text-[#cf1322]"
+            @click="handleAction('logout')"
+          >
             <logout-outlined />
             <span>退出登录</span>
           </button>
@@ -147,155 +168,6 @@ async function handleLogout() {
 </script>
 
 <style scoped lang="less">
-.profile__trigger {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  min-width: 0;
-  padding: 6px;
-  border: 0;
-  border-radius: var(--ant-border-radius-lg);
-  background: rgba(255, 255, 255, 0.86);
-  box-shadow: 0 10px 26px rgba(18, 36, 61, 0.08);
-  cursor: pointer;
-}
-
-.profile__avatar,
-.panel__avatar {
-  font-size: 14px;
-  font-weight: 700;
-  background: linear-gradient(135deg, var(--app-primary) 0%, #67d7ff 100%);
-}
-
-.profile__meta {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  text-align: left;
-  gap: 2px;
-}
-
-.profile__meta strong,
-.panel__identity strong {
-  color: var(--app-text-primary);
-}
-
-.profile__meta strong {
-  font-size: 13px;
-  white-space: nowrap;
-}
-
-.profile__meta span {
-  color: var(--app-text-tertiary);
-  font-size: 12px;
-  white-space: nowrap;
-}
-
-.profile__arrow {
-  color: var(--app-text-quaternary);
-  font-size: 12px;
-}
-
-.panel {
-  width: 240px;
-  padding: 14px 0;
-  border: 1px solid rgba(18, 36, 61, 0.08);
-  border-radius: var(--ant-border-radius-lg);
-  background: rgba(255, 255, 255, 0.98);
-  box-shadow: 0 18px 42px rgba(18, 36, 61, 0.14);
-}
-
-.panel__summary {
-  display: flex;
-  gap: 14px;
-  padding: 0 12px 12px;
-}
-
-.panel__avatar-wrap {
-  position: relative;
-  flex: none;
-}
-
-.panel__status {
-  position: absolute;
-  right: 2px;
-  bottom: 2px;
-  width: 14px;
-  height: 14px;
-  border: 2px solid #fff;
-  border-radius: 50%;
-  background: #52c41a;
-}
-
-.panel__identity {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  justify-content: center;
-  min-width: 0;
-  gap: 4px;
-}
-
-.panel__headline {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.panel__headline strong {
-  font-size: 14px;
-}
-
-.panel__identity span,
-.panel__identity em {
-  overflow: hidden;
-  color: var(--app-text-secondary);
-  font-size: 13px;
-  font-style: normal;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.panel__section {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding: 0 8px;
-}
-
-.panel__divider {
-  height: 1px;
-  margin: 10px 0;
-  background: rgba(18, 36, 61, 0.08);
-}
-
-.panel__action {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  width: 100%;
-  min-height: 30px;
-  padding: 8px 12px;
-  border: 0;
-  border-radius: var(--ant-border-radius-lg);
-  color: var(--app-text-primary);
-  font-size: 13px;
-  background: transparent;
-  cursor: pointer;
-  transition:
-    background-color 0.2s ease,
-    color 0.2s ease;
-}
-
-.panel__action:hover {
-  background: rgba(var(--app-primary-rgb), 0.08);
-}
-
-.panel__action.is-danger:hover {
-  color: #cf1322;
-  background: rgba(207, 19, 34, 0.08);
-}
-
 :deep(.profile-dropdown) {
   padding: 4px 0;
 }

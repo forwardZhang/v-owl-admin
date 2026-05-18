@@ -1,9 +1,15 @@
 <template>
-  <div class="metric-strip">
-    <div v-for="item in metrics" :key="item.label" class="metric-strip__item">
-      <span>{{ item.label }}</span>
-      <strong>{{ item.value }}</strong>
-      <small>{{ item.trend }}</small>
+  <div class="grid grid-cols-1 gap-3 md:grid-cols-3">
+    <div
+      v-for="item in metrics"
+      :key="item.label"
+      class="min-h-[104px] rounded-ant-lg border border-app-border bg-white/90 p-[18px]"
+    >
+      <span class="block text-[13px] text-app-text-secondary">{{ item.label }}</span>
+      <strong class="my-2.5 mb-1.5 block text-[26px] leading-[1.2] text-app-text-primary">
+        {{ item.value }}
+      </strong>
+      <small class="block text-[13px] text-app-text-secondary">{{ item.trend }}</small>
     </div>
   </div>
 </template>
@@ -19,40 +25,3 @@ defineProps<{
   metrics: MetricItem[];
 }>();
 </script>
-
-<style scoped lang="less">
-.metric-strip {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-}
-
-.metric-strip__item {
-  min-height: 104px;
-  padding: 18px;
-  border: 1px solid var(--app-border);
-  border-radius: var(--ant-border-radius-lg);
-  background: rgba(255, 255, 255, 0.88);
-}
-
-.metric-strip__item span,
-.metric-strip__item small {
-  display: block;
-  color: var(--app-text-secondary);
-  font-size: 13px;
-}
-
-.metric-strip__item strong {
-  display: block;
-  margin: 10px 0 6px;
-  color: var(--app-text-primary);
-  font-size: 26px;
-  line-height: 1.2;
-}
-
-@media (max-width: 768px) {
-  .metric-strip {
-    grid-template-columns: 1fr;
-  }
-}
-</style>

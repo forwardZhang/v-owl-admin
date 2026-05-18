@@ -1,8 +1,8 @@
 <template>
-  <a-breadcrumb class="breadcrumb">
+  <a-breadcrumb class="min-w-0">
     <a-breadcrumb-item v-for="item in items" :key="item.key">
       <a-space :size="6">
-        <component :is="item.icon" v-if="item.icon" class="breadcrumb__icon" />
+        <component :is="item.icon" v-if="item.icon" class="text-sm" />
         <span>{{ item.title }}</span>
       </a-space>
     </a-breadcrumb-item>
@@ -33,13 +33,3 @@ const items = computed<BreadcrumbItem[]>(() =>
     }))
 );
 </script>
-
-<style scoped lang="less">
-.breadcrumb {
-  min-width: 0;
-}
-
-.breadcrumb__icon {
-  font-size: 14px;
-}
-</style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="menu">
+  <div class="menu flex-1 overflow-hidden px-3 pb-3.5 pt-2.5">
     <a-menu
       v-model:open-keys="openKeys"
       :inline-collapsed="collapsed"
@@ -36,13 +36,16 @@ function renderMenuIcon(item: MenuRecord) {
 
   if (iconComponent) {
     return h(iconComponent, {
-      class: 'menu__icon-svg'
+      class: 'text-sm text-app-primary'
     });
   }
 
   return h(
     'span',
-    { class: 'menu__icon' },
+    {
+      class:
+        'inline-grid h-6 w-6 place-items-center rounded-ant-lg bg-[rgba(var(--app-primary-rgb),0.12)] text-[11px] font-bold text-app-primary'
+    },
     item.icon || item.meta.icon || item.meta.title.slice(0, 2)
   );
 }
@@ -102,40 +105,9 @@ function handleMenuClick(info: { key: string }) {
 </script>
 
 <style scoped lang="less">
-.menu {
-  flex: 1;
-  padding: 10px 12px 14px;
-  overflow: hidden;
-  :deep(.ant-menu) {
-    font-size: 13px;
-  }
-}
-
-.menu__icon {
-  display: inline-grid;
-  place-items: center;
-  width: 24px;
-  height: 24px;
-  border-radius: var(--ant-border-radius-lg);
-  color: var(--app-primary);
-  font-size: 11px;
-  font-weight: 700;
-  background: rgba(var(--app-primary-rgb), 0.12);
-}
-
-.menu__icon-svg {
-  color: var(--app-primary);
-  font-size: 14px;
-}
-
-.menu__expand {
-  color: var(--app-primary);
-  font-size: 12px;
-  transition: transform 0.2s ease;
-}
-
 .menu :deep(.ant-menu) {
   height: 100%;
+  font-size: 13px;
   border-inline-end: 0;
   background: transparent;
   overflow-y: auto;

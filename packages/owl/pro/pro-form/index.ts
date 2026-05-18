@@ -27,6 +27,7 @@ export type {
   DynamicFormContext,
   FormActionButtonOptions,
   FormApi as ProFormApi,
+  FormComponentSlot,
   FormCommonConfig,
   FormItemDependencies,
   FormLayout,

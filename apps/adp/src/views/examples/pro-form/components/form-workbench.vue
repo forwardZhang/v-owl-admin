@@ -1,35 +1,83 @@
 <template>
-  <a-card class="form-workbench" variant="borderless">
-    <div class="form-workbench__head">
-      <div>
-        <span class="form-workbench__eyebrow">ProForm Workbench</span>
-        <h3>条件化方案生成表单</h3>
-      </div>
-      <a-tag color="processing">Vue 3.5 + TypeScript</a-tag>
-    </div>
-
-    <SearchForm>
-      <template #action="{ api }">
-        <a-form-item>
-          <div class="form-workbench__actions">
-            <a-space wrap>
-              <a-button @click="api.resetForm()">重置</a-button>
-              <a-button :loading="submitting" type="primary" @click="api.submitForm()">
-                生成远程方案
-              </a-button>
-            </a-space>
-          </div>
-        </a-form-item>
+  <div class="flex flex-col gap-4">
+    <a-card class="rounded-ant-lg shadow-app-soft" variant="borderless">
+      <template #title>
+        <div class="flex flex-col gap-1">
+          <span class="text-base font-bold text-app-text-primary">Basic / Custom</span>
+          <small class="text-xs font-normal text-app-text-secondary">
+            基础组件、远程选项、schema 插槽、自定义内容
+          </small>
+        </div>
       </template>
-    </SearchForm>
-  </a-card>
+
+      <BasicForm>
+        <template #test-component="{ schema }">
+          <div class="flex min-h-8 items-center gap-2 text-app-text-secondary">
+            <strong class="text-app-primary">template slot</strong>
+            <span>{{ schema.fieldName }} 由 schema.slot 显式声明后渲染。</span>
+          </div>
+        </template>
+
+        <template #action="{ api }">
+          <a-form-item>
+            <div class="flex w-full justify-end">
+              <a-space wrap>
+                <a-button @click="api.resetForm()">重置</a-button>
+                <a-button :loading="submitting" type="primary" @click="api.submitForm()">
+                  提交基础表单
+                </a-button>
+              </a-space>
+            </div>
+          </a-form-item>
+        </template>
+      </BasicForm>
+    </a-card>
+
+    <a-card class="rounded-ant-lg shadow-app-soft" variant="borderless">
+      <template #title>
+        <div class="flex flex-col gap-1">
+          <span class="text-base font-bold text-app-text-primary">Dynamic</span>
+          <small class="text-xs font-normal text-app-text-secondary">
+            if / show / disabled / required / componentProps / trigger
+          </small>
+        </div>
+      </template>
+
+      <DynamicForm />
+    </a-card>
+
+    <a-card class="rounded-ant-lg shadow-app-soft" variant="borderless">
+      <template #title>
+        <div class="flex flex-col gap-1">
+          <span class="text-base font-bold text-app-text-primary">Form API</span>
+          <small class="text-xs font-normal text-app-text-secondary">
+            setState、updateSchema、removeSchemaByFields、按钮状态
+          </small>
+        </div>
+      </template>
+
+      <a-space class="mb-4" wrap>
+        <a-button
+          v-for="item in apiActions"
+          :key="item.action"
+          @click="handleApiAction(item.action)"
+        >
+          {{ item.label }}
+        </a-button>
+      </a-space>
+
+      <ApiForm />
+    </a-card>
+  </div>
 </template>
 
 <script setup lang="ts">
+import type { ApiComponentOptionsItem, UseProFormOptions } from '@owl/components';
+
 import { h, ref } from 'vue';
 import { cloneDeep, pick } from 'lodash-es';
+import { message } from 'antdv-next';
 import { useProForm } from '@owl/components';
-import type { ApiComponentOptionsItem, FormSchema, UseProFormOptions } from '@owl/components';
 import { fetchProFormInsightsApi, fetchProFormProductOptionsApi } from '@/api/examples';
 import type {
   ProFormInsightPayload,
@@ -39,6 +87,17 @@ import type {
 import ScenarioSwitch from './scenario-switch.vue';
 
 type ProFormValues = ProFormInsightPayload & Record<string, unknown>;
+type ApiAction =
+  | 'addSchema'
+  | 'disable'
+  | 'enable'
+  | 'hideActions'
+  | 'labelWidth'
+  | 'removeSchema'
+  | 'resetLabelWidth'
+  | 'reverseActions'
+  | 'showActions'
+  | 'updateSchema';
 
 const emit = defineEmits<{
   'submit-result': [result: ProFormInsightResult];
@@ -47,15 +106,48 @@ const emit = defineEmits<{
 }>();
 
 const submitting = ref(false);
+const actionButtonsReverse = ref(false);
+
+const apiActions: Array<{ action: ApiAction; label: string }> = [
+  { action: 'updateSchema', label: '更新下拉选项' },
+  { action: 'labelWidth', label: 'labelWidth 160' },
+  { action: 'resetLabelWidth', label: '还原 labelWidth' },
+  { action: 'disable', label: '禁用表单' },
+  { action: 'enable', label: '解除禁用' },
+  { action: 'reverseActions', label: '翻转按钮' },
+  { action: 'hideActions', label: '隐藏按钮' },
+  { action: 'showActions', label: '显示按钮' },
+  { action: 'addSchema', label: '添加字段' },
+  { action: 'removeSchema', label: '删除字段' }
+];
+
+const slotPillClass =
+  'inline-flex h-5 items-center rounded-ant-sm bg-[rgba(var(--app-primary-rgb),0.1)] px-1.5 text-[11px] leading-5 text-app-primary';
+const remoteSlotPillClass =
+  'inline-flex h-5 items-center rounded-ant-sm bg-[rgba(82,196,26,0.12)] px-1.5 text-[11px] leading-5 text-[#389e0d]';
+const formGridClass = 'grid-cols-1 md:grid-cols-12 gap-y-0';
+const formItemThirdClass = 'md:col-span-6 xl:col-span-4';
+const formItemQuarterClass = 'md:col-span-6 xl:col-span-3';
+const formItemFullClass = 'md:col-span-12';
 
 function renderLabel(text: string, badge?: string) {
-  return h('span', { class: 'pro-form-demo-label' }, [
+  return h('span', { class: 'inline-flex items-center gap-1.5' }, [
     h('span', text),
-    badge ? h('small', badge) : null
+    badge
+      ? h(
+          'small',
+          {
+            class: slotPillClass
+          },
+          badge
+        )
+      : null
   ]);
 }
 
-function normalizeProductParams(params?: Record<string, unknown>): ProFormProductOptionsParams {
+function normalizeProductParams(
+  params?: Record<string, unknown>
+): ProFormProductOptionsParams & Record<string, unknown> {
   return {
     bizLine: String(params?.bizLine || 'commerce'),
     scenario: String(params?.scenario || 'growth')
@@ -68,10 +160,37 @@ function renderProductLabel(item: ApiComponentOptionsItem) {
   return `${item.label} · ${stage}`;
 }
 
-const schema: UseProFormOptions<ProFormValues>['schema'] = [
+function syncLatestValues(values: ProFormValues) {
+  emit('values-change', cloneDeep(values));
+}
+
+const basicSchema: UseProFormOptions<ProFormValues>['schema'] = [
   {
-    colProps: { lg: 8, md: 12, xs: 24 },
-    component: 'RadioGroup',
+    formItemClass: formItemThirdClass,
+    type: 'Input',
+    componentProps: {
+      placeholder: '请输入项目名称'
+    },
+    componentSlots: {
+      prefix: () => h('span', { class: slotPillClass }, 'P')
+    },
+    fieldName: 'projectName',
+    label: renderLabel('项目名称', 'required'),
+    required: true
+  },
+  {
+    formItemClass: formItemThirdClass,
+    type: 'InputPassword',
+    componentProps: {
+      autocomplete: 'current-password',
+      placeholder: '请输入访问密钥'
+    },
+    fieldName: 'accessKey',
+    label: '访问密钥'
+  },
+  {
+    formItemClass: formItemThirdClass,
+    type: 'RadioGroup',
     componentProps: {
       buttonStyle: 'solid',
       optionType: 'button',
@@ -82,33 +201,41 @@ const schema: UseProFormOptions<ProFormValues>['schema'] = [
       ]
     },
     fieldName: 'bizLine',
-    label: renderLabel('业务线', '自定义 label'),
+    label: '业务线',
     required: true
   },
   {
-    colProps: { lg: 8, md: 12, xs: 24 },
-    component: 'Select',
+    formItemClass: formItemThirdClass,
+    type: 'Select',
     componentProps: {
+      allowClear: true,
       options: [
         { label: '增长转化', value: 'growth' },
         { label: '风险控制', value: 'risk' },
         { label: '交付效率', value: 'delivery' }
-      ]
+      ],
+      showSearch: true
     },
     fieldName: 'scenario',
     label: '业务场景',
     required: true
   },
   {
-    colProps: { lg: 8, md: 12, xs: 24 },
-    component: 'ApiSelect',
+    formItemClass: formItemThirdClass,
+    type: 'ApiSelect',
     componentProps: ({ values }) => ({
-      api: (params?: Record<string, unknown>) =>
-        fetchProFormProductOptionsApi(normalizeProductParams(params)),
+      api: async (params?: Record<string, unknown>) => {
+        const options = await fetchProFormProductOptionsApi(normalizeProductParams(params));
+
+        return options.map((item) => ({ ...item }));
+      },
       labelFn: renderProductLabel,
       params: normalizeProductParams(pick(values, ['bizLine', 'scenario'])),
       placeholder: '远程加载产品候选'
     }),
+    componentSlots: {
+      suffixIcon: () => h('span', { class: remoteSlotPillClass }, 'API')
+    },
     dependencies: {
       trigger: ({ api }) => {
         api.setFieldValue('productId', undefined);
@@ -116,69 +243,48 @@ const schema: UseProFormOptions<ProFormValues>['schema'] = [
       triggerFields: ['bizLine', 'scenario']
     },
     fieldName: 'productId',
-    help: '切换业务线或场景时，这个下拉会重新请求不同候选。',
-    label: renderLabel('产品候选', '远程'),
-    renderComponentContent: () => ({
-      suffixIcon: () => h('span', { class: 'pro-form-demo-slot' }, 'API')
-    }),
+    help: '切换业务线或场景时，下拉会重新请求不同候选。',
+    label: renderLabel('产品候选', 'ApiSelect'),
     required: true
   },
   {
-    colProps: { lg: 8, md: 12, xs: 24 },
-    component: 'RadioGroup',
+    formItemClass: formItemThirdClass,
+    type: 'InputNumber',
     componentProps: {
-      buttonStyle: 'solid',
-      optionType: 'button',
-      options: [
-        { label: '常规', value: 'normal' },
-        { label: '加急', value: 'urgent' }
-      ]
+      max: 100,
+      min: 0,
+      placeholder: '请输入预算',
+      style: { width: '100%' }
     },
-    fieldName: 'urgency',
-    label: '紧急程度'
-  },
-  {
-    colProps: { lg: 8, md: 12, xs: 24 },
-    component: 'Switch',
-    fieldName: 'enableAdvance',
-    help: ({ values }) =>
-      values.enableAdvance ? '高级字段已展开。' : '关闭后会隐藏预算和负责人。',
-    label: '高级配置'
-  },
-  {
-    colProps: { lg: 8, md: 12, xs: 24 },
-    component: 'InputNumber',
-    dependencies: {
-      componentProps: ({ values }) => ({
-        addonAfter: '万',
-        max: 100,
-        min: 0,
-        placeholder: values.urgency === 'urgent' ? '加急建议 >= 80' : '请输入预算',
-        style: { width: '100%' }
-      }),
-      if: ({ values }) => Boolean(values.enableAdvance),
-      required: ({ values }) => values.urgency === 'urgent',
-      triggerFields: ['enableAdvance', 'urgency']
+    componentSlots: {
+      suffix: () => h('span', { class: slotPillClass }, '万')
     },
     fieldName: 'budget',
     label: '预算'
   },
   {
-    colProps: { lg: 8, md: 12, xs: 24 },
-    component: 'Input',
-    componentProps: ({ values }) => ({
-      placeholder: values.urgency === 'urgent' ? '加急场景建议填写 owner' : '请输入负责人'
-    }),
-    dependencies: {
-      required: ({ values }) => Boolean(values.enableAdvance),
-      show: ({ values }) => Boolean(values.enableAdvance),
-      triggerFields: ['enableAdvance']
+    formItemClass: formItemThirdClass,
+    type: 'CheckboxGroup',
+    componentProps: {
+      options: [
+        { label: '站内消息', value: 'site' },
+        { label: '短信', value: 'sms' },
+        { label: '邮件', value: 'mail' }
+      ]
     },
-    fieldName: 'owner',
-    label: '负责人'
+    fieldName: 'channels',
+    label: '触达渠道'
   },
   {
-    colProps: { xs: 24 },
+    formItemClass: formItemThirdClass,
+    type: 'Switch',
+    fieldName: 'enableAdvance',
+    help: ({ values }) => (values.enableAdvance ? '高级配置已开启。' : '关闭后仍可提交基础信息。'),
+    label: '高级配置'
+  },
+  {
+    formItemClass: formItemFullClass,
+    type: 'custom',
     component: ScenarioSwitch,
     componentProps: ({ values }) => ({
       disabled: values.scenario === 'risk',
@@ -200,19 +306,34 @@ const schema: UseProFormOptions<ProFormValues>['schema'] = [
         }
       ]
     }),
+    componentSlots: {
+      note: ({ schema }) =>
+        h('span', { class: slotPillClass }, `${String(schema?.fieldName)} componentSlots`)
+    },
     fieldName: 'strategyTone',
-    help: ({ values }) =>
-      values.scenario === 'risk' ? '风险场景下策略倾向被锁定，避免误操作。' : undefined,
-    label: renderLabel('策略倾向', '自定义组件'),
-    modelPropName: 'modelValue',
-    renderComponentContent: () => ({
-      action: () => h('span', { class: 'pro-form-demo-pill' }, 'slot: action'),
-      note: () => h('span', '这里来自 schema.renderComponentContent 自定义插槽。')
-    })
+    help: ({ values }) => (values.scenario === 'risk' ? '风险场景下策略倾向被锁定。' : undefined),
+    label: renderLabel('策略倾向', 'custom')
+  },
+  {
+    formItemClass: formItemFullClass,
+    fieldName: 'templateSlot',
+    label: '模板内容',
+    slot: 'test-component',
+    type: 'custom'
+  },
+  {
+    formItemClass: formItemFullClass,
+    type: 'TextArea',
+    componentProps: {
+      autoSize: { minRows: 3, maxRows: 5 },
+      placeholder: '补充业务背景、约束或风险点'
+    },
+    fieldName: 'remark',
+    label: '备注'
   }
-] satisfies FormSchema[];
+] satisfies UseProFormOptions<ProFormValues>['schema'];
 
-const [SearchForm] = useProForm<ProFormValues>({
+const [BasicForm] = useProForm<ProFormValues>({
   handleSubmit: async (values) => {
     submitting.value = true;
     emit('submitting-change', true);
@@ -221,80 +342,271 @@ const [SearchForm] = useProForm<ProFormValues>({
       const result = await fetchProFormInsightsApi(values);
 
       emit('submit-result', result);
+      message.success('基础表单已提交，远程结果已生成。');
     } finally {
       submitting.value = false;
       emit('submitting-change', false);
     }
   },
-  handleValuesChange: (values) => {
-    emit('values-change', cloneDeep(values));
-  },
+  handleValuesChange: syncLatestValues,
   initialValues: {
     bizLine: 'commerce',
     budget: 30,
+    channels: ['site'],
     enableAdvance: false,
+    projectName: '增长实验计划',
     scenario: 'growth',
-    strategyTone: 'balance',
-    urgency: 'normal'
+    strategyTone: 'balance'
   },
   layout: 'vertical',
-  rowProps: {
-    gutter: [16, 2]
-  },
-  schema,
-  showDefaultActions: false
+  schema: basicSchema,
+  showDefaultActions: false,
+  wrapperClass: formGridClass
 });
+
+const dynamicSchema: UseProFormOptions<ProFormValues>['schema'] = [
+  {
+    formItemClass: formItemQuarterClass,
+    type: 'Switch',
+    fieldName: 'field1Switch',
+    help: '通过 if 销毁字段。',
+    label: '显示字段1'
+  },
+  {
+    formItemClass: formItemQuarterClass,
+    type: 'Switch',
+    fieldName: 'field2Switch',
+    help: '通过 show 控制显示。',
+    label: '显示字段2'
+  },
+  {
+    formItemClass: formItemQuarterClass,
+    type: 'Switch',
+    fieldName: 'field3Switch',
+    label: '禁用字段3'
+  },
+  {
+    formItemClass: formItemQuarterClass,
+    type: 'Switch',
+    fieldName: 'field4Switch',
+    label: '字段4必填'
+  },
+  {
+    formItemClass: formItemThirdClass,
+    type: 'Input',
+    dependencies: {
+      if: ({ values }) => Boolean(values.field1Switch),
+      triggerFields: ['field1Switch']
+    },
+    fieldName: 'field1',
+    label: '字段1'
+  },
+  {
+    formItemClass: formItemThirdClass,
+    type: 'Input',
+    dependencies: {
+      show: ({ values }) => Boolean(values.field2Switch),
+      triggerFields: ['field2Switch']
+    },
+    fieldName: 'field2',
+    help: '输入 123 后，动态配置下拉会追加选项。',
+    label: '字段2'
+  },
+  {
+    formItemClass: formItemThirdClass,
+    type: 'Input',
+    dependencies: {
+      disabled: ({ values }) => Boolean(values.field3Switch),
+      triggerFields: ['field3Switch']
+    },
+    fieldName: 'field3',
+    label: '字段3'
+  },
+  {
+    formItemClass: formItemThirdClass,
+    type: 'Input',
+    dependencies: {
+      required: ({ values }) => Boolean(values.field4Switch),
+      triggerFields: ['field4Switch']
+    },
+    fieldName: 'field4',
+    label: '字段4'
+  },
+  {
+    formItemClass: formItemThirdClass,
+    type: 'Select',
+    componentProps: {
+      options: [
+        { label: '选项1', value: '1' },
+        { label: '选项2', value: '2' }
+      ]
+    },
+    dependencies: {
+      componentProps: ({ values }) =>
+        values.field2 === '123'
+          ? {
+              options: [
+                { label: '选项1', value: '1' },
+                { label: '选项2', value: '2' },
+                { label: '选项3', value: '3' }
+              ]
+            }
+          : {},
+      triggerFields: ['field2']
+    },
+    fieldName: 'dynamicOptions',
+    label: '动态配置'
+  },
+  {
+    formItemClass: formItemThirdClass,
+    type: 'Input',
+    dependencies: {
+      trigger: ({ api, values }) => {
+        api.setFieldValue('syncTarget', values.syncSource);
+      },
+      triggerFields: ['syncSource']
+    },
+    fieldName: 'syncSource',
+    label: '同步源'
+  },
+  {
+    formItemClass: formItemThirdClass,
+    type: 'Input',
+    componentProps: {
+      disabled: true
+    },
+    fieldName: 'syncTarget',
+    label: '同步目标'
+  }
+] satisfies UseProFormOptions<ProFormValues>['schema'];
+
+const [DynamicForm] = useProForm<ProFormValues>({
+  handleSubmit: (values) => {
+    syncLatestValues(values);
+    message.success('动态联动表单提交成功。');
+  },
+  handleValuesChange: syncLatestValues,
+  initialValues: {
+    field1Switch: true,
+    field2Switch: true,
+    field3Switch: false,
+    field4Switch: false
+  },
+  layout: 'vertical',
+  schema: dynamicSchema,
+  submitButtonOptions: {
+    text: '提交动态表单'
+  },
+  wrapperClass: formGridClass
+});
+
+const apiSchema: UseProFormOptions<ProFormValues>['schema'] = [
+  {
+    formItemClass: formItemThirdClass,
+    type: 'Input',
+    componentProps: {
+      placeholder: '请输入操作人'
+    },
+    fieldName: 'operator',
+    label: '操作人',
+    required: true
+  },
+  {
+    formItemClass: formItemThirdClass,
+    type: 'Select',
+    componentProps: {
+      options: [
+        { label: '草稿', value: 'draft' },
+        { label: '运行中', value: 'running' }
+      ]
+    },
+    fieldName: 'status',
+    label: '状态'
+  },
+  {
+    formItemClass: formItemThirdClass,
+    type: 'Input',
+    componentProps: {
+      placeholder: '这个字段会被 removeSchemaByFields 删除'
+    },
+    fieldName: 'removable',
+    label: '可删除字段'
+  }
+] satisfies UseProFormOptions<ProFormValues>['schema'];
+
+const [ApiForm, apiFormApi] = useProForm<ProFormValues>({
+  actionPosition: 'right',
+  handleSubmit: (values) => {
+    syncLatestValues(values);
+    message.success('API 操作表单提交成功。');
+  },
+  handleValuesChange: syncLatestValues,
+  layout: 'vertical',
+  schema: apiSchema,
+  submitButtonOptions: {
+    text: '提交 API 表单'
+  },
+  wrapperClass: formGridClass
+});
+
+function handleApiAction(action: ApiAction) {
+  switch (action) {
+    case 'updateSchema':
+      apiFormApi.updateSchema([
+        {
+          componentProps: {
+            options: [
+              { label: '草稿', value: 'draft' },
+              { label: '运行中', value: 'running' },
+              { label: '已发布', value: 'published' }
+            ]
+          },
+          fieldName: 'status'
+        }
+      ]);
+      message.success('status 下拉选项已更新。');
+      break;
+    case 'labelWidth':
+      apiFormApi.setState({ commonConfig: { labelWidth: 160 } });
+      break;
+    case 'resetLabelWidth':
+      apiFormApi.setState({ commonConfig: { labelWidth: undefined } });
+      break;
+    case 'disable':
+      apiFormApi.setState({ commonConfig: { disabled: true } });
+      break;
+    case 'enable':
+      apiFormApi.setState({ commonConfig: { disabled: false } });
+      break;
+    case 'reverseActions':
+      actionButtonsReverse.value = !actionButtonsReverse.value;
+      apiFormApi.setState({ actionButtonsReverse: actionButtonsReverse.value });
+      break;
+    case 'hideActions':
+      apiFormApi.setState({ showDefaultActions: false });
+      break;
+    case 'showActions':
+      apiFormApi.setState({ showDefaultActions: true });
+      break;
+    case 'addSchema':
+      apiFormApi.setState((prev) => ({
+        schema: [
+          ...(prev.schema ?? []),
+          {
+            formItemClass: formItemThirdClass,
+            type: 'Input',
+            componentProps: {
+              placeholder: '动态添加字段'
+            },
+            fieldName: `extraField${Date.now()}`,
+            label: '新增字段'
+          }
+        ]
+      }));
+      break;
+    case 'removeSchema':
+      apiFormApi.removeSchemaByFields(['removable']);
+      break;
+  }
+}
 </script>
-
-<style scoped lang="less">
-.form-workbench {
-  border-radius: var(--ant-border-radius-lg);
-  box-shadow: var(--app-shadow-soft);
-}
-
-.form-workbench__head {
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 18px;
-}
-
-.form-workbench__eyebrow {
-  color: var(--app-primary);
-  font-size: 12px;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
-.form-workbench h3 {
-  margin: 8px 0 0;
-  color: var(--app-text-primary);
-  font-size: 22px;
-}
-
-.form-workbench__actions {
-  display: flex;
-  justify-content: flex-end;
-  width: 100%;
-}
-
-:deep(.pro-form-demo-label) {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-
-:deep(.pro-form-demo-label small),
-:deep(.pro-form-demo-pill),
-:deep(.pro-form-demo-slot) {
-  display: inline-flex;
-  align-items: center;
-  height: 20px;
-  padding: 0 6px;
-  border-radius: var(--ant-border-radius-sm);
-  color: var(--app-primary);
-  font-size: 11px;
-  line-height: 20px;
-  background: rgba(var(--app-primary-rgb), 0.1);
-}
-</style>

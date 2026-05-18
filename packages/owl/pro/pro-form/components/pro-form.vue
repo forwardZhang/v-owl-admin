@@ -1,12 +1,10 @@
 <script setup lang="ts">
 import type { BaseFormComponentType, BuiltinComponentProps, FormApi, FormSchema } from '../types';
 import type { FormInstance } from 'antdv-next';
+import type { Slot } from 'vue';
 
-import Button from 'antdv-next/dist/button/index';
-import Form, { FormItem } from 'antdv-next/dist/form/index';
-import { Row } from 'antdv-next/dist/grid/index';
-import Space from 'antdv-next/dist/space/index';
-import { computed, ref, useAttrs, watchEffect } from 'vue';
+import { Button, Form, FormItem, Row, Space } from 'antdv-next';
+import { computed, ref, useAttrs, useSlots, watchEffect } from 'vue';
 
 import ProFormField from './form-field.vue';
 
@@ -23,6 +21,7 @@ const props = withDefaults(
 );
 
 const attrs = useAttrs();
+const slots = useSlots();
 const formRef = ref<FormInstance>();
 const state = computed(() => props.formApi.getState());
 
@@ -44,6 +43,7 @@ const formProps = computed(() => {
     schema,
     showDefaultActions,
     submitButtonOptions,
+    wrapperClass,
     ...restState
   } = state.value;
 
@@ -62,6 +62,12 @@ const schema = computed(
       Record<string, unknown>
     >[]
 );
+
+const fieldSlots = computed(() => {
+  return Object.fromEntries(
+    Object.entries(slots).filter(([name]) => !['action', 'default'].includes(name))
+  ) as Record<string, Slot>;
+});
 
 const actionJustify = computed(() => {
   if (state.value.actionPosition === 'center') {
@@ -86,21 +92,32 @@ function handleReset(event: Event) {
 </script>
 
 <template>
-  <Form
-    ref="formRef"
-    class="pro-form"
-    v-bind="formProps"
-    @finish="handleFinish"
-    @reset="handleReset"
-  >
-    <Row v-if="state.rowProps" v-bind="state.rowProps">
+  <Form ref="formRef" class="w-full" v-bind="formProps" @finish="handleFinish" @reset="handleReset">
+    <div v-if="state.wrapperClass" :class="['grid flex-col gap-x-4', state.wrapperClass]">
       <ProFormField
         v-for="fieldSchema in schema"
         :key="JSON.stringify(fieldSchema.fieldName)"
         :api="formApi"
         :common-config="state.commonConfig"
         :schema="fieldSchema"
-      />
+      >
+        <template v-for="(_, slotName) in fieldSlots" #[slotName]="slotProps">
+          <slot :name="slotName" v-bind="slotProps ?? {}" />
+        </template>
+      </ProFormField>
+    </div>
+    <Row v-else-if="state.rowProps" v-bind="state.rowProps">
+      <ProFormField
+        v-for="fieldSchema in schema"
+        :key="JSON.stringify(fieldSchema.fieldName)"
+        :api="formApi"
+        :common-config="state.commonConfig"
+        :schema="fieldSchema"
+      >
+        <template v-for="(_, slotName) in fieldSlots" #[slotName]="slotProps">
+          <slot :name="slotName" v-bind="slotProps ?? {}" />
+        </template>
+      </ProFormField>
     </Row>
     <template v-else>
       <ProFormField
@@ -109,14 +126,25 @@ function handleReset(event: Event) {
         :api="formApi"
         :common-config="state.commonConfig"
         :schema="fieldSchema"
-      />
+      >
+        <template v-for="(_, slotName) in fieldSlots" #[slotName]="slotProps">
+          <slot :name="slotName" v-bind="slotProps ?? {}" />
+        </template>
+      </ProFormField>
     </template>
 
     <slot />
     <slot name="action" :api="formApi" />
 
     <FormItem v-if="state.showDefaultActions">
-      <div class="pro-form__actions" :class="`is-${state.actionPosition ?? 'right'}`">
+      <div
+        class="flex w-full"
+        :class="{
+          'justify-start': (state.actionPosition ?? 'right') === 'left',
+          'justify-center': state.actionPosition === 'center',
+          'justify-end': !state.actionPosition || state.actionPosition === 'right'
+        }"
+      >
         <Space :style="{ justifyContent: actionJustify, width: '100%' }">
           <template v-if="state.actionButtonsReverse">
             <Button
@@ -157,26 +185,3 @@ function handleReset(event: Event) {
     </FormItem>
   </Form>
 </template>
-
-<style scoped lang="less">
-.pro-form {
-  width: 100%;
-}
-
-.pro-form__actions {
-  display: flex;
-  width: 100%;
-}
-
-.pro-form__actions.is-left {
-  justify-content: flex-start;
-}
-
-.pro-form__actions.is-center {
-  justify-content: center;
-}
-
-.pro-form__actions.is-right {
-  justify-content: flex-end;
-}
-</style>

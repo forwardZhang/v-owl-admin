@@ -1,9 +1,9 @@
 <template>
-  <a-card class="form-result-panel" variant="borderless">
-    <div class="form-result-panel__head">
+  <a-card class="h-full rounded-ant-lg shadow-app-soft" variant="borderless">
+    <div class="mb-4 flex justify-between gap-3">
       <div>
-        <span class="form-result-panel__eyebrow">Remote Result</span>
-        <h3>{{ result?.planName || '等待生成方案' }}</h3>
+        <span class="text-xs font-bold uppercase text-app-primary">Remote Result</span>
+        <h3 class="mt-2 text-xl text-app-text-primary">{{ result?.planName || '等待生成方案' }}</h3>
       </div>
       <a-tag :color="levelColor">{{ result?.level || 'idle' }}</a-tag>
     </div>
@@ -11,20 +11,18 @@
     <a-skeleton v-if="loading" active :paragraph="{ rows: 5 }" />
 
     <template v-else-if="result">
-      <p class="form-result-panel__summary">{{ result.summary }}</p>
+      <p class="mb-4 leading-[1.8] text-app-text-secondary">{{ result.summary }}</p>
 
-      <div class="form-result-panel__metrics">
-        <div v-for="item in result.metrics" :key="item.label" class="form-result-panel__metric">
-          <span>{{ item.label }}</span>
-          <strong>{{ item.value }}</strong>
+      <div class="mb-3.5 grid grid-cols-1 gap-2.5 md:grid-cols-3">
+        <div
+          v-for="item in result.metrics"
+          :key="item.label"
+          class="rounded-ant-lg border border-app-border bg-white/80 p-3"
+        >
+          <span class="block text-xs text-app-text-secondary">{{ item.label }}</span>
+          <strong class="mt-1.5 block text-lg text-app-text-primary">{{ item.value }}</strong>
         </div>
       </div>
-
-      <a-list size="small" :data-source="result.highlights">
-        <template #renderItem="{ item }">
-          <a-list-item>{{ item }}</a-list-item>
-        </template>
-      </a-list>
 
       <a-alert :message="result.action" show-icon type="info" />
     </template>
@@ -58,73 +56,3 @@ const levelColor = computed(() => {
   return 'default';
 });
 </script>
-
-<style scoped lang="less">
-.form-result-panel {
-  height: 100%;
-  border-radius: var(--ant-border-radius-lg);
-  box-shadow: var(--app-shadow-soft);
-}
-
-.form-result-panel__head {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 16px;
-}
-
-.form-result-panel__eyebrow {
-  color: var(--app-primary);
-  font-size: 12px;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
-.form-result-panel h3 {
-  margin: 8px 0 0;
-  color: var(--app-text-primary);
-  font-size: 20px;
-}
-
-.form-result-panel__summary {
-  margin: 0 0 16px;
-  color: var(--app-text-secondary);
-  line-height: 1.8;
-}
-
-.form-result-panel__metrics {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
-  margin-bottom: 14px;
-}
-
-.form-result-panel__metric {
-  padding: 12px;
-  border: 1px solid var(--app-border);
-  border-radius: var(--ant-border-radius-lg);
-  background: rgba(255, 255, 255, 0.78);
-}
-
-.form-result-panel__metric span,
-.form-result-panel__metric strong {
-  display: block;
-}
-
-.form-result-panel__metric span {
-  color: var(--app-text-secondary);
-  font-size: 12px;
-}
-
-.form-result-panel__metric strong {
-  margin-top: 6px;
-  color: var(--app-text-primary);
-  font-size: 18px;
-}
-
-@media (max-width: 768px) {
-  .form-result-panel__metrics {
-    grid-template-columns: 1fr;
-  }
-}
-</style>

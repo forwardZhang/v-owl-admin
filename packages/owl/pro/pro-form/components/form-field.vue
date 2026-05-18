@@ -3,14 +3,14 @@ import type {
   BaseFormComponentType,
   BuiltinComponentProps,
   FormApi,
+  FormComponentSlot,
   FormCommonConfig,
   FormSchema,
   RenderContent as RenderContentType
 } from '../types';
 import type { Component, PropType, VNodeChild } from 'vue';
 
-import { Col } from 'antdv-next/dist/grid/index';
-import { FormItem } from 'antdv-next/dist/form/index';
+import { Col, FormItem } from 'antdv-next';
 import { computed, defineComponent, h } from 'vue';
 import { get } from 'lodash-es';
 
@@ -47,6 +47,7 @@ const slots = defineSlots<{
   label?: (props?: Record<string, unknown>) => VNodeChild;
 }>();
 
+// eslint-disable-next-line vue/one-component-per-file
 const RenderContent = defineComponent({
   name: 'ProFormRenderContent',
   props: {
@@ -60,6 +61,7 @@ const RenderContent = defineComponent({
   }
 });
 
+// eslint-disable-next-line vue/one-component-per-file
 const FieldControl = defineComponent({
   name: 'ProFormFieldControl',
   props: {
@@ -95,8 +97,6 @@ const {
   schema: props.schema
 });
 
-const ctx = computed(() => createFieldContext({ api: props.api, schema: props.schema }));
-
 const isHidden = computed(() => {
   return (
     resolveMaybe({ api: props.api, schema: props.schema, value: props.schema.hidden }) ?? false
@@ -108,6 +108,10 @@ const isShow = computed(() => {
     resolveMaybe({ api: props.api, schema: props.schema, value: props.schema.show }) ??
     dependencyShow.value
   );
+});
+
+const isVisible = computed(() => {
+  return isIf.value && !isHidden.value && isShow.value;
 });
 
 const isDisabled = computed(() => {
@@ -146,22 +150,21 @@ const fieldRules = computed(() => {
 });
 
 const FieldComponent = computed<Component | undefined>(() => {
-  const component = props.schema.component;
-
-  if (typeof component !== 'string') {
-    return component;
+  if (props.schema.type === 'custom') {
+    return props.schema.component;
   }
 
-  return getFormComponent(component);
+  return getFormComponent(props.schema.type);
 });
 
 const modelPropName = computed(() => {
-  const component = props.schema.component;
+  const schemaModelPropName =
+    'modelPropName' in props.schema ? props.schema.modelPropName : undefined;
 
   return (
-    props.schema.modelPropName ??
+    schemaModelPropName ??
     props.commonConfig.modelPropName ??
-    (typeof component === 'string' ? getFormModelPropName(component) : undefined)
+    (props.schema.type === 'custom' ? 'modelValue' : getFormModelPropName(props.schema.type))
   );
 });
 
@@ -174,7 +177,7 @@ const componentProps = computed(() => {
   const schemaProps = resolveMaybe({
     api: props.api,
     schema: props.schema,
-    value: props.schema.componentProps
+    value: 'componentProps' in props.schema ? props.schema.componentProps : undefined
   });
 
   return mergeProps({
@@ -218,37 +221,55 @@ const controlProps = computed(() => {
   };
 });
 
-const componentSlots = computed(() => {
-  const schemaSlots = props.schema.renderComponentContent?.(ctx.value) ?? {};
-  const fieldSlots = { ...slots } as Record<string, ((props?: unknown) => VNodeChild) | undefined>;
-
-  delete fieldSlots.label;
-  delete fieldSlots.help;
+function getSlotContext(slotProps?: unknown) {
+  const componentSlotProps =
+    slotProps && typeof slotProps === 'object' ? (slotProps as Record<string, unknown>) : {};
 
   return {
-    ...fieldSlots,
-    ...schemaSlots
+    ...createFieldContext({ api: props.api, schema: props.schema }),
+    ...componentSlotProps,
+    slotProps
   };
+}
+
+const componentSlots = computed(() => {
+  const slotsConfig = 'componentSlots' in props.schema ? props.schema.componentSlots : undefined;
+
+  return Object.fromEntries(
+    Object.entries((slotsConfig ?? {}) as Record<string, FormComponentSlot>).map(([name, slot]) => [
+      name,
+      (slotProps?: unknown) => slot(getSlotContext(slotProps))
+    ])
+  );
 });
 
 const helpContent = computed(() => {
   return resolveMaybe({ api: props.api, schema: props.schema, value: props.schema.help });
 });
+
+const fieldClass = computed(() => {
+  return resolveMaybe({
+    api: props.api,
+    schema: props.schema,
+    value: props.schema.formItemClass ?? props.commonConfig.formItemClass
+  });
+});
 </script>
 
 <template>
   <Col
-    v-if="schema.colProps || commonConfig.colProps"
+    v-if="(schema.colProps || commonConfig.colProps) && isVisible"
+    :class="fieldClass"
     v-bind="schema.colProps ?? commonConfig.colProps"
   >
-    <FormItem v-if="isIf && !isHidden" v-show="isShow" v-bind="formItemProps">
+    <FormItem v-bind="formItemProps">
       <template v-if="!commonConfig.hideLabel && (fieldLabel || $slots.label)" #label>
-        <slot name="label" :api="api" :schema="schema">
+        <slot name="label" :api="api" :label="fieldLabel" :schema="schema">
           <RenderContent :content="fieldLabel" />
         </slot>
       </template>
       <template v-if="helpContent || $slots.help" #help>
-        <slot name="help" :api="api" :schema="schema">
+        <slot name="help" :api="api" :help="helpContent" :schema="schema">
           <RenderContent :content="helpContent" />
         </slot>
       </template>
@@ -258,16 +279,21 @@ const helpContent = computed(() => {
         :component-props="controlProps"
         :component-slots="componentSlots"
       />
+      <slot
+        v-else-if="schema.type === 'custom' && schema.slot"
+        :name="schema.slot"
+        v-bind="getSlotContext()"
+      />
     </FormItem>
   </Col>
-  <FormItem v-else-if="isIf && !isHidden" v-show="isShow" v-bind="formItemProps">
+  <FormItem v-else-if="isVisible" :class="fieldClass" v-bind="formItemProps">
     <template v-if="!commonConfig.hideLabel && (fieldLabel || $slots.label)" #label>
-      <slot name="label" :api="api" :schema="schema">
+      <slot name="label" :api="api" :label="fieldLabel" :schema="schema">
         <RenderContent :content="fieldLabel" />
       </slot>
     </template>
     <template v-if="helpContent || $slots.help" #help>
-      <slot name="help" :api="api" :schema="schema">
+      <slot name="help" :api="api" :help="helpContent" :schema="schema">
         <RenderContent :content="helpContent" />
       </slot>
     </template>
@@ -276,6 +302,11 @@ const helpContent = computed(() => {
       :component="FieldComponent"
       :component-props="controlProps"
       :component-slots="componentSlots"
+    />
+    <slot
+      v-else-if="schema.type === 'custom' && schema.slot"
+      :name="schema.slot"
+      v-bind="getSlotContext()"
     />
   </FormItem>
 </template>

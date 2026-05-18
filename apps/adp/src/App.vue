@@ -4,9 +4,9 @@
     :get-popup-container="getPopupContainer"
     v-bind="sharedConfig"
   >
-    <a-layout>
+    <a-layout class="v-owl-admin">
       <RouterView />
-      <Spinner class-name="app-boot-spinner" :spinning="appStore.booting"> </Spinner>
+      <Spinner class-name="fixed inset-0 z-[2000]" :spinning="appStore.booting"> </Spinner>
     </a-layout>
   </a-config-provider>
 </template>
@@ -19,6 +19,11 @@ import type { ConfigProviderProps } from 'antdv-next';
 const appStore = useAppStore();
 
 const themeConfig = computed(() => ({
+  cssVar: {
+    key: 'v-owl-admin',
+    prefix: 'ant'
+  },
+  zeroRuntime: false,
   token: {
     colorInfo: appStore.primaryColor,
     colorLink: appStore.primaryColor,
@@ -51,15 +56,3 @@ function getPopupContainer() {
 
 const sharedConfig: ConfigProviderProps = {};
 </script>
-
-<style scoped lang="less">
-.app-shell {
-  min-height: 100vh;
-}
-
-.app-boot-spinner {
-  position: fixed;
-  inset: 0;
-  z-index: 2000;
-}
-</style>

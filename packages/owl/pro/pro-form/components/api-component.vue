@@ -34,6 +34,7 @@ const props = withDefaults(defineProps<ApiComponentProps>(), {
 
 const emit = defineEmits<{
   optionsChange: [ApiComponentOptionsItem[]];
+  [key: `update:${string}`]: [value: unknown];
 }>();
 
 const modelValue = defineModel<unknown>({ default: undefined });
@@ -98,7 +99,7 @@ const bindProps = computed(() => {
     [propName]: unref(modelValue),
     [props.optionsPropName]: unref(finalOptions),
     [`onUpdate:${propName}`]: (value: unknown) => {
-      modelValue.value = value;
+      updateModelValue(value);
     },
     ...omitObject(attrs as Record<string, unknown>, [`onUpdate:${propName}`]),
     ...(props.visibleEvent
@@ -108,6 +109,14 @@ const bindProps = computed(() => {
       : {})
   };
 });
+
+function updateModelValue(value: unknown) {
+  modelValue.value = value;
+
+  if (props.modelPropName !== 'modelValue') {
+    emit(`update:${props.modelPropName}`, value);
+  }
+}
 
 async function fetchApi() {
   const { afterFetch, api, beforeFetch, resultField, shouldFetch } = props;
@@ -206,7 +215,7 @@ function emitChange() {
     }
 
     if (selectedOption) {
-      modelValue.value = selectedOption.value;
+      updateModelValue(selectedOption.value);
     }
   }
 
@@ -241,15 +250,7 @@ defineExpose({
       <slot :name="slotName" v-bind="data || {}"></slot>
     </template>
     <template v-if="loadingSlot && loading" #[loadingSlot]>
-      <span class="api-component__loading">...</span>
+      <span class="inline-flex min-w-[1em] justify-center">...</span>
     </template>
   </component>
 </template>
-
-<style scoped>
-.api-component__loading {
-  display: inline-flex;
-  min-width: 1em;
-  justify-content: center;
-}
-</style>

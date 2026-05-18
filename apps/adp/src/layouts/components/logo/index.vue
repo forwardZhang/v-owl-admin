@@ -1,10 +1,22 @@
 <template>
-  <div class="logo" :class="{ 'is-collapsed': collapsed }">
-    <a-avatar class="logo__mark" :size="38">VO</a-avatar>
-    <div class="logo__meta-wrap">
-      <div class="logo__meta">
-        <strong>Owl Admin</strong>
-        <span>Enterprise Center</span>
+  <div
+    class="flex min-h-[var(--app-header-height)] items-center overflow-hidden border-b border-app-border px-5"
+    :class="collapsed ? 'justify-center gap-0 px-0' : 'gap-3.5'"
+  >
+    <a-avatar
+      class="bg-app-brand-gradient text-[13px] font-bold tracking-[0.08em] shadow-[0_18px_30px_rgba(var(--app-primary-rgb),0.22)]"
+      :class="{ 'mx-auto': collapsed }"
+      :size="38"
+    >
+      VO
+    </a-avatar>
+    <div
+      class="overflow-hidden transition-[width,opacity,transform] duration-200 ease-out"
+      :class="collapsed ? 'w-0 -translate-x-2.5 opacity-0' : 'w-[132px] opacity-100'"
+    >
+      <div class="flex w-[132px] min-w-0 flex-col">
+        <strong class="whitespace-nowrap text-sm font-bold text-app-text-primary">Owl Admin</strong>
+        <span class="whitespace-nowrap text-xs text-app-text-tertiary">Enterprise Center</span>
       </div>
     </div>
   </div>
@@ -15,69 +27,3 @@ defineProps<{
   collapsed: boolean;
 }>();
 </script>
-
-<style scoped lang="less">
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  min-height: var(--app-header-height);
-  padding: 0 20px;
-  border-bottom: 1px solid var(--app-border);
-  overflow: hidden;
-}
-
-.logo__mark {
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  background: linear-gradient(135deg, var(--app-primary) 0%, #43c4ff 100%);
-  box-shadow: 0 18px 30px rgba(var(--app-primary-rgb), 0.22);
-}
-
-.logo__meta {
-  display: flex;
-  flex-direction: column;
-  width: 132px;
-  min-width: 0;
-}
-
-.logo__meta-wrap {
-  width: 132px;
-  overflow: hidden;
-  opacity: 1;
-  transition:
-    width 0.24s ease,
-    opacity 0.18s ease,
-    transform 0.24s ease;
-}
-
-.logo__meta strong {
-  color: var(--app-text-primary);
-  font-size: 14px;
-  font-weight: 700;
-  white-space: nowrap;
-}
-
-.logo__meta span {
-  color: var(--app-text-tertiary);
-  font-size: 12px;
-  white-space: nowrap;
-}
-
-.logo.is-collapsed {
-  justify-content: center;
-  gap: 0;
-  padding-inline: 0;
-}
-
-.logo.is-collapsed .logo__mark {
-  margin-inline: auto;
-}
-
-.logo.is-collapsed .logo__meta-wrap {
-  width: 0;
-  opacity: 0;
-  transform: translateX(-10px);
-}
-</style>

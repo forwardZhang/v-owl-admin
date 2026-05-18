@@ -1,9 +1,11 @@
 <template>
-  <div class="header">
-    <div class="header__left">
+  <div
+    class="flex min-h-[var(--app-header-height)] flex-none items-center justify-between gap-[18px] border-b border-app-border bg-white/80 px-4 backdrop-blur-[18px]"
+  >
+    <div class="min-w-0 flex-1">
       <Breadcrumb />
     </div>
-    <div class="header__right">
+    <div class="flex-none">
       <a-space :size="12">
         <Settings />
         <Profile />
@@ -17,27 +19,3 @@ import Breadcrumb from './breadcrumb.vue';
 import Profile from './profile.vue';
 import Settings from './settings.vue';
 </script>
-
-<style scoped lang="less">
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 18px;
-  min-height: var(--app-header-height);
-  padding: 0 16px;
-  border-bottom: 1px solid var(--app-border);
-  background: rgba(255, 255, 255, 0.82);
-  backdrop-filter: blur(18px);
-  flex: none;
-}
-
-.header__left {
-  flex: 1;
-  min-width: 0;
-}
-
-.header__right {
-  flex: none;
-}
-</style>

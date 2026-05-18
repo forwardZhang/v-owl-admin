@@ -1,10 +1,19 @@
 <template>
-  <div class="view-page">
-    <a-card class="view-page__hero" variant="borderless">
+  <div class="flex flex-col gap-5">
+    <a-card
+      class="flex items-center justify-between gap-6 rounded-ant-lg bg-[radial-gradient(circle_at_top_left,rgba(var(--app-primary-rgb),0.14)_0%,transparent_34%),linear-gradient(135deg,rgba(255,255,255,0.94)_0%,rgba(243,248,255,0.94)_100%)] shadow-app-soft"
+      variant="borderless"
+    >
       <div>
-        <span class="view-page__eyebrow">System / Menus</span>
-        <h1>菜单管理</h1>
-        <p>维护导航结构、组件映射与按钮权限，确保服务端菜单和前端路由保持一致。</p>
+        <span
+          class="inline-flex h-7 items-center rounded-ant-lg bg-[rgba(var(--app-primary-rgb),0.1)] px-3 text-xs font-bold uppercase tracking-[0.08em] text-app-primary"
+        >
+          System / Menus
+        </span>
+        <h1 class="mb-2.5 mt-3.5 text-3xl text-app-text-primary">菜单管理</h1>
+        <p class="max-w-[640px] leading-[1.8] text-app-text-secondary">
+          维护导航结构、组件映射与按钮权限，确保服务端菜单和前端路由保持一致。
+        </p>
       </div>
 
       <a-space wrap>
@@ -13,7 +22,7 @@
       </a-space>
     </a-card>
 
-    <a-card class="view-page__card" variant="borderless">
+    <a-card class="rounded-ant-lg shadow-app-soft" variant="borderless">
       <a-table
         :columns="columns"
         :data-source="menus"
@@ -111,54 +120,3 @@ onMounted(async () => {
   }
 });
 </script>
-
-<style scoped lang="less">
-.view-page {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.view-page__hero,
-.view-page__card {
-  border-radius: var(--ant-border-radius-lg);
-  box-shadow: var(--app-shadow-soft);
-}
-
-.view-page__hero {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  background:
-    radial-gradient(circle at top left, rgba(var(--app-primary-rgb), 0.14) 0%, transparent 34%),
-    linear-gradient(135deg, rgba(255, 255, 255, 0.94) 0%, rgba(243, 248, 255, 0.94) 100%);
-}
-
-.view-page__eyebrow {
-  display: inline-flex;
-  align-items: center;
-  height: 28px;
-  padding: 0 12px;
-  border-radius: var(--ant-border-radius-lg);
-  color: var(--app-primary);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  background: rgba(var(--app-primary-rgb), 0.1);
-}
-
-.view-page__hero h1 {
-  margin: 14px 0 10px;
-  color: var(--app-text-primary);
-  font-size: 30px;
-}
-
-.view-page__hero p {
-  max-width: 640px;
-  margin: 0;
-  color: var(--app-text-secondary);
-  line-height: 1.8;
-}
-</style>

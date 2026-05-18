@@ -1,12 +1,19 @@
 <template>
-  <a-card class="form-capability-panel" variant="borderless">
-    <span class="form-capability-panel__eyebrow">Capabilities</span>
-    <h3>这个示例覆盖的 ProForm 能力</h3>
+  <a-card class="rounded-ant-lg shadow-app-soft" variant="borderless">
+    <span class="text-xs font-bold uppercase text-app-primary">Capabilities</span>
+    <h3 class="mb-[18px] mt-2 text-[22px] text-app-text-primary">
+      参考 test-components/form 重新整理的能力地图
+    </h3>
 
-    <div class="form-capability-panel__grid">
-      <div v-for="item in capabilities" :key="item.title" class="form-capability-panel__item">
-        <strong>{{ item.title }}</strong>
-        <p>{{ item.description }}</p>
+    <div class="grid grid-cols-1 gap-3.5 md:grid-cols-2 xl:grid-cols-3">
+      <div
+        v-for="item in capabilities"
+        :key="item.title"
+        class="min-h-[156px] rounded-ant-lg border border-app-border bg-white/80 p-4"
+      >
+        <a-tag :color="item.color">{{ item.group }}</a-tag>
+        <strong class="mt-3 block text-base text-app-text-primary">{{ item.title }}</strong>
+        <p class="mt-2.5 leading-[1.8] text-app-text-secondary">{{ item.description }}</p>
       </div>
     </div>
   </a-card>
@@ -15,71 +22,40 @@
 <script setup lang="ts">
 const capabilities = [
   {
-    description: '产品下拉会跟随业务线和场景变化发起远程请求，返回结果不是固定列表。',
-    title: '条件化远程请求'
+    color: 'blue',
+    description: '覆盖 Input、InputPassword、Select、RadioGroup、CheckboxGroup、Switch、TextArea。',
+    group: 'basic.vue',
+    title: '基础组件矩阵'
   },
   {
-    description: 'rowProps 和 colProps 共同控制桌面三列、移动端单列的响应式布局。',
-    title: '响应式栅格'
+    color: 'cyan',
+    description: 'ApiSelect 根据业务线和场景重新请求产品候选，展示远程参数联动。',
+    group: 'basic.vue',
+    title: '远程选项'
   },
   {
-    description: '策略倾向字段使用业务自定义组件，并通过组件插槽注入提示和标签。',
-    title: '自定义组件与插槽'
+    color: 'purple',
+    description: 'componentSlots 直接声明组件内部插槽，type=custom + slot 声明模板内容。',
+    group: 'custom.vue',
+    title: '组件插槽'
   },
   {
-    description: '高级配置、预算、负责人等字段会根据开关和紧急程度动态出现、必填或禁用。',
-    title: '动态属性'
+    color: 'geekblue',
+    description: 'ScenarioSwitch 使用 custom 组件接入，默认按 modelValue 同步表单值。',
+    group: 'custom.vue',
+    title: '自定义组件'
+  },
+  {
+    color: 'orange',
+    description: '通过 dependencies 演示 if、show、disabled、required、componentProps 和 trigger。',
+    group: 'dynamic.vue',
+    title: '动态联动'
+  },
+  {
+    color: 'green',
+    description: '使用 setState、updateSchema、removeSchemaByFields 调整 schema、按钮和全局配置。',
+    group: 'api.vue',
+    title: 'FormApi 操作'
   }
 ];
 </script>
-
-<style scoped lang="less">
-.form-capability-panel {
-  border-radius: var(--ant-border-radius-lg);
-  box-shadow: var(--app-shadow-soft);
-}
-
-.form-capability-panel__eyebrow {
-  color: var(--app-primary);
-  font-size: 12px;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
-.form-capability-panel h3 {
-  margin: 8px 0 18px;
-  color: var(--app-text-primary);
-  font-size: 22px;
-}
-
-.form-capability-panel__grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
-}
-
-.form-capability-panel__item {
-  min-height: 128px;
-  padding: 16px;
-  border: 1px solid var(--app-border);
-  border-radius: var(--ant-border-radius-lg);
-  background: rgba(255, 255, 255, 0.82);
-}
-
-.form-capability-panel__item strong {
-  color: var(--app-text-primary);
-  font-size: 16px;
-}
-
-.form-capability-panel__item p {
-  margin: 10px 0 0;
-  color: var(--app-text-secondary);
-  line-height: 1.8;
-}
-
-@media (max-width: 768px) {
-  .form-capability-panel__grid {
-    grid-template-columns: 1fr;
-  }
-}
-</style>

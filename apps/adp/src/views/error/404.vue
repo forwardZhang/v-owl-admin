@@ -1,5 +1,5 @@
 <template>
-  <div class="not-found">
+  <div class="grid min-h-[calc(100vh-180px)] place-items-center p-6">
     <a-result
       status="404"
       title="页面走丢了"
@@ -15,12 +15,3 @@
 </template>
 
 <script setup lang="ts"></script>
-
-<style scoped lang="less">
-.not-found {
-  display: grid;
-  place-items: center;
-  min-height: calc(100vh - 180px);
-  padding: 24px;
-}
-</style>

@@ -1,13 +1,13 @@
 <template>
   <a-layout
-    class="app-layout"
+    class="flex h-screen w-full overflow-hidden"
     :class="{
       'is-collapsed': appStore.sidebarCollapsed,
       'is-mobile-open': appStore.mobileMenuVisible
     }"
   >
     <a-layout-sider
-      class="app-layout__sidebar"
+      class="app-layout__sidebar sticky top-0 z-20 flex h-screen flex-col border-r border-app-border bg-[linear-gradient(180deg,rgba(255,255,255,0.96)_0%,rgba(245,248,255,0.96)_100%)] backdrop-blur-[18px]"
       :collapsed="appStore.sidebarCollapsed"
       :collapsed-width="88"
       collapsible
@@ -18,7 +18,9 @@
       <Logo :collapsed="appStore.sidebarCollapsed" />
       <Menu :menus="permissionStore.visibleMenus" :collapsed="appStore.sidebarCollapsed" />
       <template #trigger>
-        <span class="app-layout__trigger">
+        <span
+          class="inline-flex h-9 w-9 items-center justify-center rounded-ant-lg bg-[rgba(var(--app-primary-rgb),0.1)] text-app-primary transition duration-200 hover:-translate-y-px hover:bg-[rgba(var(--app-primary-rgb),0.16)]"
+        >
           <menu-unfold-outlined v-if="appStore.sidebarCollapsed" />
           <menu-fold-outlined v-else />
         </span>
@@ -27,12 +29,12 @@
 
     <button
       type="button"
-      class="app-layout__backdrop"
+      class="hidden"
       aria-label="关闭侧边栏"
       @click="appStore.setMobileMenuVisible(false)"
     />
 
-    <a-layout class="app-layout__main">
+    <a-layout class="flex h-screen min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-transparent">
       <Header />
       <Main />
     </a-layout>
@@ -57,23 +59,7 @@ function handleSidebarCollapse(collapsed: boolean) {
 </script>
 
 <style scoped lang="less">
-.app-layout {
-  display: flex;
-  height: 100vh;
-  width: 100%;
-  overflow: hidden;
-}
-
 .app-layout__sidebar {
-  position: sticky;
-  top: 0;
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  border-right: 1px solid var(--app-border);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(245, 248, 255, 0.96) 100%);
-  backdrop-filter: blur(18px);
-  z-index: 20;
   :deep(.ant-layout-sider-children) {
     display: flex;
     flex-direction: column;
@@ -85,49 +71,5 @@ function handleSidebarCollapse(collapsed: boolean) {
     height: 52px;
     border-top: 1px solid rgba(18, 36, 61, 0.07);
   }
-}
-
-.app-layout__trigger {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: var(--ant-border-radius-lg);
-  color: var(--app-primary);
-  background: rgba(var(--app-primary-rgb), 0.1);
-  transition:
-    transform 0.2s ease,
-    background-color 0.2s ease;
-}
-
-.app-layout__trigger:hover {
-  transform: translateY(-1px);
-  background: rgba(var(--app-primary-rgb), 0.16);
-}
-
-.app-layout__main {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  height: 100vh;
-  min-height: 0;
-  min-width: 0;
-  width: 0;
-  overflow: hidden;
-  background: transparent;
-}
-
-.app-layout__backdrop {
-  display: none;
-}
-
-.app-global-spinner {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 9999;
-  width: 100vw;
-  height: 100vh;
 }
 </style>

@@ -1,10 +1,13 @@
 <template>
-  <div class="pro-page">
-    <div v-if="showHeader" class="pro-page__header">
-      <div class="pro-page__tabs-shell">
+  <div class="flex h-full min-h-0 flex-col overflow-hidden">
+    <div
+      v-if="showHeader"
+      class="pro-page__header flex-none overflow-hidden bg-[radial-gradient(circle_at_top_left,rgba(var(--app-primary-rgb),0.16)_0%,transparent_34%),linear-gradient(135deg,rgba(255,255,255,0.96)_0%,rgba(243,248,255,0.96)_100%)] px-3 shadow-app-soft"
+    >
+      <div class="flex justify-between">
         <Tabs
           :active-key="mergedActiveKey"
-          class="pro-page__tabs"
+          class="pro-page__tabs min-w-0 flex-1"
           @update:active-key="handleTabChange"
         >
           <TabPane v-for="tab in normalizedTabs" :key="tab.key">
@@ -16,13 +19,13 @@
           </TabPane>
         </Tabs>
 
-        <div v-if="$slots.extra" class="pro-page__extra">
+        <div v-if="$slots.extra" class="ml-auto flex flex-none items-center gap-3">
           <slot name="extra" />
         </div>
       </div>
     </div>
 
-    <div class="pro-page__body">
+    <div class="min-h-0 flex-1 overflow-y-auto overflow-x-hidden overscroll-contain p-3">
       <template v-if="hasTabs && activeTab">
         <slot :name="`tab-${activeTab.key}`" :tab="activeTab">
           <component
@@ -131,36 +134,6 @@ function handleTabChange(nextActiveKey: string) {
 </script>
 
 <style scoped lang="less">
-.pro-page {
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
-  height: 100%;
-  overflow: hidden;
-}
-
-.pro-page__header {
-  flex: none;
-  overflow: hidden;
-  border-radius: 0;
-  box-shadow: var(--app-shadow-soft);
-  background:
-    radial-gradient(circle at top left, rgba(var(--app-primary-rgb), 0.16) 0%, transparent 34%),
-    linear-gradient(135deg, rgba(255, 255, 255, 0.96) 0%, rgba(243, 248, 255, 0.96) 100%);
-  gap: 24px;
-  padding: 0 12px;
-}
-
-.pro-page__tabs-shell {
-  display: flex;
-  justify-content: space-between;
-}
-
-.pro-page__tabs {
-  min-width: 0;
-  flex: 1;
-}
-
 .pro-page__tabs :deep(.ant-tabs-nav) {
   margin: 0;
 }
@@ -178,22 +151,5 @@ function handleTabChange(nextActiveKey: string) {
 
 .pro-page__tabs :deep(.ant-tabs-content-holder) {
   display: none;
-}
-
-.pro-page__extra {
-  display: flex;
-  flex: none;
-  align-items: center;
-  gap: 12px;
-  margin-left: auto;
-}
-
-.pro-page__body {
-  flex: 1;
-  min-height: 0;
-  padding: 12px;
-  overflow-y: auto;
-  overflow-x: hidden;
-  overscroll-behavior: contain;
 }
 </style>

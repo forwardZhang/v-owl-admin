@@ -10,7 +10,7 @@ import type { FormInstance } from 'antdv-next';
 import type { Ref } from 'vue';
 
 import { cloneDeep, isArray, isEqual, mergeWith, set } from 'lodash-es';
-import { reactive, ref, toRaw } from 'vue';
+import { markRaw, reactive, ref, toRaw } from 'vue';
 
 function normalizeNamePath(name: ProFormNamePath): Array<string | number> {
   if (Array.isArray(name)) {
@@ -62,7 +62,32 @@ function getDefaultState<TValues extends Record<string, unknown>>(): UseProFormO
     rowProps: undefined,
     schema: [],
     showDefaultActions: true,
-    submitButtonOptions: {}
+    submitButtonOptions: {},
+    wrapperClass: undefined
+  };
+}
+
+function normalizeSchema<TValues extends Record<string, unknown>>(
+  schema: UseProFormOptions<TValues>['schema']
+) {
+  return schema?.map((item) => {
+    if (item.type !== 'custom' || !item.component) {
+      return item;
+    }
+
+    return {
+      ...item,
+      component: markRaw(item.component)
+    };
+  });
+}
+
+function normalizeState<TValues extends Record<string, unknown>>(
+  state: UseProFormOptions<TValues>
+) {
+  return {
+    ...state,
+    schema: normalizeSchema(state.schema)
   };
 }
 
@@ -81,7 +106,9 @@ export class FormApi<
       getSchemaDefaultValues(options.schema)
     );
     this.state = reactive(
-      mergeWithArrayOverride({ ...options, initialValues }, getDefaultState<TValues>())
+      normalizeState(
+        mergeWithArrayOverride({ ...options, initialValues }, getDefaultState<TValues>())
+      )
     ) as UseProFormOptions<TValues>;
     this.values = reactive(cloneDeep(initialValues)) as TValues;
   }
@@ -143,7 +170,7 @@ export class FormApi<
       | Partial<UseProFormOptions<TValues>>
   ) {
     const patch = typeof stateOrFn === 'function' ? stateOrFn(this.state) : stateOrFn;
-    const nextState = mergeWithArrayOverride(patch, this.state);
+    const nextState = normalizeState(mergeWithArrayOverride(patch, this.state));
 
     Object.entries(nextState).forEach(([key, value]) => {
       this.state[key as keyof UseProFormOptions<TValues>] = value as never;
@@ -179,11 +206,13 @@ export class FormApi<
         return item;
       }
 
-      return mergeWithArrayOverride(updated, item) as FormSchema<
-        BaseFormComponentType,
-        BuiltinComponentProps,
-        TValues
-      >;
+      return normalizeSchema([
+        mergeWithArrayOverride(updated, item) as FormSchema<
+          BaseFormComponentType,
+          BuiltinComponentProps,
+          TValues
+        >
+      ])?.[0] as FormSchema<BaseFormComponentType, BuiltinComponentProps, TValues>;
     });
   }
 

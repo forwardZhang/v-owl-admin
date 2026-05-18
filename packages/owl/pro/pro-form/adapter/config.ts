@@ -5,6 +5,25 @@ import { defineAsyncComponent, defineComponent, h, ref, shallowReactive } from '
 
 import ApiComponent from '../components/api-component.vue';
 
+const AutoComplete = defineAsyncComponent(() => import('antdv-next/dist/auto-complete/index'));
+const Cascader = defineAsyncComponent(() => import('antdv-next/dist/cascader/index'));
+const Checkbox = defineAsyncComponent(() => import('antdv-next/dist/checkbox/index'));
+const CheckboxGroup = defineAsyncComponent(() => import('antdv-next/dist/checkbox/Group'));
+const DatePicker = defineAsyncComponent(() => import('antdv-next/dist/date-picker/index'));
+const DateRangePicker = defineAsyncComponent(() =>
+  import('antdv-next/dist/date-picker/index').then((res) => res.DateRangePicker)
+);
+const Input = defineAsyncComponent(() => import('antdv-next/dist/input/index'));
+const InputNumber = defineAsyncComponent(() => import('antdv-next/dist/input-number/index'));
+const InputPassword = defineAsyncComponent(() => import('antdv-next/dist/input/Password'));
+const Radio = defineAsyncComponent(() => import('antdv-next/dist/radio/radio'));
+const RadioGroup = defineAsyncComponent(() => import('antdv-next/dist/radio/group'));
+const Select = defineAsyncComponent(() => import('antdv-next/dist/select/index'));
+const Switch = defineAsyncComponent(() => import('antdv-next/dist/switch/index'));
+const TextArea = defineAsyncComponent(() => import('antdv-next/dist/input/TextArea'));
+const TimePicker = defineAsyncComponent(() => import('antdv-next/dist/time-picker/index'));
+const TreeSelect = defineAsyncComponent(() => import('antdv-next/dist/tree-select/index'));
+
 export type ProFormComponentMap = Partial<Record<BaseFormComponentType, Component>>;
 
 export interface InitComponentAdapterOptions {
@@ -12,33 +31,6 @@ export interface InitComponentAdapterOptions {
   components?: ProFormComponentMap;
   modelPropNameMap?: Partial<Record<BaseFormComponentType, string>>;
 }
-
-const AutoComplete = defineAsyncComponent(() => import('antdv-next/dist/auto-complete/index'));
-const Cascader = defineAsyncComponent(() => import('antdv-next/dist/cascader/index'));
-const Checkbox = defineAsyncComponent(() => import('antdv-next/dist/checkbox/index'));
-const CheckboxGroup = defineAsyncComponent(() =>
-  import('antdv-next/dist/checkbox/index').then((res) => res.CheckboxGroup)
-);
-const DatePicker = defineAsyncComponent(() => import('antdv-next/dist/date-picker/index'));
-const Input = defineAsyncComponent(() => import('antdv-next/dist/input/index'));
-const InputNumber = defineAsyncComponent(() => import('antdv-next/dist/input-number/index'));
-const InputPassword = defineAsyncComponent(() =>
-  import('antdv-next/dist/input/index').then((res) => res.InputPassword)
-);
-const Radio = defineAsyncComponent(() => import('antdv-next/dist/radio/index'));
-const RadioGroup = defineAsyncComponent(() =>
-  import('antdv-next/dist/radio/index').then((res) => res.RadioGroup)
-);
-const RangePicker = defineAsyncComponent(() =>
-  import('antdv-next/dist/date-picker/index').then((res) => res.DateRangePicker)
-);
-const Select = defineAsyncComponent(() => import('antdv-next/dist/select/index'));
-const Switch = defineAsyncComponent(() => import('antdv-next/dist/switch/index'));
-const Textarea = defineAsyncComponent(() =>
-  import('antdv-next/dist/input/index').then((res) => res.TextArea)
-);
-const TimePicker = defineAsyncComponent(() => import('antdv-next/dist/time-picker/index'));
-const TreeSelect = defineAsyncComponent(() => import('antdv-next/dist/tree-select/index'));
 
 export const DEFAULT_MODEL_PROP_NAME = 'value';
 
@@ -141,11 +133,11 @@ function getDefaultComponents(): ProFormComponentMap {
     InputPassword: withDefaultPlaceholder(InputPassword, 'input'),
     Radio,
     RadioGroup,
-    RangePicker,
+    RangePicker: DateRangePicker,
     Select: withDefaultPlaceholder(Select, 'select'),
     Switch,
-    TextArea: withDefaultPlaceholder(Textarea, 'input'),
-    Textarea: withDefaultPlaceholder(Textarea, 'input'),
+    TextArea: withDefaultPlaceholder(TextArea, 'input'),
+    Textarea: withDefaultPlaceholder(TextArea, 'input'),
     TimePicker,
     TreeSelect: withDefaultPlaceholder(TreeSelect, 'select')
   };

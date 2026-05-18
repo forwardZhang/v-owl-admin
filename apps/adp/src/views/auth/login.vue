@@ -1,59 +1,71 @@
 <template>
-  <div class="login-page">
-    <section class="login-page__hero">
-      <span class="login-page__badge">Production Ready</span>
-      <h1>把复杂权限、菜单和数据流，收成一套顺手的中台骨架。</h1>
-      <p>
+  <div
+    class="login-page relative grid min-h-screen grid-cols-[minmax(0,1.2fr)_minmax(420px,0.8fr)] overflow-hidden max-[1180px]:grid-cols-1"
+  >
+    <section
+      class="relative z-[1] flex flex-col justify-center gap-6 px-[7vw] py-14 pb-14 max-[1180px]:pb-3 max-[640px]:px-[18px]"
+    >
+      <span
+        class="inline-flex h-[34px] w-fit items-center rounded-ant-lg bg-[rgba(var(--app-primary-rgb),0.12)] px-3.5 text-xs font-bold uppercase tracking-[0.08em] text-app-primary"
+      >
+        Production Ready
+      </span>
+      <h1
+        class="max-w-[680px] text-[clamp(36px,4.6vw,64px)] leading-[1.06] tracking-normal text-app-text-primary"
+      >
+        把复杂权限、菜单和数据流，收成一套顺手的中台骨架。
+      </h1>
+      <p class="max-w-[620px] text-base leading-[1.8] text-app-text-secondary">
         这套初始化底座已经串好了主题、动态菜单、路由守卫、Pinia 和 Mock 请求。
         后面接真实后端时，基本就是替换接口，不是推倒重来。
       </p>
 
-      <div class="login-page__highlights">
-        <article>
-          <strong>服务端菜单驱动</strong>
-          <span>前端只消费菜单树，不再根据角色写死匹配逻辑。</span>
+      <div class="grid grid-cols-3 gap-4 max-[1180px]:grid-cols-1">
+        <article
+          class="flex flex-col gap-2.5 rounded-ant-lg border border-white/60 bg-white/70 px-5 py-[22px] shadow-app-soft backdrop-blur-[18px]"
+        >
+          <strong class="text-[15px] text-app-text-primary">服务端菜单驱动</strong>
+          <span class="text-[13px] leading-[1.7] text-app-text-secondary">
+            前端只消费菜单树，不再根据角色写死匹配逻辑。
+          </span>
         </article>
-        <article>
-          <strong>真实感 Mock</strong>
-          <span>模拟延迟、Token 校验和接口状态码，联调体验更像线上。</span>
+        <article
+          class="flex flex-col gap-2.5 rounded-ant-lg border border-white/60 bg-white/70 px-5 py-[22px] shadow-app-soft backdrop-blur-[18px]"
+        >
+          <strong class="text-[15px] text-app-text-primary">真实感 Mock</strong>
+          <span class="text-[13px] leading-[1.7] text-app-text-secondary">
+            模拟延迟、Token 校验和接口状态码，联调体验更像线上。
+          </span>
         </article>
-        <article>
-          <strong>统一主题令牌</strong>
-          <span>颜色、阴影、边框和层级都走全局变量，后续扩展换肤更丝滑。</span>
+        <article
+          class="flex flex-col gap-2.5 rounded-ant-lg border border-white/60 bg-white/70 px-5 py-[22px] shadow-app-soft backdrop-blur-[18px]"
+        >
+          <strong class="text-[15px] text-app-text-primary">统一主题令牌</strong>
+          <span class="text-[13px] leading-[1.7] text-app-text-secondary">
+            颜色、阴影、边框和层级都走全局变量，后续扩展换肤更丝滑。
+          </span>
         </article>
       </div>
     </section>
 
-    <section class="login-page__panel">
-      <a-card class="login-card" variant="borderless">
-        <div class="login-card__header">
+    <section class="relative z-[1] grid place-items-center p-8 max-[640px]:px-[18px]">
+      <a-card
+        class="w-full max-w-[440px] overflow-hidden rounded-ant-lg shadow-app-medium"
+        variant="borderless"
+      >
+        <div class="mb-7">
           <a-tag color="processing">欢迎回来</a-tag>
-          <h2>登录 V Owl Admin</h2>
-          <p>演示账号已预填，直接登录即可体验完整流程。</p>
+          <h2 class="mb-3 mt-2.5 text-3xl leading-[1.1] text-app-text-primary">登录 V Owl Admin</h2>
+          <p class="text-sm leading-[1.7] text-app-text-tertiary">
+            演示账号已预填，直接登录即可体验完整流程。
+          </p>
         </div>
 
-        <a-alert
-          class="login-card__tip"
-          type="info"
-          show-icon
-          message="体验账号：admin / Admin123"
-        />
+        <a-alert class="mb-4" type="info" show-icon message="体验账号：admin / Admin123" />
 
-        <a-alert
-          v-if="errorMessage"
-          class="login-card__tip"
-          type="error"
-          show-icon
-          :message="errorMessage"
-        />
+        <a-alert v-if="errorMessage" class="mb-4" type="error" show-icon :message="errorMessage" />
 
-        <a-form
-          class="login-card__form"
-          layout="vertical"
-          :model="form"
-          :rules="rules"
-          @finish="handleSubmit"
-        >
+        <a-form class="mt-5" layout="vertical" :model="form" :rules="rules" @finish="handleSubmit">
           <a-form-item label="用户名" name="username">
             <a-input
               v-model:value="form.username"
@@ -72,7 +84,7 @@
             />
           </a-form-item>
 
-          <a-form-item class="login-card__actions">
+          <a-form-item class="mb-0">
             <a-button block html-type="submit" size="large" type="primary" :loading="submitting">
               进入控制台
             </a-button>
@@ -137,14 +149,6 @@ async function handleSubmit() {
 </script>
 
 <style scoped lang="less">
-.login-page {
-  position: relative;
-  display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(420px, 0.8fr);
-  min-height: 100vh;
-  overflow: hidden;
-}
-
 .login-page::before,
 .login-page::after {
   content: '';
@@ -168,149 +172,5 @@ async function handleSubmit() {
   width: 300px;
   height: 300px;
   background: rgba(67, 196, 255, 0.16);
-}
-
-.login-page__hero,
-.login-page__panel {
-  position: relative;
-  z-index: 1;
-}
-
-.login-page__hero {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 24px;
-  padding: 56px 7vw;
-}
-
-.login-page__badge {
-  display: inline-flex;
-  align-items: center;
-  width: fit-content;
-  height: 34px;
-  padding: 0 14px;
-  border-radius: var(--ant-border-radius-lg);
-  color: var(--app-primary);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  background: rgba(var(--app-primary-rgb), 0.12);
-}
-
-.login-page__hero h1 {
-  max-width: 680px;
-  margin: 0;
-  color: var(--app-text-primary);
-  font-size: clamp(36px, 4.6vw, 64px);
-  line-height: 1.06;
-  letter-spacing: -0.04em;
-}
-
-.login-page__hero p {
-  max-width: 620px;
-  margin: 0;
-  color: var(--app-text-secondary);
-  font-size: 16px;
-  line-height: 1.8;
-}
-
-.login-page__highlights {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
-}
-
-.login-page__highlights article {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 22px 20px;
-  border: 1px solid rgba(255, 255, 255, 0.56);
-  border-radius: var(--ant-border-radius-lg);
-  background: rgba(255, 255, 255, 0.72);
-  box-shadow: var(--app-shadow-soft);
-  backdrop-filter: blur(18px);
-}
-
-.login-page__highlights strong {
-  color: var(--app-text-primary);
-  font-size: 15px;
-}
-
-.login-page__highlights span {
-  color: var(--app-text-secondary);
-  font-size: 13px;
-  line-height: 1.7;
-}
-
-.login-page__panel {
-  display: grid;
-  place-items: center;
-  padding: 32px;
-}
-
-.login-card {
-  width: 100%;
-  max-width: 440px;
-  border-radius: var(--ant-border-radius-lg);
-  box-shadow: var(--app-shadow-medium);
-  overflow: hidden;
-}
-
-.login-card__header {
-  margin-bottom: 28px;
-}
-
-.login-card__header h2 {
-  margin: 10px 0 12px;
-  color: var(--app-text-primary);
-  font-size: 30px;
-  line-height: 1.1;
-}
-
-.login-card__header p {
-  margin: 0;
-  color: var(--app-text-tertiary);
-  font-size: 14px;
-  line-height: 1.7;
-}
-
-.login-card__form {
-  margin-top: 20px;
-}
-
-.login-card__tip {
-  margin-bottom: 16px;
-}
-
-.login-card__actions {
-  margin-bottom: 0;
-}
-
-@media (max-width: 1180px) {
-  .login-page {
-    grid-template-columns: 1fr;
-  }
-
-  .login-page__hero {
-    padding-bottom: 12px;
-  }
-
-  .login-page__highlights {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 640px) {
-  .login-page__hero,
-  .login-page__panel {
-    padding-inline: 18px;
-  }
-
-  .login-card {
-    border-radius: var(--ant-border-radius-lg);
-  }
 }
 </style>

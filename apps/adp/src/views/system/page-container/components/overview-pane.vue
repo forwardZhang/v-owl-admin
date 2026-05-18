@@ -1,28 +1,40 @@
 <template>
-  <div class="overview-pane">
+  <div class="flex flex-col gap-3">
     <a-row :gutter="[18, 18]">
       <a-col v-for="item in highlights" :key="item.title" :xs="24" :lg="8">
-        <a-card class="overview-pane__card" variant="borderless">
-          <span class="overview-pane__eyebrow">{{ item.eyebrow }}</span>
-          <h3>{{ item.title }}</h3>
-          <p>{{ item.description }}</p>
+        <a-card class="rounded-ant-lg shadow-app-soft" variant="borderless">
+          <span
+            class="inline-flex h-[26px] items-center rounded-full bg-[rgba(var(--app-primary-rgb),0.1)] px-2.5 text-xs font-bold uppercase tracking-[0.08em] text-app-primary"
+          >
+            {{ item.eyebrow }}
+          </span>
+          <h3 class="mb-2.5 mt-3.5 text-[22px] text-app-text-primary">{{ item.title }}</h3>
+          <p class="leading-[1.8] text-app-text-secondary">{{ item.description }}</p>
         </a-card>
       </a-col>
     </a-row>
 
-    <a-card class="overview-pane__card" variant="borderless">
-      <div class="overview-pane__section-head">
+    <a-card class="rounded-ant-lg shadow-app-soft" variant="borderless">
+      <div class="mb-5 flex items-start justify-between gap-4">
         <div>
-          <span class="overview-pane__eyebrow">Quick Start</span>
-          <h3>推荐接入姿势</h3>
+          <span
+            class="inline-flex h-[26px] items-center rounded-full bg-[rgba(var(--app-primary-rgb),0.1)] px-2.5 text-xs font-bold uppercase tracking-[0.08em] text-app-primary"
+          >
+            Quick Start
+          </span>
+          <h3 class="mb-2.5 mt-3.5 text-[22px] text-app-text-primary">推荐接入姿势</h3>
         </div>
         <a-tag color="processing">Vue 3.5 + TypeScript</a-tag>
       </div>
 
-      <div class="overview-pane__steps">
-        <div v-for="item in setupSteps" :key="item.title" class="overview-pane__step">
-          <strong>{{ item.title }}</strong>
-          <p>{{ item.description }}</p>
+      <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
+        <div
+          v-for="item in setupSteps"
+          :key="item.title"
+          class="rounded-[20px] border border-app-border bg-white/80 p-[18px]"
+        >
+          <strong class="text-base text-app-text-primary">{{ item.title }}</strong>
+          <p class="mt-2.5 leading-[1.8] text-app-text-secondary">{{ item.description }}</p>
         </div>
       </div>
     </a-card>
@@ -64,78 +76,3 @@ const setupSteps = [
   }
 ];
 </script>
-
-<style scoped lang="less">
-.overview-pane {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.overview-pane__card {
-  border-radius: var(--ant-border-radius-lg);
-  box-shadow: var(--app-shadow-soft);
-}
-
-.overview-pane__eyebrow {
-  display: inline-flex;
-  align-items: center;
-  height: 26px;
-  padding: 0 10px;
-  border-radius: 999px;
-  color: var(--app-primary);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  background: rgba(var(--app-primary-rgb), 0.1);
-}
-
-.overview-pane__card h3 {
-  margin: 14px 0 10px;
-  color: var(--app-text-primary);
-  font-size: 22px;
-}
-
-.overview-pane__card p {
-  margin: 0;
-  color: var(--app-text-secondary);
-  line-height: 1.8;
-}
-
-.overview-pane__section-head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 20px;
-}
-
-.overview-pane__steps {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
-}
-
-.overview-pane__step {
-  padding: 18px;
-  border: 1px solid var(--app-border);
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.78);
-}
-
-.overview-pane__step strong {
-  color: var(--app-text-primary);
-  font-size: 16px;
-}
-
-.overview-pane__step p {
-  margin-top: 10px;
-}
-
-@media (max-width: 992px) {
-  .overview-pane__steps {
-    grid-template-columns: 1fr;
-  }
-}
-</style>

@@ -13,6 +13,11 @@
       <a-tag color="blue">Slot</a-tag>
     </template>
 
+    <template #tab-label-empty>
+      空状态
+      <a-tag color="default">Fallback</a-tag>
+    </template>
+
     <template #tab-slots>
       <SlotPane />
     </template>
@@ -41,7 +46,58 @@ const tabs: ProPageTabItem[] = [
   {
     component: SlotPane,
     key: 'reuse',
-    title: '组件复用'
+    title: '组件复用',
+    props: {
+      slots: [
+        {
+          description: '同一个组件可以通过 tabs.props 注入不同数据，不需要额外写 tab 插槽。',
+          name: 'props',
+          title: 'Props 驱动'
+        },
+        {
+          description: '适合概览、详情、审计记录这类布局相似但数据不同的页面区块。',
+          name: 'component',
+          title: '组件渲染'
+        },
+        {
+          description: '业务页只维护组件自身状态，ProPage 负责顶部导航和内容容器。',
+          name: 'container',
+          title: '容器托管'
+        }
+      ]
+    }
+  },
+  {
+    component: OperationPane,
+    key: 'props',
+    props: {
+      description: '这个标签页直接通过 tabs.props 改变组件内容，验证配置化组件渲染路径。',
+      metrics: [
+        {
+          label: '接入页面',
+          trend: '配置复用',
+          value: '6'
+        },
+        {
+          label: '插槽覆盖',
+          trend: 'label + content',
+          value: '2'
+        },
+        {
+          label: '空态兜底',
+          trend: '自动呈现',
+          value: '1'
+        }
+      ],
+      statusColor: 'success',
+      statusText: 'Props',
+      title: 'Props 驱动渲染'
+    },
+    title: 'Props 渲染'
+  },
+  {
+    key: 'empty',
+    title: '空状态'
   }
 ];
 </script>

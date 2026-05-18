@@ -66,43 +66,25 @@ onBeforeUnmount(() => {
   <div
     v-if="shouldRender"
     :class="[
-      'app-spinner',
+      'flex h-full w-full flex-col items-center justify-center gap-4 bg-[rgb(242_242_242_/_45%)] opacity-0 backdrop-blur-sm transition-opacity duration-200',
       props.className,
       {
         'is-visible': isVisible
       }
     ]"
   >
-    <div class="app-spinner__loader"></div>
-    <div class="app-spinner__text">
+    <div class="app-spinner__loader relative h-12 w-12"></div>
+    <div
+      class="mt-5 text-center text-base font-semibold leading-6 tracking-[0.02em] text-app-text-secondary [text-shadow:0_1px_2px_rgb(255_255_255_/_35%)]"
+    >
       <slot name="text"> 加载中... </slot>
     </div>
   </div>
 </template>
 
 <style scoped>
-.app-spinner {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  backdrop-filter: blur(4px);
-  background-color: rgb(242 242 242 / 45%);
-  transition: opacity 180ms ease;
-  gap: 1rem;
-}
-
-.app-spinner.is-visible {
+.is-visible {
   opacity: 1;
-}
-
-.app-spinner__loader {
-  position: relative;
-  width: 3rem;
-  height: 3rem;
 }
 
 .app-spinner__loader::before {
