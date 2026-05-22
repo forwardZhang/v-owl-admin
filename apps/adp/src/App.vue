@@ -4,7 +4,7 @@
     :get-popup-container="getPopupContainer"
     v-bind="sharedConfig"
   >
-    <a-layout class="v-owl-admin">
+    <a-layout>
       <RouterView />
       <Spinner class-name="fixed inset-0 z-[2000]" :spinning="appStore.booting"> </Spinner>
     </a-layout>
@@ -19,11 +19,6 @@ import type { ConfigProviderProps } from 'antdv-next';
 const appStore = useAppStore();
 
 const themeConfig = computed(() => ({
-  cssVar: {
-    key: 'v-owl-admin',
-    prefix: 'ant'
-  },
-  zeroRuntime: false,
   token: {
     colorInfo: appStore.primaryColor,
     colorLink: appStore.primaryColor,

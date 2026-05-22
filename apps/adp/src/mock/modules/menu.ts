@@ -60,20 +60,6 @@ export const menuMockRoutes: MockRoute[] = [
                 }
               },
               {
-                id: 'system-page-container',
-                name: 'SystemPageContainer',
-                path: '/system/page-container',
-                component: 'system/page-container/index',
-                icon: 'system',
-                meta: {
-                  title: 'ProPage',
-                  order: 2,
-                  icon: 'system',
-                  requiresAuth: true
-                }
-              },
-
-              {
                 id: 'system-menus',
                 name: 'SystemMenus',
                 path: '/system/menus',
@@ -81,7 +67,7 @@ export const menuMockRoutes: MockRoute[] = [
                 icon: 'menus',
                 meta: {
                   title: '菜单管理',
-                  order: 4,
+                  order: 2,
                   icon: 'menus',
                   requiresAuth: true
                 }
@@ -94,7 +80,7 @@ export const menuMockRoutes: MockRoute[] = [
                 icon: 'roles',
                 meta: {
                   title: '角色管理',
-                  order: 5,
+                  order: 3,
                   icon: 'roles',
                   requiresAuth: true
                 }

@@ -31,8 +31,6 @@
 </template>
 
 <script setup lang="ts">
-import { useAttrs } from 'vue';
-
 interface ScenarioOption {
   description: string;
   label: string;
@@ -49,10 +47,6 @@ const props = withDefaults(
     options: () => []
   }
 );
-
-const attrs = useAttrs();
-console.log('attr', attrs);
-console.log('attpropsr', props);
 
 const modelValue = defineModel<string>('modelValue', {
   default: ''
