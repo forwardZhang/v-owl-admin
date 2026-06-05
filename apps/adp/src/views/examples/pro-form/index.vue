@@ -1,16 +1,7 @@
 <template>
-  <ProPage v-model:active-key="activeKey" :tabs="tabs"> </ProPage>
+  <div>pro-form</div>
 </template>
 
-<script setup lang="ts">
-import { ProPage, type ProPageTabItem } from '@owl/components';
-import { ref } from 'vue';
+<script setup lang="ts"></script>
 
-const activeKey = ref('form');
-const tabs: ProPageTabItem[] = [
-  {
-    key: 'form',
-    title: '表单工作台'
-  }
-];
-</script>
+<style scoped lang="less"></style>

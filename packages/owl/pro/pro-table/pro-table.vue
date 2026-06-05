@@ -1,5 +1,7 @@
 <template>
-  <div>pro-page</div>
+  <div>1</div>
 </template>
 
 <script setup lang="ts"></script>
+
+<style scoped lang="less"></style>
