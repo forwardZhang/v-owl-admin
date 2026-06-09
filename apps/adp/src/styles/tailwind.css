@@ -1,16 +1,17 @@
 @import 'tailwindcss' source('../../../../');
 @import '@antdv-next/tailwind/compat.css';
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme inline {
   --color-app-primary: var(--app-primary);
-  --color-app-primary-hover: var(--app-primary-hover);
-  --color-app-primary-active: var(--app-primary-active);
   --color-app-success: var(--app-success);
   --color-app-warning: var(--app-warning);
   --color-app-danger: var(--app-danger);
   --color-app-bg-page: var(--app-bg-page);
   --color-app-bg-grid: var(--app-bg-grid);
   --color-app-surface: var(--app-surface);
+  --color-app-surface-strong: var(--app-surface-strong);
   --color-app-surface-subtle: var(--app-surface-subtle);
   --color-app-border: var(--app-border);
   --color-app-text-primary: var(--app-text-primary);

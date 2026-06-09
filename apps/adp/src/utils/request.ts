@@ -1,13 +1,27 @@
 import axios, { type AxiosError, type AxiosInstance, type AxiosRequestConfig } from 'axios';
+import { LOGIN_PATH } from '@/constants/app';
 import { TOKEN_STORAGE_KEY } from '@/constants/storage';
 import type { ApiResponse } from '@/types/api';
-import { getStorage } from '@/utils/storage';
+import { getStorage, removeStorage } from '@/utils/storage';
 
 const service = axios.create({
   baseURL: '/api',
   timeout: 10_000
 });
 
+/** 鉴权失效：清 token 并跳转登录（带回跳地址），避免每个调用方各自处理 */
+function redirectToLogin() {
+  removeStorage(TOKEN_STORAGE_KEY);
+
+  if (window.location.pathname === LOGIN_PATH) {
+    return;
+  }
+
+  const redirect = encodeURIComponent(window.location.pathname + window.location.search);
+  window.location.assign(`${LOGIN_PATH}?redirect=${redirect}`);
+}
+
+// 请求拦截：注入 Bearer token
 service.interceptors.request.use((config) => {
   const token = getStorage<string>(TOKEN_STORAGE_KEY, '');
 
@@ -18,6 +32,7 @@ service.interceptors.request.use((config) => {
   return config;
 });
 
+// 响应拦截：解包业务数据 / 统一错误
 service.interceptors.response.use(
   <T>(response: { data: ApiResponse<T> }) => {
     const payload = response.data;
@@ -29,6 +44,12 @@ service.interceptors.response.use(
     return payload.data;
   },
   (error: AxiosError<ApiResponse<never>>) => {
+    const status = error.response?.status;
+
+    if (status === 401 || status === 403) {
+      redirectToLogin();
+    }
+
     const message = error.response?.data?.message || error.message || '网络异常，请稍后重试';
     return Promise.reject(new Error(message));
   }

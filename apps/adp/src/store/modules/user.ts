@@ -1,50 +1,37 @@
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
-import { fetchProfileApi, loginApi, logoutApi } from '@/api/auth';
-import { TOKEN_STORAGE_KEY } from '@/constants/storage';
-import type { LoginCommand, UserProfile } from '@/types/auth';
-import { getStorage, removeStorage, setStorage } from '@/utils/storage';
+import type { UserProfile } from '@/types/auth';
 
+/**
+ * 用户 store：只负责「用户是谁」——个人资料与角色。
+ * 登录态 token 与权限码归 access store，登录/登出编排归 auth store。
+ */
 export const useUserStore = defineStore('user', () => {
-  const token = ref<string>(getStorage<string>(TOKEN_STORAGE_KEY, ''));
-  const profile = ref<UserProfile | null>(null);
+  const userInfo = ref<UserProfile | null>(null);
+  const userRoles = ref<string[]>([]);
 
-  const isAuthenticated = computed(() => Boolean(token.value));
+  const nickname = computed(() => userInfo.value?.nickname ?? '');
 
-  async function login(command: LoginCommand) {
-    const result = await loginApi(command);
-    token.value = result.token;
-    setStorage(TOKEN_STORAGE_KEY, result.token);
-    return result;
+  function setUserInfo(info: UserProfile | null) {
+    userInfo.value = info;
+    userRoles.value = info?.roles ?? [];
   }
 
-  async function fetchProfile() {
-    const result = await fetchProfileApi();
-    profile.value = result;
-    return result;
+  function setUserRoles(roles: string[]) {
+    userRoles.value = roles;
   }
 
-  async function logout() {
-    if (token.value) {
-      await logoutApi();
-    }
-
-    clearSession();
-  }
-
-  function clearSession() {
-    token.value = '';
-    profile.value = null;
-    removeStorage(TOKEN_STORAGE_KEY);
+  function reset() {
+    userInfo.value = null;
+    userRoles.value = [];
   }
 
   return {
-    isAuthenticated,
-    profile,
-    token,
-    clearSession,
-    fetchProfile,
-    login,
-    logout
+    nickname,
+    userInfo,
+    userRoles,
+    reset,
+    setUserInfo,
+    setUserRoles
   };
 });

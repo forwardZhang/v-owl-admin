@@ -1,7 +1,5 @@
 :root {
   --app-primary: #1677ff;
-  --app-primary-hover: #4096ff;
-  --app-primary-active: #0958d9;
   --app-primary-rgb: 22, 119, 255;
   --app-header-height: 64px;
 
@@ -12,6 +10,7 @@
   --app-bg-page: #eef3fb;
   --app-bg-grid: rgba(255, 255, 255, 0.28);
   --app-surface: rgba(255, 255, 255, 0.82);
+  --app-surface-strong: #ffffff;
   --app-surface-subtle: #f5f8ff;
   --app-border: rgba(18, 36, 61, 0.08);
 
@@ -22,4 +21,21 @@
 
   --app-shadow-soft: 0 16px 40px rgba(18, 36, 61, 0.08);
   --app-shadow-medium: 0 24px 54px rgba(18, 36, 61, 0.12);
+}
+
+html.dark {
+  --app-bg-page: #0b1220;
+  --app-bg-grid: rgba(148, 163, 184, 0.08);
+  --app-surface: rgba(22, 31, 48, 0.82);
+  --app-surface-strong: #161f30;
+  --app-surface-subtle: #131c2c;
+  --app-border: rgba(148, 163, 184, 0.16);
+
+  --app-text-primary: #e6edf7;
+  --app-text-secondary: #aab6c8;
+  --app-text-tertiary: #7d8aa0;
+  --app-text-quaternary: #5b6880;
+
+  --app-shadow-soft: 0 16px 40px rgba(0, 0, 0, 0.36);
+  --app-shadow-medium: 0 24px 54px rgba(0, 0, 0, 0.46);
 }

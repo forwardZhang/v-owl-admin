@@ -1,110 +1,185 @@
 <template>
-  <div
-    class="login-page relative grid min-h-screen grid-cols-[minmax(0,1.2fr)_minmax(420px,0.8fr)] overflow-hidden max-[1180px]:grid-cols-1"
-  >
-    <section
-      class="relative z-[1] flex flex-col justify-center gap-6 px-[7vw] py-14 pb-14 max-[1180px]:pb-3 max-[640px]:px-[18px]"
-    >
-      <span
-        class="inline-flex h-[34px] w-fit items-center rounded-ant-lg bg-[rgba(var(--app-primary-rgb),0.12)] px-3.5 text-xs font-bold uppercase tracking-[0.08em] text-app-primary"
-      >
-        Production Ready
-      </span>
-      <h1
-        class="max-w-[680px] text-[clamp(36px,4.6vw,64px)] leading-[1.06] tracking-normal text-app-text-primary"
-      >
-        把复杂权限、菜单和数据流，收成一套顺手的中台骨架。
-      </h1>
-      <p class="max-w-[620px] text-base leading-[1.8] text-app-text-secondary">
-        这套初始化底座已经串好了主题、动态菜单、路由守卫、Pinia 和 Mock 请求。
-        后面接真实后端时，基本就是替换接口，不是推倒重来。
-      </p>
+  <div class="login-page relative flex min-h-screen overflow-hidden bg-app-bg-page">
+    <!-- 左侧品牌叙事 -->
+    <aside class="brand-panel relative hidden w-[58%] flex-col px-[5vw] py-12 lg:flex">
+      <!-- 顶部 Logo -->
+      <a-flex align="center" :gap="12" class="relative z-[1]">
+        <a-avatar :size="40" class="brand-mark text-sm font-bold tracking-[0.06em]">VO</a-avatar>
+        <strong class="text-lg font-semibold text-app-text-primary">V Owl Admin</strong>
+      </a-flex>
 
-      <div class="grid grid-cols-3 gap-4 max-[1180px]:grid-cols-1">
-        <article
-          class="flex flex-col gap-2.5 rounded-ant-lg border border-white/60 bg-white/70 px-5 py-[22px] shadow-app-soft backdrop-blur-[18px]"
-        >
-          <strong class="text-[15px] text-app-text-primary">服务端菜单驱动</strong>
-          <span class="text-[13px] leading-[1.7] text-app-text-secondary">
-            前端只消费菜单树，不再根据角色写死匹配逻辑。
-          </span>
-        </article>
-        <article
-          class="flex flex-col gap-2.5 rounded-ant-lg border border-white/60 bg-white/70 px-5 py-[22px] shadow-app-soft backdrop-blur-[18px]"
-        >
-          <strong class="text-[15px] text-app-text-primary">真实感 Mock</strong>
-          <span class="text-[13px] leading-[1.7] text-app-text-secondary">
-            模拟延迟、Token 校验和接口状态码，联调体验更像线上。
-          </span>
-        </article>
-        <article
-          class="flex flex-col gap-2.5 rounded-ant-lg border border-white/60 bg-white/70 px-5 py-[22px] shadow-app-soft backdrop-blur-[18px]"
-        >
-          <strong class="text-[15px] text-app-text-primary">统一主题令牌</strong>
-          <span class="text-[13px] leading-[1.7] text-app-text-secondary">
-            颜色、阴影、边框和层级都走全局变量，后续扩展换肤更丝滑。
-          </span>
-        </article>
+      <!-- 居中插画与文案 -->
+      <div class="relative z-[1] flex flex-1 flex-col items-center justify-center text-center">
+        <img :src="heroImage" alt="hero" class="hero-img w-[clamp(240px,30vw,420px)]" />
+        <h1 class="mt-10 text-[clamp(26px,2.6vw,38px)] font-bold text-app-text-primary">
+          开箱即用的大型中后台管理系统
+        </h1>
+        <p class="mt-3 text-base text-app-text-tertiary">工程化、高性能、跨组件库的前端模版</p>
       </div>
-    </section>
+    </aside>
 
-    <section class="relative z-[1] grid place-items-center p-8 max-[640px]:px-[18px]">
-      <a-card
-        class="w-full max-w-[440px] overflow-hidden rounded-ant-lg shadow-app-medium"
-        variant="borderless"
+    <!-- 右侧登录区 -->
+    <main class="relative flex flex-1 items-center justify-center px-5 py-12 sm:px-10">
+      <!-- 右上角工具栏 -->
+      <div
+        class="toolbar absolute right-5 top-5 z-10 flex items-center gap-1.5 sm:right-8 sm:top-7"
       >
-        <div class="mb-7">
-          <a-tag color="processing">欢迎回来</a-tag>
-          <h2 class="mb-3 mt-2.5 text-3xl leading-[1.1] text-app-text-primary">登录 V Owl Admin</h2>
-          <p class="text-sm leading-[1.7] text-app-text-tertiary">
-            演示账号已预填，直接登录即可体验完整流程。
-          </p>
+        <a-tooltip title="主题色">
+          <a-button shape="circle" class="tool-btn" @click="cyclePrimaryColor">
+            <template #icon><bg-colors-outlined /></template>
+          </a-button>
+        </a-tooltip>
+        <a-tooltip title="语言">
+          <a-button shape="circle" class="tool-btn" @click="info('多语言切换敬请期待')">
+            <template #icon><translation-outlined /></template>
+          </a-button>
+        </a-tooltip>
+        <a-tooltip :title="appStore.isDark ? '切换浅色' : '切换深色'">
+          <a-button shape="circle" class="tool-btn" @click="appStore.toggleColorScheme()">
+            <template #icon>
+              <sun-outlined v-if="appStore.isDark" />
+              <moon-outlined v-else />
+            </template>
+          </a-button>
+        </a-tooltip>
+      </div>
+
+      <div class="w-full max-w-[400px]">
+        <!-- 移动端顶部 Logo -->
+        <div class="mb-8 flex items-center gap-2.5 lg:hidden">
+          <a-avatar :size="36" class="brand-mark text-xs font-bold tracking-[0.06em]">VO</a-avatar>
+          <strong class="text-base font-semibold text-app-text-primary">V Owl Admin</strong>
         </div>
 
-        <a-alert class="mb-4" type="info" show-icon message="体验账号：admin / Admin123" />
+        <h2
+          class="flex items-center gap-2 text-[28px] font-bold leading-tight text-app-text-primary"
+        >
+          欢迎回来 <span class="wave">👋</span>
+        </h2>
+        <p class="mt-2 text-sm text-app-text-tertiary">请输入您的账户信息以开始管理您的项目</p>
 
-        <a-alert v-if="errorMessage" class="mb-4" type="error" show-icon :message="errorMessage" />
+        <a-alert v-if="errorMessage" class="mt-5" type="error" show-icon :message="errorMessage" />
 
-        <a-form class="mt-5" layout="vertical" :model="form" :rules="rules" @finish="handleSubmit">
-          <a-form-item label="用户名" name="username">
+        <a-form class="mt-6" layout="vertical" :model="form" :rules="rules" @finish="handleSubmit">
+          <a-form-item class="mb-4">
+            <a-select
+              v-model:value="selectedAccount"
+              size="large"
+              placeholder="快速选择账号"
+              :options="accountOptions"
+              @change="handleAccountChange"
+            />
+          </a-form-item>
+
+          <a-form-item name="username" class="mb-4">
             <a-input
               v-model:value="form.username"
               autocomplete="username"
               placeholder="请输入用户名"
               size="large"
-            />
+            >
+              <template #prefix>
+                <user-outlined class="text-app-text-quaternary" />
+              </template>
+            </a-input>
           </a-form-item>
 
-          <a-form-item label="密码" name="password">
+          <a-form-item name="password" class="mb-4">
             <a-input-password
               v-model:value="form.password"
               autocomplete="current-password"
-              placeholder="请输入密码"
+              placeholder="密码"
               size="large"
-            />
+            >
+              <template #prefix>
+                <lock-outlined class="text-app-text-quaternary" />
+              </template>
+            </a-input-password>
           </a-form-item>
 
-          <a-form-item class="mb-0">
-            <a-button block html-type="submit" size="large" type="primary" :loading="submitting">
-              进入控制台
-            </a-button>
-          </a-form-item>
+          <div class="mb-5 flex items-center justify-between">
+            <a-checkbox v-model:checked="rememberMe" class="text-app-text-secondary">
+              记住账号
+            </a-checkbox>
+            <a class="text-sm text-app-primary" @click="info('请联系管理员重置密码')">忘记密码?</a>
+          </div>
+
+          <a-button block html-type="submit" size="large" type="primary" :loading="submitting">
+            登录
+          </a-button>
+
+          <div class="mt-4 grid grid-cols-2 gap-3">
+            <a-button size="large" @click="info('手机号登录敬请期待')">手机号登录</a-button>
+            <a-button size="large" @click="info('扫码登录敬请期待')">扫码登录</a-button>
+          </div>
         </a-form>
-      </a-card>
-    </section>
+
+        <a-divider class="!my-7 !text-xs !text-app-text-quaternary">其他登录方式</a-divider>
+
+        <div class="flex items-center justify-center gap-5">
+          <button
+            v-for="social in socials"
+            :key="social.title"
+            type="button"
+            class="social-btn"
+            :title="social.title"
+            @click="info(`${social.title} 登录敬请期待`)"
+          >
+            <component :is="social.icon" />
+          </button>
+        </div>
+
+        <p class="mt-7 text-center text-sm text-app-text-tertiary">
+          还没有账号?
+          <a class="text-app-primary" @click="info('请联系管理员开通账号')">创建账号</a>
+        </p>
+      </div>
+    </main>
   </div>
 </template>
 
 <script setup lang="ts">
+import {
+  BgColorsOutlined,
+  GithubOutlined,
+  GoogleOutlined,
+  LockOutlined,
+  MoonOutlined,
+  QqOutlined,
+  SunOutlined,
+  TranslationOutlined,
+  UserOutlined,
+  WechatOutlined
+} from '@antdv-next/icons';
 import { reactive, ref } from 'vue';
+import { message } from 'antdv-next';
 import type { FormProps } from 'antdv-next';
 import { useRoute, useRouter } from 'vue-router';
+import heroImage from '@/assets/hero.png';
 import { HOME_PATH } from '@/constants/app';
-import { useUserStore } from '@/store/modules/user';
+import { useAppStore } from '@/store/modules/app';
+import { useAuthStore } from '@/store/modules/auth';
 
 const route = useRoute();
 const router = useRouter();
-const userStore = useUserStore();
+const appStore = useAppStore();
+const authStore = useAuthStore();
+
+const socials = [
+  { icon: WechatOutlined, title: '微信' },
+  { icon: QqOutlined, title: 'QQ' },
+  { icon: GithubOutlined, title: 'GitHub' },
+  { icon: GoogleOutlined, title: 'Google' }
+];
+
+// 演示账号均映射到可用的 admin / Admin123
+const accountOptions = [
+  { label: '超级管理员 admin', value: 'admin', password: 'Admin123' },
+  { label: '管理员 manager', value: 'manager', password: 'Admin123' }
+];
+
+const selectedAccount = ref<string>();
+const rememberMe = ref(true);
 
 const form = reactive({
   username: 'admin',
@@ -114,26 +189,36 @@ const form = reactive({
 const submitting = ref(false);
 const errorMessage = ref('');
 const rules: FormProps['rules'] = {
-  password: [
-    {
-      message: '请输入密码',
-      required: true
-    }
-  ],
-  username: [
-    {
-      message: '请输入用户名',
-      required: true
-    }
-  ]
+  username: [{ message: '请输入用户名', required: true }],
+  password: [{ message: '请输入密码', required: true }]
 };
+
+const PRIMARY_PALETTE = ['#1677ff', '#7c3aed', '#0ea5e9', '#16a34a', '#f5222d', '#fa8c16'];
+
+function info(text: string) {
+  message.info(text);
+}
+
+function cyclePrimaryColor() {
+  const current = PRIMARY_PALETTE.indexOf(appStore.primaryColor);
+  const next = PRIMARY_PALETTE[(current + 1) % PRIMARY_PALETTE.length];
+  appStore.setPrimaryColor(next);
+}
+
+function handleAccountChange(value: string) {
+  const matched = accountOptions.find((item) => item.value === value);
+  if (matched) {
+    form.username = matched.value;
+    form.password = matched.password;
+  }
+}
 
 async function handleSubmit() {
   try {
     submitting.value = true;
     errorMessage.value = '';
 
-    await userStore.login({
+    await authStore.authLogin({
       password: form.password,
       username: form.username
     });
@@ -149,28 +234,105 @@ async function handleSubmit() {
 </script>
 
 <style scoped lang="less">
-.login-page::before,
-.login-page::after {
+.brand-panel {
+  background:
+    radial-gradient(120% 120% at 100% 0%, rgba(var(--app-primary-rgb), 0.12) 0%, transparent 55%),
+    radial-gradient(120% 120% at 0% 100%, rgba(124, 58, 237, 0.12) 0%, transparent 55%),
+    var(--app-surface-subtle);
+}
+
+.brand-panel::before,
+.brand-panel::after {
   content: '';
   position: absolute;
   border-radius: 50%;
-  filter: blur(10px);
+  filter: blur(90px);
   z-index: 0;
 }
 
-.login-page::before {
+.brand-panel::before {
   top: -120px;
-  left: -90px;
+  left: -80px;
   width: 360px;
   height: 360px;
-  background: rgba(var(--app-primary-rgb), 0.18);
+  background: rgba(var(--app-primary-rgb), 0.25);
 }
 
-.login-page::after {
-  right: -80px;
+.brand-panel::after {
+  right: -100px;
   bottom: -60px;
-  width: 300px;
-  height: 300px;
-  background: rgba(67, 196, 255, 0.16);
+  width: 320px;
+  height: 320px;
+  background: rgba(124, 58, 237, 0.18);
+}
+
+.brand-mark {
+  background-image: linear-gradient(135deg, var(--app-primary) 0%, #43c4ff 100%) !important;
+  background-color: transparent !important;
+  color: #fff;
+}
+
+.hero-img {
+  filter: drop-shadow(0 24px 48px rgba(18, 36, 61, 0.18));
+  animation: float 6s ease-in-out infinite;
+}
+
+.wave {
+  display: inline-block;
+  transform-origin: 70% 70%;
+  animation: wave 2.4s ease-in-out infinite;
+}
+
+.tool-btn {
+  background: var(--app-surface);
+  border-color: var(--app-border);
+  box-shadow: var(--app-shadow-soft);
+}
+
+.social-btn {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  font-size: 18px;
+  color: var(--app-text-tertiary);
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.social-btn:hover {
+  color: var(--app-primary);
+  border-color: var(--app-primary);
+  transform: translateY(-2px);
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-14px);
+  }
+}
+
+@keyframes wave {
+  0%,
+  60%,
+  100% {
+    transform: rotate(0deg);
+  }
+  10%,
+  30% {
+    transform: rotate(14deg);
+  }
+  20% {
+    transform: rotate(-8deg);
+  }
 }
 </style>

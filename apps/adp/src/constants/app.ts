@@ -8,13 +8,7 @@ export const HOME_PATH = '/dashboard';
 
 export const WHITE_LIST = [LOGIN_PATH];
 
-export const DEFAULT_THEME = {
-  name: 'aurora',
-  primaryColor: '#1677ff',
-  primaryHoverColor: '#4096ff',
-  primaryActiveColor: '#0958d9',
-  primaryRgb: '22, 119, 255'
-} as const;
+export const DEFAULT_PRIMARY_COLOR = '#1677ff';
 
 export const THEME_COLOR_PRESETS = [
   '#1677ff',

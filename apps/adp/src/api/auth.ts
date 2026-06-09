@@ -9,6 +9,10 @@ export function fetchProfileApi() {
   return request.get<UserProfile>('/auth/profile');
 }
 
+export function getAccessCodesApi() {
+  return request.get<string[]>('/auth/codes');
+}
+
 export function logoutApi() {
   return request.post<null>('/auth/logout');
 }

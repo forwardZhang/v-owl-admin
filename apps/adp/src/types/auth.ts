@@ -15,4 +15,5 @@ export interface UserProfile {
   avatar: string;
   department: string;
   position: string;
+  roles: string[];
 }

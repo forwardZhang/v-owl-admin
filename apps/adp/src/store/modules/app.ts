@@ -1,48 +1,50 @@
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
-import { DEFAULT_THEME } from '@/constants/app';
+import { DEFAULT_PRIMARY_COLOR } from '@/constants/app';
 import { APP_STORAGE_KEY } from '@/constants/storage';
+import type { ColorScheme, LayoutMode } from '@/layouts/types';
 import { getStorage, setStorage } from '@/utils/storage';
-
-export type LayoutMode = 'vertical';
+import { toRgbTriple } from '@/utils/theme';
 
 interface AppSettings {
   layoutMode: LayoutMode;
+  colorScheme: ColorScheme;
   sidebarCollapsed: boolean;
-  mobileMenuVisible: boolean;
   primaryColor: string;
-  primaryHoverColor: string;
-  primaryActiveColor: string;
-  primaryRgb: string;
 }
 
 const defaultSettings: AppSettings = {
-  layoutMode: 'vertical',
+  layoutMode: 'sidebar',
+  colorScheme: 'light',
   sidebarCollapsed: false,
-  mobileMenuVisible: false,
-  primaryColor: DEFAULT_THEME.primaryColor,
-  primaryHoverColor: DEFAULT_THEME.primaryHoverColor,
-  primaryActiveColor: DEFAULT_THEME.primaryActiveColor,
-  primaryRgb: DEFAULT_THEME.primaryRgb
+  primaryColor: DEFAULT_PRIMARY_COLOR
 };
 
-function applyThemeVariables(settings: AppSettings) {
+/** 把主色与配色方案落到 :root 上：主色 CSS 变量 + html.dark 开关 */
+function applyTheme(settings: AppSettings) {
   const root = document.documentElement;
 
   root.style.setProperty('--app-primary', settings.primaryColor);
-  root.style.setProperty('--app-primary-hover', settings.primaryHoverColor);
-  root.style.setProperty('--app-primary-active', settings.primaryActiveColor);
-  root.style.setProperty('--app-primary-rgb', settings.primaryRgb);
+  root.style.setProperty('--app-primary-rgb', toRgbTriple(settings.primaryColor));
+
+  const isDark = settings.colorScheme === 'dark';
+  root.classList.toggle('dark', isDark);
+  root.style.colorScheme = settings.colorScheme;
 }
 
 export const useAppStore = defineStore('app', () => {
-  const settings = ref<AppSettings>(getStorage(APP_STORAGE_KEY, defaultSettings));
+  // 合并默认值，历史残留 / 缺失字段都能被规整
+  const settings = ref<AppSettings>({
+    ...defaultSettings,
+    ...getStorage<Partial<AppSettings>>(APP_STORAGE_KEY, {})
+  });
   const booting = ref(true);
 
   const isBooting = computed(() => booting.value);
   const layoutMode = computed(() => settings.value.layoutMode);
+  const colorScheme = computed(() => settings.value.colorScheme);
+  const isDark = computed(() => settings.value.colorScheme === 'dark');
   const sidebarCollapsed = computed(() => settings.value.sidebarCollapsed);
-  const mobileMenuVisible = computed(() => settings.value.mobileMenuVisible);
   const primaryColor = computed(() => settings.value.primaryColor);
 
   function persistSettings() {
@@ -50,16 +52,11 @@ export const useAppStore = defineStore('app', () => {
   }
 
   function bootstrap() {
-    applyThemeVariables(settings.value);
+    applyTheme(settings.value);
   }
 
   function setBooting(value: boolean) {
     booting.value = value;
-  }
-
-  function setSidebarCollapsed(collapsed: boolean) {
-    settings.value.sidebarCollapsed = collapsed;
-    persistSettings();
   }
 
   function setLayoutMode(mode: LayoutMode) {
@@ -67,42 +64,40 @@ export const useAppStore = defineStore('app', () => {
     persistSettings();
   }
 
-  function toggleSidebar() {
-    setSidebarCollapsed(!settings.value.sidebarCollapsed);
-  }
-
-  function setMobileMenuVisible(visible: boolean) {
-    settings.value.mobileMenuVisible = visible;
+  function setSidebarCollapsed(collapsed: boolean) {
+    settings.value.sidebarCollapsed = collapsed;
     persistSettings();
   }
 
-  function setPrimaryColor(
-    payload: Pick<
-      AppSettings,
-      'primaryColor' | 'primaryHoverColor' | 'primaryActiveColor' | 'primaryRgb'
-    >
-  ) {
-    settings.value = {
-      ...settings.value,
-      ...payload
-    };
+  function setColorScheme(scheme: ColorScheme) {
+    settings.value.colorScheme = scheme;
+    applyTheme(settings.value);
+    persistSettings();
+  }
 
-    applyThemeVariables(settings.value);
+  function toggleColorScheme() {
+    setColorScheme(settings.value.colorScheme === 'dark' ? 'light' : 'dark');
+  }
+
+  function setPrimaryColor(color: string) {
+    settings.value.primaryColor = color;
+    applyTheme(settings.value);
     persistSettings();
   }
 
   return {
     booting: isBooting,
     layoutMode,
-    mobileMenuVisible,
+    colorScheme,
+    isDark,
     primaryColor,
     sidebarCollapsed,
     bootstrap,
     setBooting,
+    setColorScheme,
     setLayoutMode,
-    setMobileMenuVisible,
     setPrimaryColor,
     setSidebarCollapsed,
-    toggleSidebar
+    toggleColorScheme
   };
 });

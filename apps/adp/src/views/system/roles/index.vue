@@ -1,26 +1,17 @@
 <template>
   <div class="flex flex-col gap-5">
-    <a-card
-      class="flex items-center justify-between gap-6 rounded-ant-lg bg-[radial-gradient(circle_at_top_left,rgba(var(--app-primary-rgb),0.14)_0%,transparent_34%),linear-gradient(135deg,rgba(255,255,255,0.94)_0%,rgba(243,248,255,0.94)_100%)] shadow-app-soft"
-      variant="borderless"
+    <PageHeader
+      eyebrow="System / Roles"
+      title="角色管理"
+      description="按角色维度组织菜单与操作权限，方便不同岗位的人在边界内高效工作。"
     >
-      <div>
-        <span
-          class="inline-flex h-7 items-center rounded-ant-lg bg-[rgba(var(--app-primary-rgb),0.1)] px-3 text-xs font-bold uppercase tracking-[0.08em] text-app-primary"
-        >
-          System / Roles
-        </span>
-        <h1 class="mb-2.5 mt-3.5 text-3xl text-app-text-primary">角色管理</h1>
-        <p class="max-w-[640px] leading-[1.8] text-app-text-secondary">
-          按角色维度组织菜单与操作权限，方便不同岗位的人在边界内高效工作。
-        </p>
-      </div>
-
-      <a-space wrap>
-        <a-button type="primary">新增角色</a-button>
-        <a-button ghost type="primary">导出权限矩阵</a-button>
-      </a-space>
-    </a-card>
+      <template #actions>
+        <a-space wrap>
+          <a-button v-access="'system:role:add'" type="primary">新增角色</a-button>
+          <a-button v-access="'system:role:export'" ghost type="primary">导出权限矩阵</a-button>
+        </a-space>
+      </template>
+    </PageHeader>
 
     <a-row :gutter="[18, 18]">
       <a-col v-for="item in roles" :key="item.id" :xs="24" :lg="12">
@@ -72,6 +63,7 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
+import PageHeader from '@/components/page-header.vue';
 import { fetchSystemRolesApi } from '@/api/system';
 import type { SystemRoleRecord } from '@/types/system';
 

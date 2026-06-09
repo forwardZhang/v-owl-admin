@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "adp",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "adp", "dev"],
+      "port": 9528
+    }
+  ]
+}

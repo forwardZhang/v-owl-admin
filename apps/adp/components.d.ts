@@ -18,12 +18,14 @@ declare module 'vue' {
     ABreadcrumbItem: typeof import('antdv-next')['BreadcrumbItem']
     AButton: typeof import('antdv-next')['Button']
     ACard: typeof import('antdv-next')['Card']
+    ACheckbox: typeof import('antdv-next')['Checkbox']
     ACol: typeof import('antdv-next')['Col']
     AColorPicker: typeof import('antdv-next')['ColorPicker']
     AConfigProvider: typeof import('antdv-next')['ConfigProvider']
     ADivider: typeof import('antdv-next')['Divider']
     ADrawer: typeof import('antdv-next')['Drawer']
     ADropdown: typeof import('antdv-next')['Dropdown']
+    AFlex: typeof import('antdv-next')['Flex']
     AForm: typeof import('antdv-next')['Form']
     AFormItem: typeof import('antdv-next')['FormItem']
     AInput: typeof import('antdv-next')['Input']
@@ -34,11 +36,20 @@ declare module 'vue' {
     AMenu: typeof import('antdv-next')['Menu']
     AResult: typeof import('antdv-next')['Result']
     ARow: typeof import('antdv-next')['Row']
+    ASegmented: typeof import('antdv-next')['Segmented']
+    ASelect: typeof import('antdv-next')['Select']
     ASpace: typeof import('antdv-next')['Space']
     AStatistic: typeof import('antdv-next')['Statistic']
     ASwitch: typeof import('antdv-next')['Switch']
     ATable: typeof import('antdv-next')['Table']
+    ATabPane: typeof import('antdv-next')['TabPane']
+    ATabs: typeof import('antdv-next')['Tabs']
     ATag: typeof import('antdv-next')['Tag']
+    ATextarea: typeof import('antdv-next')['TextArea']
+    ATooltip: typeof import('antdv-next')['Tooltip']
+    ATreeSelect: typeof import('antdv-next')['TreeSelect']
+    ATypographyTitle: typeof import('antdv-next')['TypographyTitle']
+    PageHeader: typeof import('./src/components/page-header.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     Spinner: typeof import('./src/components/spinner/index.vue')['default']
@@ -53,12 +64,14 @@ declare global {
   const ABreadcrumbItem: (typeof import('antdv-next'))['BreadcrumbItem'];
   const AButton: (typeof import('antdv-next'))['Button'];
   const ACard: (typeof import('antdv-next'))['Card'];
+  const ACheckbox: (typeof import('antdv-next'))['Checkbox'];
   const ACol: (typeof import('antdv-next'))['Col'];
   const AColorPicker: (typeof import('antdv-next'))['ColorPicker'];
   const AConfigProvider: (typeof import('antdv-next'))['ConfigProvider'];
   const ADivider: (typeof import('antdv-next'))['Divider'];
   const ADrawer: (typeof import('antdv-next'))['Drawer'];
   const ADropdown: (typeof import('antdv-next'))['Dropdown'];
+  const AFlex: (typeof import('antdv-next'))['Flex'];
   const AForm: (typeof import('antdv-next'))['Form'];
   const AFormItem: (typeof import('antdv-next'))['FormItem'];
   const AInput: (typeof import('antdv-next'))['Input'];
@@ -69,11 +82,20 @@ declare global {
   const AMenu: (typeof import('antdv-next'))['Menu'];
   const AResult: (typeof import('antdv-next'))['Result'];
   const ARow: (typeof import('antdv-next'))['Row'];
+  const ASegmented: (typeof import('antdv-next'))['Segmented'];
+  const ASelect: (typeof import('antdv-next'))['Select'];
   const ASpace: (typeof import('antdv-next'))['Space'];
   const AStatistic: (typeof import('antdv-next'))['Statistic'];
   const ASwitch: (typeof import('antdv-next'))['Switch'];
   const ATable: (typeof import('antdv-next'))['Table'];
+  const ATabPane: (typeof import('antdv-next'))['TabPane'];
+  const ATabs: (typeof import('antdv-next'))['Tabs'];
   const ATag: (typeof import('antdv-next'))['Tag'];
+  const ATextarea: (typeof import('antdv-next'))['TextArea'];
+  const ATooltip: (typeof import('antdv-next'))['Tooltip'];
+  const ATreeSelect: (typeof import('antdv-next'))['TreeSelect'];
+  const ATypographyTitle: (typeof import('antdv-next'))['TypographyTitle'];
+  const PageHeader: (typeof import('./src/components/page-header.vue'))['default'];
   const RouterLink: (typeof import('vue-router'))['RouterLink'];
   const RouterView: (typeof import('vue-router'))['RouterView'];
   const Spinner: (typeof import('./src/components/spinner/index.vue'))['default'];

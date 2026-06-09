@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col gap-[22px]">
     <a-card
-      class="flex items-center justify-between gap-6 rounded-ant-lg bg-[radial-gradient(circle_at_top_left,rgba(var(--app-primary-rgb),0.16)_0%,transparent_34%),linear-gradient(135deg,rgba(255,255,255,0.94)_0%,rgba(241,247,255,0.92)_100%)] shadow-app-soft max-[1180px]:flex-col max-[1180px]:items-start"
+      class="dashboard-hero flex items-center justify-between gap-6 rounded-ant-lg shadow-app-soft max-[1180px]:flex-col max-[1180px]:items-start"
       variant="borderless"
     >
       <div class="flex-1">
@@ -139,3 +139,11 @@ function formatMetricValue(value: string) {
   return Number.isNaN(nextValue) ? value : nextValue;
 }
 </script>
+
+<style scoped lang="less">
+.dashboard-hero {
+  background:
+    radial-gradient(circle at top left, rgba(var(--app-primary-rgb), 0.16) 0%, transparent 34%),
+    linear-gradient(135deg, var(--app-surface-strong) 0%, var(--app-surface-subtle) 100%);
+}
+</style>

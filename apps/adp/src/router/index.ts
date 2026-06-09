@@ -1,12 +1,11 @@
 import type { App } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
 import { setupRouterGuard } from './guards';
-import { constantRoutes } from './static-routes';
-import { useAppPageParams } from '@/composables/use-app-page-params';
+import { coreRoutes } from './routes/core';
 
 const router = createRouter({
   history: createWebHistory(),
-  routes: constantRoutes,
+  routes: coreRoutes,
   scrollBehavior: () => ({
     left: 0,
     top: 0
@@ -15,7 +14,6 @@ const router = createRouter({
 
 export function setupRouter(app: App) {
   setupRouterGuard(router);
-  useAppPageParams(router);
   app.use(router);
 }
 
