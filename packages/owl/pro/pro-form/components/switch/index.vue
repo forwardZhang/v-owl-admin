@@ -1,15 +1,31 @@
 <template>
-  <FieldComp v-bind="$attrs" v-model:checked="checked">
-    <template v-for="(_, slotName) in $slots" #[slotName]="slotProps">
-      <slot :name="slotName" v-bind="slotProps ?? {}" />
+  <ProField v-bind="props">
+    <template #default="{ value, setValue, fieldProps, disabled }">
+      <a-switch
+        v-bind="{ ...$attrs, ...fieldProps }"
+        :checked="value"
+        :disabled="disabled"
+        @update:checked="setValue"
+      >
+        <template v-for="(_, s) in $slots" #[s]="sp">
+          <slot :name="s" v-bind="sp ?? {}" />
+        </template>
+      </a-switch>
     </template>
-  </FieldComp>
+  </ProField>
 </template>
 
 <script setup lang="ts">
-import { Switch as FieldComp } from 'antdv-next';
+import { Switch as ASwitch } from 'antdv-next';
+import type { SwitchProps } from 'antdv-next';
+import { ProField } from '../field';
+import type { ProFieldProps } from '../../types';
 
 defineOptions({ name: 'ProSwitch', inheritAttrs: false });
 
-const checked = defineModel<any>('checked');
+const props = withDefaults(defineProps<ProFieldProps<SwitchProps>>(), {
+  disabled: undefined,
+  readonly: undefined,
+  visible: undefined
+});
 </script>

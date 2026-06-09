@@ -9,9 +9,11 @@
       </a-flex>
 
       <!-- 居中插画与文案 -->
-      <div class="relative z-[1] flex flex-1 flex-col items-center justify-center text-center">
-        <img :src="heroImage" alt="hero" class="hero-img w-[clamp(240px,30vw,420px)]" />
-        <h1 class="mt-10 text-[clamp(26px,2.6vw,38px)] font-bold text-app-text-primary">
+      <div
+        class="relative z-[1] flex flex-1 flex-col gap-4 items-center justify-center text-center"
+      >
+        <img :src="heroImage" alt="hero" class="hero-img w-[clamp(240px,20vw,420px)]" />
+        <h1 class="mt-20 text-[clamp(26px,2.6vw,38px)] font-bold text-app-text-primary">
           开箱即用的大型中后台管理系统
         </h1>
         <p class="mt-3 text-base text-app-text-tertiary">工程化、高性能、跨组件库的前端模版</p>

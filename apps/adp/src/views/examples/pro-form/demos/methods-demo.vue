@@ -1,80 +1,64 @@
 <template>
   <div class="flex flex-col gap-4">
     <a-space wrap>
-      <a-button @click="onFill">setValues 填充</a-button>
-      <a-button @click="onGet">getValues 取值</a-button>
+      <a-button @click="onFill">setFieldsValue 填充</a-button>
+      <a-button @click="onGet">getFieldsValue 取值</a-button>
       <a-button @click="onValidate">validate 校验</a-button>
-      <a-button @click="onUpdateSchema">updateSchema 改 label</a-button>
-      <a-button @click="onToggleDisabled">setState 切换禁用</a-button>
+      <a-button @click="resetFields()">resetFields 重置</a-button>
+      <a-button @click="disabled = !disabled">切换禁用</a-button>
     </a-space>
-    <ProForm />
+    <pro-form :form="formApi" label-width="90" :disabled="disabled">
+      <pro-input path="name" label="姓名" required placeholder="请输入姓名" />
+      <pro-number path="age" label="年龄" :field-props="{ min: 0, max: 150 }" />
+      <pro-radio
+        path="gender"
+        label="性别"
+        :field-props="{
+          options: [
+            { label: '男', value: 'male' },
+            { label: '女', value: 'female' }
+          ]
+        }"
+      />
+    </pro-form>
   </div>
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue';
 import { message } from 'antdv-next';
-import { useProForm } from '@owl/components';
+import { createProForm, ProForm, ProInput, ProNumber, ProRadio } from '@owl/components';
 
-const [ProForm, formApi] = useProForm({
-  labelWidth: 90,
-  showDefaultActions: false,
-  schema: [
-    {
-      fieldName: 'name',
-      label: '姓名',
-      component: 'Input',
-      rules: 'required',
-      componentProps: { placeholder: '请输入姓名' }
-    },
-    {
-      fieldName: 'age',
-      label: '年龄',
-      component: 'InputNumber',
-      componentProps: { min: 0, max: 150 }
-    },
-    {
-      fieldName: 'gender',
-      label: '性别',
-      component: 'RadioGroup',
-      defaultValue: 'male',
-      componentProps: {
-        options: [
-          { label: '男', value: 'male' },
-          { label: '女', value: 'female' }
-        ]
-      }
-    }
-  ]
-});
+const disabled = ref(false);
 
-function onFill() {
-  formApi.setValues({ name: '张三', age: 28, gender: 'female' });
-  message.success('已通过 setValues 填充');
+interface MethodsFormData {
+  name?: string;
+  age?: number;
+  gender?: string;
 }
 
-async function onGet() {
-  const values = await formApi.getValues();
-  message.info(JSON.stringify(values));
+const [, formApi] = createProForm<MethodsFormData>({
+  initialValues: { gender: 'male' }
+});
+
+// 方法均为闭包，可安全解构
+const { setFieldsValue, getFieldsValue, validate, resetFields } = formApi;
+
+function onFill() {
+  setFieldsValue({ name: '张三', age: 28, gender: 'female' });
+  message.success('已通过 setFieldsValue 填充');
+}
+
+function onGet() {
+  message.info(JSON.stringify(getFieldsValue()));
 }
 
 async function onValidate() {
   try {
-    await formApi.validate();
+    await validate();
     message.success('校验通过');
   } catch {
     message.error('校验未通过');
   }
-}
-
-function onUpdateSchema() {
-  formApi.updateSchema([
-    { fieldName: 'name', label: '真实姓名', componentProps: { placeholder: '改过 label 了' } }
-  ]);
-  message.success('已通过 updateSchema 修改「姓名」label');
-}
-
-function onToggleDisabled() {
-  formApi.setState((prev) => ({ disabled: !prev.disabled }));
-  message.info('已通过 setState 切换整表禁用');
 }
 </script>

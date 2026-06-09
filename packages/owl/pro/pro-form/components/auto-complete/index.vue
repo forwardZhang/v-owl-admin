@@ -1,15 +1,33 @@
 <template>
-  <FieldComp v-bind="$attrs" v-model:value="value">
-    <template v-for="(_, slotName) in $slots" #[slotName]="slotProps">
-      <slot :name="slotName" v-bind="slotProps ?? {}" />
+  <ProField v-bind="props">
+    <template #default="{ value, setValue, fieldProps, disabled, placeholder, label: lbl }">
+      <a-auto-complete
+        v-bind="{ ...$attrs, ...fieldProps }"
+        :value="value"
+        :disabled="disabled"
+        :placeholder="placeholder ?? fieldProps.placeholder ?? `请输入${lbl ?? ''}`"
+        :style="[{ width: '100%' }, fieldProps.style]"
+        @update:value="setValue"
+      >
+        <template v-for="(_, s) in $slots" #[s]="sp">
+          <slot :name="s" v-bind="sp ?? {}" />
+        </template>
+      </a-auto-complete>
     </template>
-  </FieldComp>
+  </ProField>
 </template>
 
 <script setup lang="ts">
-import { AutoComplete as FieldComp } from 'antdv-next';
+import { AutoComplete as AAutoComplete } from 'antdv-next';
+import type { AutoCompleteProps } from 'antdv-next';
+import { ProField } from '../field';
+import type { ProFieldProps } from '../../types';
 
 defineOptions({ name: 'ProAutoComplete', inheritAttrs: false });
 
-const value = defineModel<any>('value');
+const props = withDefaults(defineProps<ProFieldProps<AutoCompleteProps>>(), {
+  disabled: undefined,
+  readonly: undefined,
+  visible: undefined
+});
 </script>

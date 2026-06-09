@@ -4,16 +4,18 @@
     :get-popup-container="getPopupContainer"
     v-bind="sharedConfig"
   >
-    <div class="min-h-screen bg-transparent">
+    <a-app class="min-h-screen bg-transparent">
+      <ProgressBar />
       <RouterView />
       <Spinner class-name="fixed inset-0 z-[2000]" :spinning="appStore.booting" />
-    </div>
+    </a-app>
   </a-config-provider>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue';
 import { type ConfigProviderProps, theme } from 'antdv-next';
+import ProgressBar from '@/components/progress-bar/index.vue';
 import Spinner from '@/components/spinner/index.vue';
 import { useAppStore } from '@/store/modules/app';
 
@@ -26,8 +28,7 @@ const themeConfig = computed(() => ({
     colorLink: appStore.primaryColor,
     colorPrimary: appStore.primaryColor,
     controlHeight: 28,
-    fontSize: 13,
-    fontFamily: "'SF Pro Display', 'PingFang SC', 'Segoe UI', sans-serif"
+    fontSize: 13
   },
   components: {
     Layout: {

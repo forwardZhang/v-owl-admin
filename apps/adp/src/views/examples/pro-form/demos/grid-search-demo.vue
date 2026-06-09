@@ -3,11 +3,50 @@
     <a-alert
       type="info"
       show-icon
-      message="演示：栅格布局（每行 3 列）+ 展开/收起，收起时只显示 1 行"
+      message="演示：栅格配置直接放在 pro-form 上（grid / cols / collapsible），字段自动包列，收起时只显示 1 行"
     />
     <a-card variant="borderless" class="rounded-ant-lg">
-      <ProForm />
+      <pro-form
+        :form="formApi"
+        grid
+        :cols="3"
+        :gutter="16"
+        collapsible
+        label-width="80"
+        submit-text="查询"
+      >
+        <pro-input
+          path="keyword"
+          label="关键词"
+          placeholder="名称 / 编号"
+          :field-props="{ allowClear: true }"
+        />
+        <pro-select
+          path="role"
+          label="角色"
+          placeholder="全部"
+          :source="fetchRoles"
+          :field-props="{ allowClear: true }"
+        />
+        <pro-select
+          path="status"
+          label="状态"
+          placeholder="全部"
+          :field-props="{
+            allowClear: true,
+            options: [
+              { label: '启用', value: 1 },
+              { label: '停用', value: 0 }
+            ]
+          }"
+        />
+        <!-- 个性化：单独占 2 列（span 为 24 栅格制） -->
+        <pro-range-picker path="createTime" label="创建时间" :span="16" />
+        <pro-number path="amountMin" label="最小额度" :field-props="{ min: 0 }" />
+        <pro-number path="amountMax" label="最大额度" :field-props="{ min: 0 }" />
+      </pro-form>
     </a-card>
+
     <a-card size="small" title="当前查询条件">
       <pre class="m-0 text-[13px] leading-[1.7]">{{ query }}</pre>
     </a-card>
@@ -16,71 +55,24 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useProForm } from '@owl/components';
+import {
+  createProForm,
+  ProForm,
+  ProInput,
+  ProNumber,
+  ProRangePicker,
+  ProSelect
+} from '@owl/components';
 import { fetchRoles } from '../mock-api';
 
 const query = ref('{}');
 
-const [ProForm] = useProForm({
-  // 开启栅格 + 折叠
-  grid: true,
-  colProps: { span: 8 },
-  showCollapseButton: true,
-  collapsedRows: 1,
-  defaultCollapsed: true,
-  labelWidth: 80,
-  submitButtonOptions: { content: '查询' },
-  schema: [
-    {
-      fieldName: 'keyword',
-      label: '关键词',
-      component: 'Input',
-      componentProps: { placeholder: '名称 / 编号', allowClear: true }
-    },
-    {
-      fieldName: 'role',
-      label: '角色',
-      component: 'ApiSelect',
-      componentProps: { placeholder: '全部', allowClear: true, request: { api: fetchRoles } }
-    },
-    {
-      fieldName: 'status',
-      label: '状态',
-      component: 'Select',
-      componentProps: {
-        placeholder: '全部',
-        allowClear: true,
-        options: [
-          { label: '启用', value: 1 },
-          { label: '停用', value: 0 }
-        ]
-      }
-    },
-    {
-      fieldName: 'createTime',
-      label: '创建时间',
-      component: 'RangePicker',
-      // 单独占满整行
-      colProps: { span: 16 }
-    },
-    {
-      fieldName: 'amountMin',
-      label: '最小额度',
-      component: 'InputNumber',
-      componentProps: { min: 0 }
-    },
-    {
-      fieldName: 'amountMax',
-      label: '最大额度',
-      component: 'InputNumber',
-      componentProps: { min: 0 }
-    }
-  ],
+const [, formApi] = createProForm({
   fieldMappingTime: [['createTime', ['startTime', 'endTime'], 'YYYY-MM-DD']],
-  handleSubmit: (values) => {
-    query.value = JSON.stringify(values, null, 2);
+  onSubmit: (formData) => {
+    query.value = JSON.stringify(formData, null, 2);
   },
-  handleReset: () => {
+  onReset: () => {
     query.value = '{}';
   }
 });

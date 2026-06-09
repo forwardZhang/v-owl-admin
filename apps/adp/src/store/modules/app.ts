@@ -11,13 +11,15 @@ interface AppSettings {
   colorScheme: ColorScheme;
   sidebarCollapsed: boolean;
   primaryColor: string;
+  progressBar: boolean;
 }
 
 const defaultSettings: AppSettings = {
   layoutMode: 'sidebar',
   colorScheme: 'light',
   sidebarCollapsed: false,
-  primaryColor: DEFAULT_PRIMARY_COLOR
+  primaryColor: DEFAULT_PRIMARY_COLOR,
+  progressBar: true
 };
 
 /** 把主色与配色方案落到 :root 上：主色 CSS 变量 + html.dark 开关 */
@@ -46,6 +48,7 @@ export const useAppStore = defineStore('app', () => {
   const isDark = computed(() => settings.value.colorScheme === 'dark');
   const sidebarCollapsed = computed(() => settings.value.sidebarCollapsed);
   const primaryColor = computed(() => settings.value.primaryColor);
+  const progressBar = computed(() => settings.value.progressBar);
 
   function persistSettings() {
     setStorage(APP_STORAGE_KEY, settings.value);
@@ -85,19 +88,34 @@ export const useAppStore = defineStore('app', () => {
     persistSettings();
   }
 
+  function setProgressBar(value: boolean) {
+    settings.value.progressBar = value;
+    persistSettings();
+  }
+
+  /** 恢复全部偏好为默认值，并重新落地主题 */
+  function resetSettings() {
+    settings.value = { ...defaultSettings };
+    applyTheme(settings.value);
+    persistSettings();
+  }
+
   return {
     booting: isBooting,
     layoutMode,
     colorScheme,
     isDark,
     primaryColor,
+    progressBar,
     sidebarCollapsed,
     bootstrap,
     setBooting,
     setColorScheme,
     setLayoutMode,
     setPrimaryColor,
+    setProgressBar,
     setSidebarCollapsed,
-    toggleColorScheme
+    toggleColorScheme,
+    resetSettings
   };
 });

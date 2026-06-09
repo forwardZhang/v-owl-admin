@@ -94,7 +94,7 @@ onBeforeUnmount(() => {
   width: 3rem;
   height: 5px;
   content: '';
-  border-radius: 8px;
+  border-radius: var(--ant-border-radius-lg, 8px);
   background-color: rgba(var(--app-primary-rgb), 0.5);
   animation: loader-shadow-ani 0.5s linear infinite;
 }
@@ -106,8 +106,7 @@ onBeforeUnmount(() => {
   width: 100%;
   height: 100%;
   content: '';
-  border: 1px solid var(--app-border);
-  border-radius: 8px;
+  border-radius: var(--ant-border-radius-lg, 8px);
   background-color: var(--app-primary);
   animation: loader-jump-ani 0.5s linear infinite;
 }
@@ -125,7 +124,7 @@ onBeforeUnmount(() => {
 
 @keyframes loader-jump-ani {
   15% {
-    border-bottom-right-radius: 8px;
+    border-bottom-right-radius: var(--ant-border-radius-lg, 8px);
   }
 
   25% {
@@ -133,7 +132,7 @@ onBeforeUnmount(() => {
   }
 
   50% {
-    border-bottom-right-radius: 8px;
+    border-bottom-right-radius: var(--ant-border-radius-lg, 8px);
     transform: translateY(18px) scale(1, 0.9) rotate(45deg);
   }
 

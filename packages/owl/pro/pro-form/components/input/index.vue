@@ -1,15 +1,32 @@
 <template>
-  <FieldComp v-bind="$attrs" v-model:value="value">
-    <template v-for="(_, slotName) in $slots" #[slotName]="slotProps">
-      <slot :name="slotName" v-bind="slotProps ?? {}" />
+  <ProField v-bind="props">
+    <template #default="{ value, setValue, fieldProps, disabled, placeholder, label: lbl }">
+      <a-input
+        v-bind="{ ...$attrs, ...fieldProps }"
+        :value="value"
+        :disabled="disabled"
+        :placeholder="placeholder ?? fieldProps.placeholder ?? `请输入${lbl ?? ''}`"
+        @update:value="setValue"
+      >
+        <template v-for="(_, s) in $slots" #[s]="sp">
+          <slot :name="s" v-bind="sp ?? {}" />
+        </template>
+      </a-input>
     </template>
-  </FieldComp>
+  </ProField>
 </template>
 
 <script setup lang="ts">
-import { Input as FieldComp } from 'antdv-next';
+import { Input as AInput } from 'antdv-next';
+import type { InputProps } from 'antdv-next';
+import { ProField } from '../field';
+import type { ProFieldProps } from '../../types';
 
 defineOptions({ name: 'ProInput', inheritAttrs: false });
 
-const value = defineModel<any>('value');
+const props = withDefaults(defineProps<ProFieldProps<InputProps>>(), {
+  disabled: undefined,
+  readonly: undefined,
+  visible: undefined
+});
 </script>

@@ -1,10 +1,12 @@
 <template>
   <a-layout-content class="relative min-h-0 min-w-0 flex-1 overflow-hidden overscroll-contain">
     <RouterView v-slot="{ Component, route }">
-      <KeepAlive>
-        <component :is="Component" v-if="route.meta.keepAlive" :key="route.fullPath" />
-      </KeepAlive>
-      <component :is="Component" v-if="!route.meta.keepAlive" :key="route.fullPath" />
+      <transition name="fade-slide" mode="out-in" appear>
+        <KeepAlive v-if="route.meta.keepAlive">
+          <component :is="Component" :key="route.fullPath" />
+        </KeepAlive>
+        <component :is="Component" v-else :key="route.fullPath" />
+      </transition>
     </RouterView>
     <Spinner class-name="absolute inset-0 z-[9999]" :spinning="spinning" />
   </a-layout-content>

@@ -83,7 +83,32 @@
             </button>
           </a-flex>
         </section>
+
+        <!-- 顶部进度条 -->
+        <section>
+          <a-flex align="center" justify="space-between" :gap="12">
+            <SectionTitle
+              :icon="ThunderboltOutlined"
+              title="顶部进度条"
+              desc="切换路由时在页面顶部显示加载进度。"
+              class="!mb-0 flex-1"
+            />
+            <a-switch
+              :checked="appStore.progressBar"
+              @change="(checked) => appStore.setProgressBar(Boolean(checked))"
+            />
+          </a-flex>
+        </section>
       </a-flex>
+
+      <template #footer>
+        <a-button block @click="handleReset">
+          <template #icon>
+            <reload-outlined />
+          </template>
+          重置
+        </a-button>
+      </template>
     </a-drawer>
   </div>
 </template>
@@ -94,8 +119,11 @@ import {
   BulbOutlined,
   CheckCircleFilled,
   LayoutOutlined,
-  SettingOutlined
+  ReloadOutlined,
+  SettingOutlined,
+  ThunderboltOutlined
 } from '@antdv-next/icons';
+import { message } from 'antdv-next';
 import { ref } from 'vue';
 import { THEME_COLOR_PRESETS } from '@/constants/app';
 import type { ColorScheme, LayoutMode } from '@/layouts/types';
@@ -122,6 +150,11 @@ function handleColorSchemeChange(value: string | number) {
 
 function handleColorChange(_: unknown, css: string) {
   appStore.setPrimaryColor(css);
+}
+
+function handleReset() {
+  appStore.resetSettings();
+  message.success('已恢复默认设置');
 }
 </script>
 

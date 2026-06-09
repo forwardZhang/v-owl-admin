@@ -1,15 +1,33 @@
 <template>
-  <FieldComp v-bind="$attrs" v-model:value="value">
-    <template v-for="(_, slotName) in $slots" #[slotName]="slotProps">
-      <slot :name="slotName" v-bind="slotProps ?? {}" />
+  <ProField v-bind="props">
+    <template #default="{ value, setValue, fieldProps, disabled, placeholder, label: lbl }">
+      <a-time-picker
+        v-bind="{ ...$attrs, ...fieldProps }"
+        :value="value"
+        :disabled="disabled"
+        :placeholder="placeholder ?? fieldProps.placeholder ?? `请选择${lbl ?? ''}`"
+        :style="[{ width: '100%' }, fieldProps.style]"
+        @update:value="setValue"
+      >
+        <template v-for="(_, s) in $slots" #[s]="sp">
+          <slot :name="s" v-bind="sp ?? {}" />
+        </template>
+      </a-time-picker>
     </template>
-  </FieldComp>
+  </ProField>
 </template>
 
 <script setup lang="ts">
-import { TimePicker as FieldComp } from 'antdv-next';
+import { TimePicker as ATimePicker } from 'antdv-next';
+import type { TimePickerProps } from 'antdv-next';
+import { ProField } from '../field';
+import type { ProFieldProps } from '../../types';
 
 defineOptions({ name: 'ProTimePicker', inheritAttrs: false });
 
-const value = defineModel<any>('value');
+const props = withDefaults(defineProps<ProFieldProps<TimePickerProps>>(), {
+  disabled: undefined,
+  readonly: undefined,
+  visible: undefined
+});
 </script>

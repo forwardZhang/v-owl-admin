@@ -1,7 +1,7 @@
 <template>
   <ProField v-bind="props">
     <template #default="{ value, setValue, fieldProps, disabled }">
-      <a-checkbox-group
+      <a-radio-group
         v-bind="{ ...$attrs, ...fieldProps }"
         :value="value"
         :disabled="disabled"
@@ -11,21 +11,21 @@
         <template v-for="(_, s) in $slots" #[s]="sp">
           <slot :name="s" v-bind="sp ?? {}" />
         </template>
-      </a-checkbox-group>
+      </a-radio-group>
     </template>
   </ProField>
 </template>
 
 <script setup lang="ts">
-import { CheckboxGroup as ACheckboxGroup } from 'antdv-next';
-import type { CheckboxGroupProps } from 'antdv-next';
+import { RadioGroup as ARadioGroup } from 'antdv-next';
+import type { RadioGroupProps } from 'antdv-next';
 import { ProField } from '../field';
 import { useFieldOptions } from '../../composables/use-field-options';
 import type { ProDataFieldProps } from '../../types';
 
-defineOptions({ name: 'ProCheckbox', inheritAttrs: false });
+defineOptions({ name: 'ProRadio', inheritAttrs: false });
 
-const props = withDefaults(defineProps<ProDataFieldProps<CheckboxGroupProps>>(), {
+const props = withDefaults(defineProps<ProDataFieldProps<RadioGroupProps>>(), {
   disabled: undefined,
   readonly: undefined,
   source: undefined,

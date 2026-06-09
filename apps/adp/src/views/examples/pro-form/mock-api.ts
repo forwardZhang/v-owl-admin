@@ -39,9 +39,8 @@ const CITY_MAP: Record<string, Array<{ name: string; code: string }>> = {
   ]
 };
 
-/** 城市：依赖省份 province 参数，演示「依赖字段请求」 */
-export function fetchCities(params?: Record<string, any>) {
-  const province = params?.province as string | undefined;
+/** 城市：依赖省份 province，演示「依赖字段请求」 */
+export function fetchCities(province?: string) {
   const list = province ? (CITY_MAP[province] ?? []) : [];
   return delay({ code: 0, data: { list } });
 }
@@ -55,22 +54,22 @@ export function fetchRoles() {
   ]);
 }
 
-/** 部门树：演示 ApiTreeSelect 的字段替换（title/key -> label/value） */
+/** 部门树：直接返回 label/value 树数据 */
 export function fetchDeptTree() {
   return delay({
     data: [
       {
-        title: '技术中心',
-        key: 'tech',
+        label: '技术中心',
+        value: 'tech',
         children: [
-          { title: '前端组', key: 'fe' },
-          { title: '后端组', key: 'be' }
+          { label: '前端组', value: 'fe' },
+          { label: '后端组', value: 'be' }
         ]
       },
       {
-        title: '运营中心',
-        key: 'ops',
-        children: [{ title: '内容组', key: 'content' }]
+        label: '运营中心',
+        value: 'ops',
+        children: [{ label: '内容组', value: 'content' }]
       }
     ]
   });
