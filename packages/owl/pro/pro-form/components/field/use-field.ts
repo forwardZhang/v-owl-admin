@@ -24,7 +24,6 @@ export function useField(props: ProFieldProps) {
   }
 
   const namePath = computed(() => toPathArray(props.path));
-  console.log('namePath.value', namePath.value);
 
   /** 取值：直接读写 formData 上的 path */
   const value = computed({

@@ -39,39 +39,36 @@ function iconOf(item: MenuRecordRaw) {
 
 <style scoped lang="less">
 .menu-rail {
-  background: var(--app-surface);
-  backdrop-filter: blur(18px);
+  background: #13213a;
+  border-right: 1px solid var(--app-border);
 }
 
 .rail-item {
   display: flex;
+  min-height: 64px;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 5px;
-  padding: 10px 4px;
+  padding: 8px 4px;
   cursor: pointer;
   border: 0;
-  border-radius: 12px;
+  border-radius: 8px;
   background: transparent;
-  color: var(--app-text-tertiary);
+  color: rgba(255, 255, 255, 0.62);
   transition: all 0.2s ease;
 
   &:hover {
-    color: var(--app-primary);
-    background: rgba(var(--app-primary-rgb), 0.1);
+    color: #fff;
+    background: rgba(255, 255, 255, 0.1);
   }
 
   &.is-active {
     color: #fff;
     background: var(--app-primary);
-    box-shadow: 0 8px 18px rgba(var(--app-primary-rgb), 0.32);
+    box-shadow: 0 10px 18px rgba(var(--app-primary-rgb), 0.32);
   }
 }
-
-.rail-item__label {
-  font-size: 12px;
-  font-weight: 600;
-  line-height: 1.2;
-  text-align: center;
-}
 </style>
+
+.rail-item__label { font-size: 12px; font-weight: 700; line-height: 1.2; text-align: center; }

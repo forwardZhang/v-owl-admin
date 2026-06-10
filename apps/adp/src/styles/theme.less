@@ -1,33 +1,48 @@
 :root {
-  --app-primary: #1677ff;
-  --app-primary-rgb: 22, 119, 255;
-  --app-header-height: 64px;
+  --app-primary: #2f6bff;
+  --app-primary-rgb: 47, 107, 255;
+  --app-primary-soft: rgba(47, 107, 255, 0.1);
+  --app-primary-mid: rgba(47, 107, 255, 0.18);
 
-  --app-success: #039855;
-  --app-warning: #dc6803;
-  --app-danger: #d92d20;
+  --app-header-height: 64px;
+  --app-sidebar-width: 232px;
+  --app-rail-width: 84px;
+  --app-sub-width: 214px;
+
+  --app-success: #19a974;
+  --app-warning: #d98d0d;
+  --app-danger: #d94f4f;
 
   --app-bg-page: #eef3fb;
   --app-bg-grid: rgba(255, 255, 255, 0.28);
-  --app-surface: rgba(255, 255, 255, 0.82);
-  --app-surface-strong: #ffffff;
-  --app-surface-subtle: #f5f8ff;
-  --app-border: rgba(18, 36, 61, 0.08);
 
-  --app-text-primary: #142033;
-  --app-text-secondary: #405067;
-  --app-text-tertiary: #6b7a90;
+  --app-surface: #ffffff;
+  --app-surface-strong: #ffffff;
+  --app-surface-soft: #f5f7fb;
+  --app-surface-mute: #eef2f8;
+  --app-surface-subtle: #f5f8ff;
+  --app-border: #e3e8f2;
+
+  --app-text-primary: #172033;
+  --app-text-secondary: #667085;
+  --app-text-tertiary: #98a2b3;
   --app-text-quaternary: #98a4b8;
 
-  --app-shadow-soft: 0 16px 40px rgba(18, 36, 61, 0.08);
+  --app-shadow: 0 14px 34px rgba(19, 35, 64, 0.08);
+  --app-shadow-soft: 0 8px 22px rgba(19, 35, 64, 0.06);
   --app-shadow-medium: 0 24px 54px rgba(18, 36, 61, 0.12);
 }
 
 html.dark {
+  --app-primary-soft: rgba(47, 107, 255, 0.16);
+  --app-primary-mid: rgba(47, 107, 255, 0.24);
+
   --app-bg-page: #0b1220;
   --app-bg-grid: rgba(148, 163, 184, 0.08);
   --app-surface: rgba(22, 31, 48, 0.82);
   --app-surface-strong: #161f30;
+  --app-surface-soft: #1e293b;
+  --app-surface-mute: #1e293b;
   --app-surface-subtle: #131c2c;
   --app-border: rgba(148, 163, 184, 0.16);
 
@@ -36,6 +51,7 @@ html.dark {
   --app-text-tertiary: #7d8aa0;
   --app-text-quaternary: #5b6880;
 
+  --app-shadow: 0 16px 40px rgba(0, 0, 0, 0.36);
   --app-shadow-soft: 0 16px 40px rgba(0, 0, 0, 0.36);
   --app-shadow-medium: 0 24px 54px rgba(0, 0, 0, 0.46);
 }

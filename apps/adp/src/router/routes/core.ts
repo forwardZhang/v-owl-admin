@@ -27,16 +27,11 @@ export const coreRoutes: RouteRecordRaw[] = [
     }
   },
   {
-    path: '/404',
-    name: '404',
+    path: '/:pathMatch(.*)*',
+    name: 'NotFound',
     component: () => import('@/views/error/404.vue'),
     meta: {
-      ignoreAccess: true,
       title: '页面不存在'
     }
-  },
-  {
-    path: '/:pathMatch(.*)*',
-    redirect: '/404'
   }
 ];

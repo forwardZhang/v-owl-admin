@@ -41,13 +41,8 @@ export function setupAccessGuard(router: Router) {
       await generateAccess(router);
       accessStore.setIsAccessChecked(true);
 
-      // 动态路由刚挂载，重新进入目标地址（命中 404 时回退到原始地址）
-      const targetPath =
-        to.path === '/404' && to.redirectedFrom?.fullPath
-          ? to.redirectedFrom.fullPath
-          : to.fullPath;
-
-      return { path: targetPath, replace: true };
+      // 动态路由刚挂载，重新进入目标地址
+      return { path: to.fullPath, replace: true };
     } catch {
       await authStore.logout();
 

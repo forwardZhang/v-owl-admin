@@ -1,10 +1,8 @@
 <template>
   <div class="relative flex">
-    <a-button class="settings-trigger border-transparent" shape="circle" @click="open = true">
-      <template #icon>
-        <setting-outlined />
-      </template>
-    </a-button>
+    <button class="settings-trigger" type="button" @click="open = true">
+      <setting-outlined />
+    </button>
 
     <a-drawer
       v-model:open="open"
@@ -14,42 +12,75 @@
       title="偏好设置"
     >
       <a-flex vertical :gap="28">
-        <!-- 外观 -->
-        <section>
-          <SectionTitle :icon="BulbOutlined" title="外观模式" desc="在浅色与深色主题之间切换。" />
-          <a-segmented
-            block
-            :value="appStore.colorScheme"
-            :options="colorSchemeOptions"
-            @change="handleColorSchemeChange"
-          />
-        </section>
-
-        <!-- 主题色 -->
+        <!-- 主题 -->
         <section>
           <SectionTitle
-            :icon="BgColorsOutlined"
-            title="品牌主题"
-            desc="调整主色，联动按钮、导航和关键操作反馈。"
+            :icon="BulbOutlined"
+            title="主题与外观"
+            desc="自定义系统主题颜色及深浅模式。"
           />
-          <a-flex vertical :gap="12">
-            <a-color-picker
-              :value="appStore.primaryColor"
-              format="hex"
-              show-text
-              size="small"
-              @change="handleColorChange"
-            />
-            <div class="grid grid-cols-8 gap-2">
-              <button
-                v-for="color in THEME_COLOR_PRESETS"
-                :key="color"
-                type="button"
-                class="theme-swatch aspect-square w-full cursor-pointer rounded-lg border-0"
-                :class="{ 'is-active': color === appStore.primaryColor }"
-                :style="{ backgroundColor: color }"
-                @click="appStore.setPrimaryColor(color)"
-              />
+
+          <a-flex vertical :gap="20">
+            <!-- 外观模式 -->
+            <div class="grid grid-cols-3 gap-3">
+              <div
+                v-for="item in colorSchemeOptions"
+                :key="item.value"
+                class="flex flex-col items-center gap-1.5 cursor-pointer"
+                @click="handleColorSchemeChange(item.value)"
+              >
+                <div
+                  class="theme-swatch-box flex h-12 w-full items-center justify-center rounded-lg border transition-all"
+                  :class="
+                    item.value === appStore.colorScheme
+                      ? 'is-active'
+                      : 'border-app-border hover:border-app-primary'
+                  "
+                >
+                  <component
+                    :is="item.icon"
+                    class="text-xl"
+                    :class="
+                      item.value === appStore.colorScheme
+                        ? 'text-app-primary'
+                        : 'text-app-text-secondary'
+                    "
+                  />
+                </div>
+                <span class="text-xs text-app-text-secondary">{{ item.label }}</span>
+              </div>
+            </div>
+
+            <!-- 主题色 -->
+            <div>
+              <div class="mb-3 text-xs text-app-text-tertiary">品牌主色</div>
+              <div class="flex flex-wrap items-center gap-3">
+                <!-- 自定义颜色选择器 -->
+                <a-color-picker
+                  :value="appStore.primaryColor"
+                  format="hex"
+                  size="small"
+                  @change="handleColorChange"
+                />
+
+                <!-- 预设颜色 -->
+                <a-tooltip
+                  v-for="preset in THEME_COLOR_PRESETS"
+                  :key="preset.color"
+                  :title="preset.label"
+                >
+                  <div
+                    class="relative flex h-6 w-6 cursor-pointer items-center justify-center rounded transition-transform hover:scale-110"
+                    :style="{ backgroundColor: preset.color }"
+                    @click="appStore.setPrimaryColor(preset.color)"
+                  >
+                    <check-outlined
+                      v-if="preset.color === appStore.primaryColor"
+                      class="text-white text-[10px]"
+                    />
+                  </div>
+                </a-tooltip>
+              </div>
             </div>
           </a-flex>
         </section>
@@ -83,22 +114,6 @@
             </button>
           </a-flex>
         </section>
-
-        <!-- 顶部进度条 -->
-        <section>
-          <a-flex align="center" justify="space-between" :gap="12">
-            <SectionTitle
-              :icon="ThunderboltOutlined"
-              title="顶部进度条"
-              desc="切换路由时在页面顶部显示加载进度。"
-              class="!mb-0 flex-1"
-            />
-            <a-switch
-              :checked="appStore.progressBar"
-              @change="(checked) => appStore.setProgressBar(Boolean(checked))"
-            />
-          </a-flex>
-        </section>
       </a-flex>
 
       <template #footer>
@@ -118,10 +133,14 @@ import {
   BgColorsOutlined,
   BulbOutlined,
   CheckCircleFilled,
+  CheckOutlined,
+  DesktopOutlined,
   LayoutOutlined,
+  MoonOutlined,
+  QuestionCircleOutlined,
   ReloadOutlined,
   SettingOutlined,
-  ThunderboltOutlined
+  SunOutlined
 } from '@antdv-next/icons';
 import { message } from 'antdv-next';
 import { ref } from 'vue';
@@ -134,8 +153,9 @@ const appStore = useAppStore();
 const open = ref(false);
 
 const colorSchemeOptions = [
-  { label: '浅色', value: 'light' },
-  { label: '深色', value: 'dark' }
+  { label: '浅色', value: 'light', icon: SunOutlined },
+  { label: '深色', value: 'dark', icon: MoonOutlined },
+  { label: '跟随系统', value: 'auto', icon: DesktopOutlined }
 ];
 
 const layoutOptions: { value: LayoutMode; label: string; desc: string }[] = [
@@ -160,17 +180,31 @@ function handleReset() {
 
 <style scoped lang="less">
 .settings-trigger {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  place-items: center;
+  border: 1px solid var(--app-border);
+  border-radius: 8px;
+  color: var(--app-text-secondary);
   background: var(--app-surface);
-  box-shadow: var(--app-shadow-soft);
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+
+  &:hover {
+    color: var(--app-primary);
+    background: var(--app-surface-soft);
+  }
 }
 
-.theme-swatch {
-  transition: box-shadow 0.2s ease;
+.theme-swatch-box {
+  background: var(--app-surface-subtle);
 
   &.is-active {
-    box-shadow:
-      inset 0 0 0 2px var(--app-surface-strong),
-      0 0 0 3px rgba(var(--app-primary-rgb), 0.4);
+    border-color: var(--app-primary);
+    box-shadow: 0 0 0 1px var(--app-primary);
   }
 }
 

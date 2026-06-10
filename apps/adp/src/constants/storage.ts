@@ -1,3 +1,3 @@
-export const TOKEN_STORAGE_KEY = 'v-owl-admin/token';
+export const TOKEN_STORAGE_KEY = 'owl-admin/token';
 
-export const APP_STORAGE_KEY = 'v-owl-admin/app-settings';
+export const APP_STORAGE_KEY = 'owl-admin/app-settings';

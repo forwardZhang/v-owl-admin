@@ -1,21 +1,17 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, ref } from 'vue';
+import { onBeforeUnmount, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { useAppStore } from '@/store/modules/app';
 
 defineOptions({
   name: 'ProgressBar'
 });
 
-const appStore = useAppStore();
 const router = useRouter();
 
 const percent = ref(0);
 const active = ref(false);
 let trickleTimer: ReturnType<typeof setInterval> | undefined;
 let doneTimer: ReturnType<typeof setTimeout> | undefined;
-
-const enabled = computed(() => appStore.progressBar);
 
 function clearTimers() {
   if (trickleTimer) {
@@ -55,22 +51,20 @@ function done() {
 }
 
 router.beforeEach((to) => {
-  if (enabled.value && !to.meta?.loaded) {
+  if (!to.meta?.loaded) {
     start();
   }
   return true;
 });
 
 router.afterEach((to) => {
-  if (enabled.value && !to.meta?.loaded) {
+  if (!to.meta?.loaded) {
     done();
   }
 });
 
 router.onError(() => {
-  if (enabled.value) {
-    done();
-  }
+  done();
 });
 
 onBeforeUnmount(() => {
@@ -80,7 +74,6 @@ onBeforeUnmount(() => {
 
 <template>
   <div
-    v-if="enabled"
     class="route-progress"
     :class="{ 'is-active': active }"
     role="progressbar"

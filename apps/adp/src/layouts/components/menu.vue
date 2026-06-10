@@ -4,6 +4,7 @@
       v-model:open-keys="openKeys"
       :inline-collapsed="collapsed"
       mode="inline"
+      :theme="theme || 'light'"
       :items="menuItems"
       :selected-keys="selectedKeys"
       @click="handleMenuClick"
@@ -21,6 +22,7 @@ import { collectParentPaths, transformMenusToItems } from './menu-shared';
 const props = defineProps<{
   collapsed: boolean;
   menus: MenuRecordRaw[];
+  theme?: 'light' | 'dark';
 }>();
 
 const route = useRoute();
@@ -68,7 +70,9 @@ function handleMenuClick(info: { key: string }) {
 }
 
 .menu :deep(.ant-menu-item-selected) {
-  background: rgba(var(--app-primary-rgb), 0.12);
+  background: var(--app-primary-soft);
+  color: var(--app-primary);
+  font-weight: 700;
 }
 
 .menu :deep(.ant-menu-submenu-expand-icon) {

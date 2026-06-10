@@ -6,11 +6,11 @@
     <!-- 第二列：当前一级的子菜单 -->
     <aside
       v-if="sideMenus.length"
-      class="two-col-sub flex w-[210px] flex-none flex-col border-r border-app-border"
+      class="two-col-sub app-shell-sider flex w-[214px] flex-none flex-col border-r border-app-border"
     >
       <div class="flex min-h-app-header items-center border-b border-app-border px-5">
-        <strong class="truncate text-sm font-bold text-app-text-primary">
-          {{ activeRoot?.title || 'Owl Admin' }}
+        <strong class="truncate text-[15px] font-[800] text-app-text-primary">
+          {{ activeRoot?.title }}
         </strong>
       </div>
       <Menu class="pt-3" :menus="sideMenus" :collapsed="false" />

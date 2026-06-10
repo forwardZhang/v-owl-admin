@@ -6,22 +6,18 @@
     :trigger="['click']"
     @open-change="handleOpenChange"
   >
-    <button
-      type="button"
-      class="profile-trigger flex min-w-0 cursor-pointer items-center gap-3 rounded-ant-lg border-0 p-1.5"
-    >
-      <a-avatar class="bg-app-avatar-gradient text-sm font-bold" size="small">
+    <button type="button" class="profile-trigger">
+      <div class="user-avatar">
         {{ initials }}
-      </a-avatar>
-      <div class="flex min-w-0 flex-col gap-0.5 text-left">
-        <strong class="whitespace-nowrap text-[13px] text-app-text-primary">
+      </div>
+      <div class="flex min-w-0 flex-col gap-[2px] text-left">
+        <strong class="whitespace-nowrap text-[13px] leading-tight text-app-text-primary">
           {{ userStore.userInfo?.nickname || '访客' }}
         </strong>
-        <span class="whitespace-nowrap text-xs text-app-text-tertiary">
+        <span class="whitespace-nowrap text-[11px] leading-tight text-app-text-tertiary">
           {{ userStore.userInfo?.department || '未设置部门' }}
         </span>
       </div>
-      <down-outlined class="text-xs text-app-text-quaternary" />
     </button>
 
     <template #popupRender>
@@ -168,8 +164,26 @@ async function handleLogout() {
 }
 
 .profile-trigger {
-  background: var(--app-surface);
-  box-shadow: var(--app-shadow-soft);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  padding: 0;
+  border-radius: 8px;
+}
+
+.user-avatar {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #172033, #415371);
 }
 
 .profile-panel {

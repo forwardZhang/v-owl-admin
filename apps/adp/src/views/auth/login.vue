@@ -5,7 +5,7 @@
       <!-- 顶部 Logo -->
       <a-flex align="center" :gap="12" class="relative z-[1]">
         <a-avatar :size="40" class="brand-mark text-sm font-bold tracking-[0.06em]">VO</a-avatar>
-        <strong class="text-lg font-semibold text-app-text-primary">V Owl Admin</strong>
+        <strong class="text-lg font-semibold text-app-text-primary">{{ APP_TITLE }}</strong>
       </a-flex>
 
       <!-- 居中插画与文案 -->
@@ -50,7 +50,7 @@
         <!-- 移动端顶部 Logo -->
         <div class="mb-8 flex items-center gap-2.5 lg:hidden">
           <a-avatar :size="36" class="brand-mark text-xs font-bold tracking-[0.06em]">VO</a-avatar>
-          <strong class="text-base font-semibold text-app-text-primary">V Owl Admin</strong>
+          <strong class="text-base font-semibold text-app-text-primary">{{ APP_TITLE }}</strong>
         </div>
 
         <h2
@@ -158,7 +158,7 @@ import { message } from 'antdv-next';
 import type { FormProps } from 'antdv-next';
 import { useRoute, useRouter } from 'vue-router';
 import heroImage from '@/assets/hero.png';
-import { HOME_PATH } from '@/constants/app';
+import { APP_TITLE, HOME_PATH } from '@/constants/app';
 import { useAppStore } from '@/store/modules/app';
 import { useAuthStore } from '@/store/modules/auth';
 

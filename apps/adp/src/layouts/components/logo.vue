@@ -4,12 +4,7 @@
     v-if="variant === 'rail'"
     class="flex min-h-app-header items-center justify-center border-b border-app-border"
   >
-    <a-avatar
-      class="logo-avatar shrink-0 bg-app-brand-gradient text-[13px] font-bold tracking-[0.08em]"
-      :size="38"
-    >
-      VO
-    </a-avatar>
+    <div class="brand__mark shrink-0">O</div>
   </div>
 
   <!-- sider / header 变体 -->
@@ -17,29 +12,33 @@
     v-else
     class="flex items-center overflow-hidden"
     :class="[
-      variant === 'sider' ? 'min-h-app-header border-b border-app-border px-5' : 'h-app-header',
-      collapsed ? 'justify-center gap-0 px-0' : 'gap-3.5'
+      variant === 'sider'
+        ? 'min-h-app-header border-b border-app-border px-[18px]'
+        : 'h-app-header',
+      collapsed ? 'justify-center gap-0 px-0' : 'gap-[10px]'
     ]"
   >
-    <a-avatar
-      class="logo-avatar shrink-0 bg-app-brand-gradient text-[13px] font-bold tracking-[0.08em]"
-      :size="38"
-    >
-      VO
-    </a-avatar>
+    <div class="brand__mark shrink-0">O</div>
     <div
-      class="overflow-hidden transition-[width,opacity,transform] duration-200 ease-out"
+      class="overflow-hidden transition-[width,opacity,transform] duration-200 ease-out flex flex-col gap-[2px]"
       :class="collapsed ? 'w-0 -translate-x-2.5 opacity-0' : 'w-[132px] opacity-100'"
     >
       <div class="flex w-[132px] min-w-0 flex-col">
-        <strong class="whitespace-nowrap text-sm font-bold text-app-text-primary">Owl Admin</strong>
-        <span class="whitespace-nowrap text-xs text-app-text-tertiary">Enterprise Center</span>
+        <strong
+          class="brand__name truncate text-[14px] font-[800] leading-[1.2] text-app-text-primary"
+          >{{ APP_TITLE }}</strong
+        >
+        <span class="brand__desc text-[11px] leading-[1.2] text-app-text-tertiary"
+          >Enterprise Console</span
+        >
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { APP_TITLE } from '@/constants/app';
+
 withDefaults(
   defineProps<{
     collapsed?: boolean;
@@ -53,8 +52,15 @@ withDefaults(
 </script>
 
 <style scoped lang="less">
-.logo-avatar {
-  box-shadow: 0 2px 4px rgba(var(--app-primary-rgb), 0.22);
-  background: rgba(var(--app-primary-rgb), 0.22);
+.brand__mark {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border-radius: 8px;
+  color: #fff;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--app-primary), #00a3ff);
+  box-shadow: 0 10px 20px rgba(var(--app-primary-rgb), 0.24);
 }
 </style>

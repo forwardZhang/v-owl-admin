@@ -1,9 +1,16 @@
 <script setup lang="ts">
-import { onBeforeUnmount, ref, watch } from 'vue';
+import { ref, watch } from 'vue';
 
 interface Props {
   className?: string;
+  /**
+   * @zh_CN 最小加载时间
+   * @en_US Minimum loading time
+   */
   minLoadingTime?: number;
+  /**
+   * @zh_CN loading状态开启
+   */
   spinning?: boolean;
 }
 
@@ -17,39 +24,24 @@ const props = withDefaults(defineProps<Props>(), {
   spinning: false
 });
 
-const isVisible = ref(false);
-const shouldRender = ref(false);
-let showTimer: ReturnType<typeof setTimeout> | undefined;
-let hideTimer: ReturnType<typeof setTimeout> | undefined;
-
-function clearTimers() {
-  if (showTimer) {
-    clearTimeout(showTimer);
-    showTimer = undefined;
-  }
-
-  if (hideTimer) {
-    clearTimeout(hideTimer);
-    hideTimer = undefined;
-  }
-}
+const showSpinner = ref(false);
+const renderSpinner = ref(false);
+const timer = ref<ReturnType<typeof setTimeout>>();
 
 watch(
   () => props.spinning,
   (show) => {
-    clearTimers();
-
     if (!show) {
-      isVisible.value = false;
-      hideTimer = setTimeout(() => {
-        shouldRender.value = false;
-      }, 180);
+      showSpinner.value = false;
+      clearTimeout(timer.value);
       return;
     }
 
-    shouldRender.value = true;
-    showTimer = setTimeout(() => {
-      isVisible.value = true;
+    timer.value = setTimeout(() => {
+      showSpinner.value = true;
+      if (showSpinner.value) {
+        renderSpinner.value = true;
+      }
     }, props.minLoadingTime);
   },
   {
@@ -57,34 +49,45 @@ watch(
   }
 );
 
-onBeforeUnmount(() => {
-  clearTimers();
-});
+function onTransitionEnd() {
+  if (!showSpinner.value) {
+    renderSpinner.value = false;
+  }
+}
 </script>
 
 <template>
   <div
-    v-if="shouldRender"
     :class="[
-      'flex h-full w-full flex-col items-center justify-center gap-4 bg-[rgb(242_242_242_/_45%)] opacity-0 backdrop-blur-sm transition-opacity duration-200',
-      props.className,
+      'absolute left-0 top-0 z-[100] flex h-full w-full flex-col items-center justify-center gap-4 bg-[rgb(242_242_242_/_45%)] dark:bg-black/40 backdrop-blur-sm transition-all duration-500',
       {
-        'is-visible': isVisible
-      }
+        'invisible opacity-0': !showSpinner,
+        'opacity-100': showSpinner
+      },
+      props.className
     ]"
+    @transitionend="onTransitionEnd"
   >
-    <div class="app-spinner__loader relative h-12 w-12"></div>
     <div
-      class="mt-5 text-center text-base font-semibold leading-6 tracking-[0.02em] text-app-text-secondary [text-shadow:0_1px_2px_rgb(255_255_255_/_35%)]"
+      v-if="renderSpinner"
+      :class="{ paused: !renderSpinner }"
+      class="app-spinner__loader relative h-12 w-12"
+    ></div>
+    <div
+      v-if="renderSpinner"
+      class="mt-5 text-center text-[15px] font-[700] leading-6 tracking-[0.04em] text-app-primary [text-shadow:0_2px_4px_rgba(var(--app-primary-rgb),0.2)]"
     >
-      <slot name="text"> 加载中... </slot>
+      <slot name="text">加载中...</slot>
     </div>
   </div>
 </template>
 
 <style scoped>
-.is-visible {
-  opacity: 1;
+.paused {
+  &::before,
+  &::after {
+    animation-play-state: paused !important;
+  }
 }
 
 .app-spinner__loader::before {
@@ -111,20 +114,9 @@ onBeforeUnmount(() => {
   animation: loader-jump-ani 0.5s linear infinite;
 }
 
-.app-spinner__text {
-  margin-top: 1.25rem;
-  font-size: 1rem;
-  font-weight: 600;
-  line-height: 1.5;
-  color: var(--app-text-secondary);
-  text-align: center;
-  letter-spacing: 0.02em;
-  text-shadow: 0 1px 2px rgb(255 255 255 / 35%);
-}
-
 @keyframes loader-jump-ani {
   15% {
-    border-bottom-right-radius: var(--ant-border-radius-lg, 8px);
+    border-bottom-right-radius: 3px;
   }
 
   25% {
@@ -132,7 +124,7 @@ onBeforeUnmount(() => {
   }
 
   50% {
-    border-bottom-right-radius: var(--ant-border-radius-lg, 8px);
+    border-bottom-right-radius: 40px;
     transform: translateY(18px) scale(1, 0.9) rotate(45deg);
   }
 

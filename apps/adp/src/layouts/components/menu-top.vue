@@ -39,6 +39,8 @@ function handleClick(info: { key: string }) {
 }
 
 .menu-top :deep(.ant-menu-item-selected) {
-  background: rgba(var(--app-primary-rgb), 0.1);
+  background: var(--app-primary-soft);
+  color: var(--app-primary);
+  font-weight: 700;
 }
 </style>

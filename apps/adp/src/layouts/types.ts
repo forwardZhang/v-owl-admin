@@ -7,4 +7,4 @@
 export type LayoutMode = 'sidebar' | 'mixed' | 'two-column';
 
 /** 配色方案 */
-export type ColorScheme = 'light' | 'dark';
+export type ColorScheme = 'light' | 'dark' | 'auto';

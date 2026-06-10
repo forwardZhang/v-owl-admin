@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
+import { usePreferredDark } from '@vueuse/core';
 import { DEFAULT_PRIMARY_COLOR } from '@/constants/app';
 import { APP_STORAGE_KEY } from '@/constants/storage';
 import type { ColorScheme, LayoutMode } from '@/layouts/types';
@@ -11,51 +12,58 @@ interface AppSettings {
   colorScheme: ColorScheme;
   sidebarCollapsed: boolean;
   primaryColor: string;
-  progressBar: boolean;
 }
 
 const defaultSettings: AppSettings = {
   layoutMode: 'sidebar',
   colorScheme: 'light',
   sidebarCollapsed: false,
-  primaryColor: DEFAULT_PRIMARY_COLOR,
-  progressBar: true
+  primaryColor: DEFAULT_PRIMARY_COLOR
 };
 
-/** 把主色与配色方案落到 :root 上：主色 CSS 变量 + html.dark 开关 */
-function applyTheme(settings: AppSettings) {
+function applyTheme(settings: AppSettings, isDarkTheme: boolean) {
   const root = document.documentElement;
 
   root.style.setProperty('--app-primary', settings.primaryColor);
   root.style.setProperty('--app-primary-rgb', toRgbTriple(settings.primaryColor));
 
-  const isDark = settings.colorScheme === 'dark';
-  root.classList.toggle('dark', isDark);
-  root.style.colorScheme = settings.colorScheme;
+  root.classList.toggle('dark', isDarkTheme);
+  root.style.colorScheme = isDarkTheme ? 'dark' : 'light';
 }
 
 export const useAppStore = defineStore('app', () => {
-  // 合并默认值，历史残留 / 缺失字段都能被规整
   const settings = ref<AppSettings>({
     ...defaultSettings,
     ...getStorage<Partial<AppSettings>>(APP_STORAGE_KEY, {})
   });
   const booting = ref(true);
+  const preferredDark = usePreferredDark();
 
   const isBooting = computed(() => booting.value);
   const layoutMode = computed(() => settings.value.layoutMode);
   const colorScheme = computed(() => settings.value.colorScheme);
-  const isDark = computed(() => settings.value.colorScheme === 'dark');
+  const isDark = computed(() => {
+    if (settings.value.colorScheme === 'auto') return preferredDark.value;
+    return settings.value.colorScheme === 'dark';
+  });
   const sidebarCollapsed = computed(() => settings.value.sidebarCollapsed);
   const primaryColor = computed(() => settings.value.primaryColor);
-  const progressBar = computed(() => settings.value.progressBar);
 
   function persistSettings() {
     setStorage(APP_STORAGE_KEY, settings.value);
   }
 
+  // 监听主题变化，自动应用到 DOM
+  watch(
+    [settings, isDark],
+    () => {
+      applyTheme(settings.value, isDark.value);
+    },
+    { deep: true }
+  );
+
   function bootstrap() {
-    applyTheme(settings.value);
+    applyTheme(settings.value, isDark.value);
   }
 
   function setBooting(value: boolean) {
@@ -74,7 +82,6 @@ export const useAppStore = defineStore('app', () => {
 
   function setColorScheme(scheme: ColorScheme) {
     settings.value.colorScheme = scheme;
-    applyTheme(settings.value);
     persistSettings();
   }
 
@@ -84,19 +91,11 @@ export const useAppStore = defineStore('app', () => {
 
   function setPrimaryColor(color: string) {
     settings.value.primaryColor = color;
-    applyTheme(settings.value);
     persistSettings();
   }
 
-  function setProgressBar(value: boolean) {
-    settings.value.progressBar = value;
-    persistSettings();
-  }
-
-  /** 恢复全部偏好为默认值，并重新落地主题 */
   function resetSettings() {
     settings.value = { ...defaultSettings };
-    applyTheme(settings.value);
     persistSettings();
   }
 
@@ -106,14 +105,12 @@ export const useAppStore = defineStore('app', () => {
     colorScheme,
     isDark,
     primaryColor,
-    progressBar,
     sidebarCollapsed,
     bootstrap,
     setBooting,
     setColorScheme,
     setLayoutMode,
     setPrimaryColor,
-    setProgressBar,
     setSidebarCollapsed,
     toggleColorScheme,
     resetSettings

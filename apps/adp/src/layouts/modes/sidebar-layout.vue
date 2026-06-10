@@ -5,12 +5,16 @@
       :collapsed="appStore.sidebarCollapsed"
       :collapsed-width="SIDEBAR_COLLAPSED_WIDTH"
       collapsible
-      theme="light"
+      :theme="appStore.isDark ? 'dark' : 'light'"
       :width="SIDEBAR_WIDTH"
       @collapse="appStore.setSidebarCollapsed"
     >
       <Logo :collapsed="appStore.sidebarCollapsed" />
-      <Menu :menus="accessStore.accessMenus" :collapsed="appStore.sidebarCollapsed" />
+      <Menu
+        :menus="accessStore.accessMenus"
+        :collapsed="appStore.sidebarCollapsed"
+        :theme="appStore.isDark ? 'dark' : 'light'"
+      />
       <template #trigger>
         <span class="app-shell-trigger">
           <menu-unfold-outlined v-if="appStore.sidebarCollapsed" />

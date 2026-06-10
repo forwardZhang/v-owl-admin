@@ -1,7 +1,10 @@
 <template>
   <a-breadcrumb class="min-w-0">
     <a-breadcrumb-item v-for="item in items" :key="item.key">
-      <a-space :size="6">
+      <a-space
+        :size="6"
+        class="text-[13px] text-app-text-tertiary hover:text-app-primary cursor-pointer font-medium"
+      >
         <component :is="item.icon" v-if="item.icon" class="text-sm" />
         <span>{{ item.title }}</span>
       </a-space>
