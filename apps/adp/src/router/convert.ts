@@ -51,7 +51,7 @@ export function buildRoutesFromBackend(records: MenuRecord[]): RouteRecordRaw[] 
  */
 export function generateMenus(routes: RouteRecordRaw[]): MenuRecordRaw[] {
   return routes
-    .filter((route) => !route.meta?.hidden)
+    .filter((route) => !route.meta?.hideInMenu)
     .map((route) => {
       const children = route.children?.length ? generateMenus(route.children) : undefined;
 

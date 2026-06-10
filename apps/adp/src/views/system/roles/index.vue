@@ -1,17 +1,11 @@
 <template>
-  <div class="flex flex-col gap-5">
-    <PageHeader
-      eyebrow="System / Roles"
-      title="角色管理"
-      description="按角色维度组织菜单与操作权限，方便不同岗位的人在边界内高效工作。"
-    >
-      <template #actions>
-        <a-space wrap>
-          <a-button v-access="'system:role:add'" type="primary">新增角色</a-button>
-          <a-button v-access="'system:role:export'" ghost type="primary">导出权限矩阵</a-button>
-        </a-space>
-      </template>
-    </PageHeader>
+  <AppProPage title="角色管理">
+    <template #extra>
+      <a-space wrap>
+        <a-button v-access="'system:role:add'" type="primary">新增角色</a-button>
+        <a-button v-access="'system:role:export'" ghost type="primary">导出权限矩阵</a-button>
+      </a-space>
+    </template>
 
     <a-row :gutter="[18, 18]">
       <a-col v-for="item in roles" :key="item.id" :xs="24" :lg="12">
@@ -58,12 +52,12 @@
         </a-card>
       </a-col>
     </a-row>
-  </div>
+  </AppProPage>
 </template>
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import PageHeader from '@/components/page-header.vue';
+import AppProPage from '@/components/app-pro-page/index.vue';
 import { fetchSystemRolesApi } from '@/api/system';
 import type { SystemRoleRecord } from '@/types/system';
 

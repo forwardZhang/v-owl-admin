@@ -3,9 +3,9 @@
     <RouterView v-slot="{ Component, route }">
       <transition name="fade-slide" mode="out-in" appear>
         <KeepAlive v-if="route.meta.keepAlive">
-          <component :is="Component" :key="route.fullPath" />
+          <component :is="Component" :key="route.path" />
         </KeepAlive>
-        <component :is="Component" v-else :key="route.fullPath" />
+        <component :is="Component" v-else :key="route.path" />
       </transition>
     </RouterView>
     <Spinner class-name="absolute inset-0 z-[9999]" :spinning="spinning" />

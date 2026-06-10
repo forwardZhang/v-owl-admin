@@ -78,7 +78,6 @@
 <script setup lang="ts">
 import {
   BookOutlined,
-  DownOutlined,
   LogoutOutlined,
   QuestionCircleOutlined,
   UserOutlined

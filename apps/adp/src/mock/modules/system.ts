@@ -128,6 +128,16 @@ export const systemMockRoutes: MockRoute[] = [
             type: 'menu'
           },
           {
+            component: 'examples/pro-page-single/index',
+            id: 'menu_8_single',
+            order: 1.5,
+            path: '/examples/pro-page-single',
+            permission: 'examples:pro-page-single:view',
+            status: 'enabled',
+            title: 'ProPage(单)',
+            type: 'menu'
+          },
+          {
             component: 'examples/pro-form/index',
             id: 'menu_9',
             order: 2,

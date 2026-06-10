@@ -112,6 +112,51 @@ export const menuMockRoutes: MockRoute[] = [
                   order: 1,
                   icon: 'system',
                   requiresAuth: true
+                },
+                children: [
+                  {
+                    id: 'examples-pro-page-overview',
+                    name: 'ExamplesProPageOverview',
+                    path: '/examples/pro-page/overview',
+                    meta: {
+                      title: '概览',
+                      hideInMenu: true,
+                      requiresAuth: true
+                    }
+                  },
+                  {
+                    id: 'examples-pro-page-metrics',
+                    name: 'ExamplesProPageMetrics',
+                    path: '/examples/pro-page/metrics',
+                    meta: {
+                      title: '指标',
+                      hideInMenu: true,
+                      requiresAuth: true
+                    }
+                  },
+                  {
+                    id: 'examples-pro-page-logs',
+                    name: 'ExamplesProPageLogs',
+                    path: '/examples/pro-page/logs',
+                    meta: {
+                      title: '日志',
+                      hideInMenu: true,
+                      requiresAuth: true
+                    }
+                  }
+                ]
+              },
+              {
+                id: 'examples-pro-page-single',
+                name: 'ExamplesProPageSingle',
+                path: '/examples/pro-page-single',
+                component: 'examples/pro-page-single/index',
+                icon: 'system',
+                meta: {
+                  title: 'ProPage(单)',
+                  order: 1.5,
+                  icon: 'system',
+                  requiresAuth: true
                 }
               },
               {

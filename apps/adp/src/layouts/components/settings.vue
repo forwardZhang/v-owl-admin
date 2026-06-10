@@ -130,14 +130,12 @@
 
 <script setup lang="ts">
 import {
-  BgColorsOutlined,
   BulbOutlined,
   CheckCircleFilled,
   CheckOutlined,
   DesktopOutlined,
   LayoutOutlined,
   MoonOutlined,
-  QuestionCircleOutlined,
   ReloadOutlined,
   SettingOutlined,
   SunOutlined

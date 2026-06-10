@@ -1,5 +1,5 @@
 <template>
-  <a-card class="rounded-ant-lg shadow-app-soft" title="ProForm 示例" variant="borderless">
+  <AppProPage title="ProForm 示例">
     <a-tabs v-model:active-key="active">
       <a-tab-pane key="basic" tab="基础 / 联动 / 时间映射">
         <BasicDemo />
@@ -17,11 +17,12 @@
         <MethodsDemo />
       </a-tab-pane>
     </a-tabs>
-  </a-card>
+  </AppProPage>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import AppProPage from '@/components/app-pro-page/index.vue';
 import ApiOptionsDemo from './demos/api-options-demo.vue';
 import BasicDemo from './demos/basic-demo.vue';
 import GridSearchDemo from './demos/grid-search-demo.vue';

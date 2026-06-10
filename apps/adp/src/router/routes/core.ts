@@ -21,7 +21,7 @@ export const coreRoutes: RouteRecordRaw[] = [
     children: [],
     redirect: '/dashboard',
     meta: {
-      hidden: true,
+      hideInMenu: true,
       requiresAuth: true,
       title: '首页'
     }

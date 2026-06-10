@@ -1,58 +1,50 @@
 <template>
-  <div class="flex flex-col gap-5">
-    <PageHeader
-      eyebrow="System / Users"
-      title="用户管理"
-      description="统一管理后台账号、角色归属和登录状态，方便平台协作与权限治理。"
+  <AppProPage title="用户管理">
+    <template #extra>
+      <a-space wrap>
+        <a-button type="primary">新增用户</a-button>
+        <a-button ghost type="primary">批量导出</a-button>
+      </a-space>
+    </template>
+
+    <div class="mb-[18px] flex items-center justify-between gap-4">
+      <a-input
+        v-model:value="keyword"
+        allow-clear
+        class="max-w-xs"
+        placeholder="搜索用户名 / 昵称 / 部门"
+      />
+      <a-tag color="processing">共 {{ filteredUsers.length }} 位成员</a-tag>
+    </div>
+
+    <a-table
+      :columns="columns"
+      :data-source="filteredUsers"
+      :loading="loading"
+      :pagination="{ pageSize: 5, showSizeChanger: false }"
+      row-key="id"
     >
-      <template #actions>
-        <a-space wrap>
-          <a-button type="primary">新增用户</a-button>
-          <a-button ghost type="primary">批量导出</a-button>
-        </a-space>
-      </template>
-    </PageHeader>
-
-    <a-card class="rounded-ant-lg shadow-app-soft" variant="borderless">
-      <div class="mb-[18px] flex items-center justify-between gap-4">
-        <a-input
-          v-model:value="keyword"
-          allow-clear
-          class="max-w-xs"
-          placeholder="搜索用户名 / 昵称 / 部门"
-        />
-        <a-tag color="processing">共 {{ filteredUsers.length }} 位成员</a-tag>
-      </div>
-
-      <a-table
-        :columns="columns"
-        :data-source="filteredUsers"
-        :loading="loading"
-        :pagination="{ pageSize: 5, showSizeChanger: false }"
-        row-key="id"
-      >
-        <template #bodyCell="{ column, record }">
-          <template v-if="column.key === 'status'">
-            <a-tag :color="record.status === 'enabled' ? 'success' : 'default'">
-              {{ record.status === 'enabled' ? '启用中' : '已停用' }}
-            </a-tag>
-          </template>
-
-          <template v-else-if="column.key === 'action'">
-            <a-space :size="8">
-              <a-button size="small" type="link">编辑</a-button>
-              <a-button size="small" type="link">重置密码</a-button>
-            </a-space>
-          </template>
+      <template #bodyCell="{ column, record }">
+        <template v-if="column.key === 'status'">
+          <a-tag :color="record.status === 'enabled' ? 'success' : 'default'">
+            {{ record.status === 'enabled' ? '启用中' : '已停用' }}
+          </a-tag>
         </template>
-      </a-table>
-    </a-card>
-  </div>
+
+        <template v-else-if="column.key === 'action'">
+          <a-space :size="8">
+            <a-button size="small" type="link">编辑</a-button>
+            <a-button size="small" type="link">重置密码</a-button>
+          </a-space>
+        </template>
+      </template>
+    </a-table>
+  </AppProPage>
 </template>
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
-import PageHeader from '@/components/page-header.vue';
+import AppProPage from '@/components/app-pro-page/index.vue';
 import { fetchSystemUsersApi } from '@/api/system';
 import type { SystemUserRecord } from '@/types/system';
 

@@ -34,7 +34,6 @@ const props = withDefaults(defineProps<ProDataFieldProps<SelectProps>>(), {
   source: undefined,
   visible: undefined
 });
-console.log('props', props);
 
 const { options, loading } = useFieldOptions(() => props.source);
 

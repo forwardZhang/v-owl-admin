@@ -116,8 +116,6 @@
           </div>
         </a-form>
 
-        <a-divider class="!my-7 !text-xs !text-app-text-quaternary">其他登录方式</a-divider>
-
         <div class="flex items-center justify-center gap-5">
           <button
             v-for="social in socials"
