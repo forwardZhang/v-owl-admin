@@ -1,5 +1,5 @@
 <template>
-  <a-layout-content class="relative min-h-0 min-w-0 flex-1 overflow-hidden overscroll-contain">
+  <a-layout-content class="relative min-h-0 min-w-0 flex-1 overscroll-contain">
     <RouterView v-slot="{ Component, route }">
       <transition name="fade-slide" mode="out-in" appear>
         <KeepAlive v-if="route.meta.keepAlive">
