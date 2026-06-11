@@ -1,5 +1,5 @@
 <template>
-  <div class="pro-page h-full flex flex-col bg-[#f0f2f5] dark:bg-black">
+  <div class="page-layout h-full flex flex-col bg-[#f0f2f5] dark:bg-black">
     <!-- Header Area -->
     <div v-if="!hideHeader" class="bg-white dark:bg-[#141414] px-6 shadow-sm flex-shrink-0 z-10">
       <div
@@ -22,7 +22,7 @@
       <a-tabs
         v-if="authorizedTabs.length > 0"
         :active-key="currentTab"
-        class="pro-page-tabs -mb-[1px]"
+        class="page-layout-tabs -mb-[1px]"
         @change="handleTabChange"
       >
         <a-tab-pane v-for="tab in authorizedTabs" :key="tab.key" :tab="tab.label" />
@@ -47,19 +47,19 @@
 <script setup lang="ts">
 import { computed, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import type { ProPageTabItem } from './types';
+import type { PageLayoutTabItem } from './types';
 
 defineOptions({
-  name: 'ProPage'
+  name: 'PageLayout'
 });
 
 const props = withDefaults(
   defineProps<{
     title?: string;
     hideHeader?: boolean;
-    tabs?: ProPageTabItem[];
+    tabs?: PageLayoutTabItem[];
     queryKey?: string;
-    hasTabAccess?: (tab: ProPageTabItem) => boolean;
+    hasTabAccess?: (tab: PageLayoutTabItem) => boolean;
   }>(),
   {
     hideHeader: false,
@@ -148,13 +148,13 @@ const handleTabChange = (key: any) => {
 </script>
 
 <style scoped>
-.pro-page-tabs :deep(.ant-tabs-nav) {
+.page-layout-tabs :deep(.ant-tabs-nav) {
   margin-bottom: 0;
 }
-.pro-page-tabs :deep(.ant-tabs-nav::before) {
+.page-layout-tabs :deep(.ant-tabs-nav::before) {
   border-bottom: 1px solid transparent;
 }
-.pro-page-tabs :deep(.ant-tabs-tab) {
+.page-layout-tabs :deep(.ant-tabs-tab) {
   font-size: 14px;
 }
 </style>

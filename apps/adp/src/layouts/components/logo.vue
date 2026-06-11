@@ -2,7 +2,7 @@
   <!-- 轨道变体：仅图标，居中 -->
   <div
     v-if="variant === 'rail'"
-    class="flex min-h-app-header items-center justify-center border-b border-app-border"
+    class="flex min-h-app-header items-center justify-center border-b border-slate-600 dark:border-app-border"
   >
     <div class="brand__mark shrink-0">O</div>
   </div>
@@ -13,7 +13,7 @@
     class="flex items-center overflow-hidden"
     :class="[
       variant === 'sider'
-        ? 'min-h-app-header border-b border-app-border px-[18px]'
+        ? 'min-h-app-header border-b border-slate-100 dark:border-app-border px-[18px]'
         : 'h-app-header',
       collapsed ? 'justify-center gap-0 px-0' : 'gap-[10px]'
     ]"

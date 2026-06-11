@@ -1,5 +1,5 @@
 <template>
-  <AppProPage hide-header content-class="">
+  <AppProLayout hide-header content-class="">
     <div class="flex flex-col gap-[22px]">
       <a-card
         class="dashboard-hero flex items-center justify-between gap-6 rounded-ant-lg shadow-app-soft max-[1180px]:flex-col max-[1180px]:items-start"
@@ -108,13 +108,13 @@
         </a-col>
       </a-row>
     </div>
-  </AppProPage>
+  </AppProLayout>
 </template>
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import AppProPage from '@/components/app-pro-page/index.vue';
+import AppProLayout from '@/components/app-pro-layout/index.vue';
 import { fetchDashboardOverviewApi } from '@/api/dashboard';
 import type { DashboardOverview } from '@/types/dashboard';
 

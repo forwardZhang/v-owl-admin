@@ -1,50 +1,57 @@
 <template>
-  <AppProPage title="用户管理">
-    <template #extra>
-      <a-space wrap>
-        <a-button type="primary">新增用户</a-button>
-        <a-button ghost type="primary">批量导出</a-button>
-      </a-space>
-    </template>
-
-    <div class="mb-[18px] flex items-center justify-between gap-4">
-      <a-input
-        v-model:value="keyword"
-        allow-clear
-        class="max-w-xs"
-        placeholder="搜索用户名 / 昵称 / 部门"
-      />
-      <a-tag color="processing">共 {{ filteredUsers.length }} 位成员</a-tag>
-    </div>
-
-    <a-table
-      :columns="columns"
-      :data-source="filteredUsers"
-      :loading="loading"
-      :pagination="{ pageSize: 5, showSizeChanger: false }"
-      row-key="id"
-    >
-      <template #bodyCell="{ column, record }">
-        <template v-if="column.key === 'status'">
-          <a-tag :color="record.status === 'enabled' ? 'success' : 'default'">
-            {{ record.status === 'enabled' ? '启用中' : '已停用' }}
-          </a-tag>
-        </template>
-
-        <template v-else-if="column.key === 'action'">
-          <a-space :size="8">
-            <a-button size="small" type="link">编辑</a-button>
-            <a-button size="small" type="link">重置密码</a-button>
-          </a-space>
-        </template>
+  <AppProLayout title="用户管理">
+    <ProPage>
+      <template #search>
+        <div class="flex items-center justify-between gap-4">
+          <a-input
+            v-model:value="keyword"
+            allow-clear
+            class="max-w-xs"
+            placeholder="搜索用户名 / 昵称 / 部门"
+          />
+          <a-tag color="processing">共 {{ filteredUsers.length }} 位成员</a-tag>
+        </div>
       </template>
-    </a-table>
-  </AppProPage>
+
+      <template #toolbar>
+        <a-space wrap>
+          <a-button type="primary">新增用户</a-button>
+          <a-button ghost type="primary">批量导出</a-button>
+        </a-space>
+      </template>
+
+      <template #main>
+        <a-table
+          :columns="columns"
+          :data-source="filteredUsers"
+          :loading="loading"
+          :pagination="{ pageSize: 5, showSizeChanger: false }"
+          row-key="id"
+        >
+          <template #bodyCell="{ column, record }">
+            <template v-if="column.key === 'status'">
+              <a-tag :color="record.status === 'enabled' ? 'success' : 'default'">
+                {{ record.status === 'enabled' ? '启用中' : '已停用' }}
+              </a-tag>
+            </template>
+
+            <template v-else-if="column.key === 'action'">
+              <a-space :size="8">
+                <a-button size="small" type="link">编辑</a-button>
+                <a-button size="small" type="link">重置密码</a-button>
+              </a-space>
+            </template>
+          </template>
+        </a-table>
+      </template>
+    </ProPage>
+  </AppProLayout>
 </template>
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
-import AppProPage from '@/components/app-pro-page/index.vue';
+import { ProPage } from '@owl/components';
+import AppProLayout from '@/components/app-pro-layout/index.vue';
 import { fetchSystemUsersApi } from '@/api/system';
 import type { SystemUserRecord } from '@/types/system';
 

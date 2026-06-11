@@ -1,5 +1,5 @@
 <template>
-  <AppProPage>
+  <AppProLayout>
     <template #extra>
       <a-button type="primary">操作按钮</a-button>
     </template>
@@ -16,9 +16,9 @@
         内容区域占位
       </div>
     </div>
-  </AppProPage>
+  </AppProLayout>
 </template>
 
 <script setup lang="ts">
-import AppProPage from '@/components/app-pro-page/index.vue';
+import AppProLayout from '@/components/app-pro-layout/index.vue';
 </script>

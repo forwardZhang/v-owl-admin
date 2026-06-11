@@ -1,37 +1,42 @@
 <template>
-  <AppProPage title="菜单管理">
-    <template #extra>
-      <a-space wrap>
-        <a-button type="primary">新增菜单</a-button>
-        <a-button ghost type="primary">同步路由结构</a-button>
-      </a-space>
-    </template>
-
-    <a-table
-      :columns="columns"
-      :data-source="menus"
-      :loading="loading"
-      :pagination="false"
-      row-key="id"
-    >
-      <template #bodyCell="{ column, record }">
-        <template v-if="column.key === 'type'">
-          <a-tag :color="getMenuTypeColor(record.type)">
-            {{ getMenuTypeLabel(record.type) }}
-          </a-tag>
-        </template>
-
-        <template v-else-if="column.key === 'status'">
-          <a-switch :checked="record.status === 'enabled'" disabled />
-        </template>
+  <AppProLayout title="菜单管理">
+    <ProPage>
+      <template #toolbar>
+        <a-space wrap>
+          <a-button type="primary">新增菜单</a-button>
+          <a-button ghost type="primary">同步路由结构</a-button>
+        </a-space>
       </template>
-    </a-table>
-  </AppProPage>
+
+      <template #main>
+        <a-table
+          :columns="columns"
+          :data-source="menus"
+          :loading="loading"
+          :pagination="false"
+          row-key="id"
+        >
+          <template #bodyCell="{ column, record }">
+            <template v-if="column.key === 'type'">
+              <a-tag :color="getMenuTypeColor(record.type)">
+                {{ getMenuTypeLabel(record.type) }}
+              </a-tag>
+            </template>
+
+            <template v-else-if="column.key === 'status'">
+              <a-switch :checked="record.status === 'enabled'" disabled />
+            </template>
+          </template>
+        </a-table>
+      </template>
+    </ProPage>
+  </AppProLayout>
 </template>
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import AppProPage from '@/components/app-pro-page/index.vue';
+import { ProPage } from '@owl/components';
+import AppProLayout from '@/components/app-pro-layout/index.vue';
 import { fetchSystemMenusApi } from '@/api/system';
 import type { SystemMenuRecord } from '@/types/system';
 

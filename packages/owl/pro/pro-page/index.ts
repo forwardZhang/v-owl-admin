@@ -1,2 +1,1 @@
-export { default as ProPage } from './pro-page.vue';
-export * from './types';
+export { default as ProPage } from './index.vue';

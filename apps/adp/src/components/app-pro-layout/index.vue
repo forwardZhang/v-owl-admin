@@ -1,5 +1,5 @@
 <template>
-  <ProPage
+  <PageLayout
     v-bind="$attrs"
     :title="computedTitle"
     :hide-header="hideHeader"
@@ -33,14 +33,14 @@
         </div>
       </transition>
     </template>
-  </ProPage>
+  </PageLayout>
 </template>
 
 <script lang="ts">
-import type { ProPageTabItem } from '@owl/components';
+import type { PageLayoutTabItem } from '@owl/components';
 import type { Component } from 'vue';
 
-export interface AppProPageTabItem extends ProPageTabItem {
+export interface AppProLayoutTabItem extends PageLayoutTabItem {
   component?: Component;
 }
 </script>
@@ -49,10 +49,10 @@ export interface AppProPageTabItem extends ProPageTabItem {
 import { computed } from 'vue';
 import { useAccessStore } from '@/store/modules/access';
 import { useRoute, type RouteRecordRaw } from 'vue-router';
-import { ProPage } from '@owl/components';
+import { PageLayout } from '@owl/components';
 
 defineOptions({
-  name: 'AppProPage'
+  name: 'AppProLayout'
 });
 
 const props = withDefaults(
@@ -60,7 +60,7 @@ const props = withDefaults(
     title?: string;
     hideHeader?: boolean;
     contentClass?: any;
-    tabs?: AppProPageTabItem[];
+    tabs?: AppProLayoutTabItem[];
     queryKey?: string;
   }>(),
   {
@@ -135,7 +135,7 @@ const processedTabs = computed(() => {
         label: routeTitle || tab.label
       };
     })
-    .filter(Boolean) as AppProPageTabItem[];
+    .filter(Boolean) as AppProLayoutTabItem[];
 });
 
 // 获取对应 tab 的组件
