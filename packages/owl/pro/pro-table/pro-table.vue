@@ -1,6 +1,6 @@
 <script lang="ts">
 import { Table as ATable } from 'antdv-next';
-import { computed, defineComponent, h, onBeforeMount, onBeforeUnmount, provide, watch } from 'vue';
+import { computed, defineComponent, h, onBeforeMount, onBeforeUnmount, provide } from 'vue';
 import type { PropType } from 'vue';
 import type {
   TablePaginationConfig,
@@ -8,62 +8,32 @@ import type {
   TableRowSelection,
   TableSorterResult
 } from 'antdv-next';
-import type {
-  ProTableApi,
-  ProTablePaginationState,
-  ProTableRowKey,
-  ProTableState
-} from './create-pro-table';
-import { createProTable } from './create-pro-table';
+import type { ProTableApi, ProTableBatchSlotProps } from './create-pro-table';
 
 type RowKey = string | number;
 
-type RequestResult<Row> = {
-  data: Row[];
-  total?: number;
-};
-
-export interface ProTableRequestQuery<Params extends Record<string, any> = Record<string, any>> {
-  params: Params;
-  pagination: ProTablePaginationState;
-  sorter?: TableSorterResult<any> | TableSorterResult<any>[];
-  filters?: Record<string, any>;
-}
-
-export type ProTableRequest<Row, Params extends Record<string, any> = Record<string, any>> = (
-  query: ProTableRequestQuery<Params>
-) => Promise<RequestResult<Row> | Row[]>;
-
-export interface ProTableBatchSlotProps<Row = any> {
-  selectedRowKeys: RowKey[];
-  selectedRows: Row[];
-  clearSelection: () => void;
-}
-
+/**
+ * <ProTable>：组件式表格容器（与 <ProForm> 对齐）。
+ * - 绑定 :table（createProTable 的返回值），渲染 a-table 并接管分页 / 多选 / 远程拉取
+ * - 组件本身只负责「长什么样」，数据来源与行为全部由外部 controller 决定
+ */
 export default defineComponent({
   name: 'ProTable',
   inheritAttrs: false,
   props: {
-    form: {
+    /** 表格控制器（createProTable 返回，必传） */
+    table: {
       type: Object as PropType<ProTableApi<any, any>>,
-      default: undefined
+      required: true
     },
-    request: Function as PropType<ProTableRequest<any, any>>,
-    dataSource: {
-      type: Array as PropType<any[]>,
-      default: undefined
-    },
-    params: {
-      type: Object as PropType<Record<string, any>>,
+    /* ---- 纯 UI 透传 ---- */
+    columns: {
+      type: Array as PropType<TableProps['columns']>,
       default: undefined
     },
     pagination: {
       type: [Boolean, Object] as PropType<false | Partial<TablePaginationConfig>>,
       default: undefined
-    },
-    rowKey: {
-      type: [String, Function] as PropType<ProTableRowKey<any>>,
-      default: 'key'
     },
     rowSelection: {
       type: [Boolean, Object] as PropType<boolean | TableRowSelection<any>>,
@@ -101,56 +71,19 @@ export default defineComponent({
       type: Function as PropType<TableProps['summary']>,
       default: undefined
     },
-    columns: {
-      type: Array as PropType<TableProps['columns']>,
-      default: undefined
-    },
-
+    /* ---- UI 开关 ---- */
     showPagination: {
       type: Boolean,
       default: true
-    },
-    manual: {
-      type: Boolean,
-      default: false
-    },
-    defaultPageSize: {
-      type: Number,
-      default: 10
     },
     hideOnSinglePage: {
       type: Boolean,
       default: true
     }
   },
-  emits: [
-    'update:loading',
-    'update:pagination',
-    'update:rowSelection',
-    'update:rowKey',
-    'change',
-    'reload',
-    'reset',
-    'request-success',
-    'request-error'
-  ],
+  emits: ['update:pagination', 'update:rowSelection', 'change'],
   setup(props, { attrs, slots, emit }) {
-    const table =
-      props.form ??
-      createProTable({
-        request: props.request,
-        initialData: props.dataSource ?? [],
-        initialParams: props.params ?? {},
-        initialPagination: {
-          current: 1,
-          pageSize: props.defaultPageSize
-        },
-        pageSize: props.defaultPageSize,
-        rowKey: props.rowKey,
-        manual: props.manual
-      })[1];
-
-    const tableState = computed<ProTableState<any, any>>(() => table.state);
+    const table = props.table;
 
     provide('pro-table', table);
 
@@ -180,31 +113,14 @@ export default defineComponent({
       if (pagination === false) return false;
 
       return {
-        current: tableState.value.pagination.current,
-        pageSize: tableState.value.pagination.pageSize,
-        total: tableState.value.pagination.total,
+        current: table.state.pagination.current,
+        pageSize: table.state.pagination.pageSize,
+        total: table.state.pagination.total,
         showSizeChanger: true,
         hideOnSinglePage: props.hideOnSinglePage,
         ...pagination
       };
     });
-
-    const triggerRequest = async () => {
-      if (props.request || table.options.request) {
-        emit('update:loading', true);
-        try {
-          const rows = await table.reload();
-          emit('request-success', rows);
-          return rows;
-        } catch (error) {
-          emit('request-error', error);
-          return [];
-        } finally {
-          emit('update:loading', false);
-        }
-      }
-      return table.state.dataSource;
-    };
 
     const handleTableChange = async (
       pagination: TablePaginationConfig,
@@ -222,30 +138,13 @@ export default defineComponent({
       table.clearSelection();
       emit('update:pagination', pagination);
       emit('change', pagination, filters, sorter, extra);
-      await triggerRequest();
+      await table.reload();
     };
 
-    watch(
-      () => props.dataSource,
-      (next) => {
-        if (!props.request && next) {
-          table.setData(next);
-        }
-      },
-      { deep: true }
-    );
-
-    watch(
-      () => props.params,
-      (next) => {
-        if (next) table.setParams(next, false);
-      },
-      { deep: true }
-    );
-
-    onBeforeMount(async () => {
-      if (!props.manual) {
-        await triggerRequest();
+    onBeforeMount(() => {
+      // 默认自动拉取；controller 配置 manual=true 时不拉
+      if (!table.options.manual) {
+        table.reload();
       }
     });
 
@@ -286,7 +185,7 @@ export default defineComponent({
         columns: props.columns ?? attrs.columns,
         dataSource: table.state.dataSource,
         loading: props.loading ?? table.state.loading,
-        rowKey: props.rowKey ?? table.rowKey,
+        rowKey: table.rowKey,
         rowSelection: innerRowSelection.value,
         pagination: innerPagination.value,
         showHeader: props.showHeader,

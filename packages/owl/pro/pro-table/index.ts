@@ -4,6 +4,7 @@ export type {
   CreateProTableOptions,
   CreateProTableReturn,
   ProTableApi,
+  ProTableBatchSlotProps,
   ProTablePaginationState,
   ProTableQueryState,
   ProTableRequest,

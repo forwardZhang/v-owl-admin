@@ -28,6 +28,13 @@ export type ProTableRequest<Row, Params extends Record<string, any> = Record<str
   query: ProTableQueryState<Params>
 ) => Promise<ProTableRequestResult<Row> | Row[]>;
 
+/** 批量操作插槽的 slot props */
+export interface ProTableBatchSlotProps<Row = any> {
+  selectedRowKeys: TableKey[];
+  selectedRows: Row[];
+  clearSelection: () => void;
+}
+
 export interface CreateProTableOptions<
   Row = Record<string, any>,
   Params extends Record<string, any> = Record<string, any>
@@ -78,8 +85,6 @@ export interface ProTableApi<
 > {
   state: ProTableState<Row, Params>;
   options: CreateProTableOptions<Row, Params>;
-  rowKey: ProTableRowKey<Row>;
-  setRowKey: (rowKey: ProTableRowKey<Row>) => void;
   reload: () => Promise<Row[]>;
   reset: () => Promise<Row[]>;
   setParams: (params: Partial<Params>, merge?: boolean) => void;
@@ -133,7 +138,7 @@ export function createProTable<
     selectedRows: []
   });
 
-  let currentRowKey: ProTableRowKey<Row> = options.rowKey ?? 'key';
+  const currentRowKey: ProTableRowKey<Row> = options.rowKey ?? 'id';
   let requestSeq = 0;
 
   const query = (): ProTableQueryState<Params> => ({
@@ -162,11 +167,6 @@ export function createProTable<
       if (matched) rows.push(matched);
     });
     state.selectedRows = rows;
-  };
-
-  const setRowKey = (rowKey: ProTableRowKey<Row>) => {
-    currentRowKey = rowKey;
-    syncSelectedRows();
   };
 
   const setData = (dataSource: Row[]) => {
@@ -271,10 +271,6 @@ export function createProTable<
   const tableApi: ProTableApi<Row, Params> = {
     state,
     options,
-    get rowKey() {
-      return currentRowKey;
-    },
-    setRowKey,
     reload,
     reset,
     setParams,

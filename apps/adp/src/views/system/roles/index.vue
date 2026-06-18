@@ -16,11 +16,10 @@
 
       <template #main>
         <ProTable
+          :table="tableApi"
           :columns="columns"
-          :data-source="filteredRoles"
           :hide-on-single-page="false"
           :row-selection="{ type: 'checkbox' }"
-          row-key="id"
         >
           <template #action>
             <a-space wrap>
@@ -81,9 +80,17 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { message } from 'antdv-next';
-import { createProForm, ProForm, ProInput, ProPage, ProSelect, ProTable } from '@owl/components';
+import {
+  createProForm,
+  createProTable,
+  ProForm,
+  ProInput,
+  ProPage,
+  ProSelect,
+  ProTable
+} from '@owl/components';
 import AppProLayout from '@/components/app-pro-layout/index.vue';
 import { fetchSystemRolesApi } from '@/api/system';
 import type { SystemRoleRecord } from '@/types/system';
@@ -135,6 +142,13 @@ const filteredRoles = computed(() => {
     return keywordMatched && statusMatched;
   });
 });
+
+const [, tableApi] = createProTable<SystemRoleRecord>({
+  rowKey: 'id',
+  manual: true
+});
+
+watch(filteredRoles, (next) => tableApi.setData(next));
 
 function onBatchExport(selectedRows: SystemRoleRecord[], clearSelection: () => void) {
   message.success(`已导出 ${selectedRows.length} 个角色`);

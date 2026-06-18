@@ -16,11 +16,10 @@
 
       <template #main>
         <ProTable
+          :table="tableApi"
           :columns="columns"
-          :data-source="filteredUsers"
           :row-selection="{ type: 'checkbox' }"
           :hide-on-single-page="false"
-          row-key="id"
         >
           <template #action>
             <a-space wrap>
@@ -67,9 +66,17 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { message } from 'antdv-next';
-import { createProForm, ProForm, ProInput, ProPage, ProSelect, ProTable } from '@owl/components';
+import {
+  createProForm,
+  createProTable,
+  ProForm,
+  ProInput,
+  ProPage,
+  ProSelect,
+  ProTable
+} from '@owl/components';
 import AppProLayout from '@/components/app-pro-layout/index.vue';
 import { fetchSystemUsersApi } from '@/api/system';
 import type { SystemUserRecord } from '@/types/system';
@@ -122,6 +129,14 @@ const filteredUsers = computed(() => {
     return keywordMatched && statusMatched;
   });
 });
+
+// 本地模式：controller 不发请求，数据由外部 watch 推入
+const [, tableApi] = createProTable<SystemUserRecord>({
+  rowKey: 'id',
+  manual: true
+});
+
+watch(filteredUsers, (next) => tableApi.setData(next));
 
 function onBatchExport(selectedRows: SystemUserRecord[], clearSelection: () => void) {
   message.success(`已导出 ${selectedRows.length} 位成员`);

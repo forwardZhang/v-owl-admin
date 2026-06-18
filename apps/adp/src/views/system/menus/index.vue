@@ -15,7 +15,7 @@
       </template>
 
       <template #main>
-        <ProTable :columns="columns" :data-source="filteredMenus" :pagination="false" row-key="id">
+        <ProTable :table="tableApi" :columns="columns" :pagination="false">
           <template #action>
             <a-space wrap>
               <a-button type="primary">新增菜单</a-button>
@@ -45,8 +45,16 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
-import { createProForm, ProForm, ProInput, ProPage, ProSelect, ProTable } from '@owl/components';
+import { computed, onMounted, ref, watch } from 'vue';
+import {
+  createProForm,
+  createProTable,
+  ProForm,
+  ProInput,
+  ProPage,
+  ProSelect,
+  ProTable
+} from '@owl/components';
 import AppProLayout from '@/components/app-pro-layout/index.vue';
 import { fetchSystemMenusApi } from '@/api/system';
 import type { SystemMenuRecord } from '@/types/system';
@@ -111,6 +119,13 @@ const filteredMenus = computed(() => {
     return keywordMatched && typeMatched;
   });
 });
+
+const [, tableApi] = createProTable<SystemMenuRecord>({
+  rowKey: 'id',
+  manual: true
+});
+
+watch(filteredMenus, (next) => tableApi.setData(next));
 
 function getMenuTypeLabel(type: SystemMenuRecord['type']) {
   return menuTypeLabelMap[type];

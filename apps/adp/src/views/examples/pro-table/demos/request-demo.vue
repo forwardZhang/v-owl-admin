@@ -1,19 +1,22 @@
 <template>
   <div class="flex flex-col gap-4">
-    <a-alert type="info" show-icon message="演示：远程请求、分页、刷新，分页条固定可见" />
+    <a-alert type="info" show-icon message="演示：远程请求、分页、刷新（外部 controller）" />
 
-    <pro-table
-      :columns="columns"
-      :request="requestTable"
-      :default-page-size="5"
-      :hide-on-single-page="false"
-      row-key="id"
-    />
+    <pro-table :table="tableApi" :columns="columns" :hide-on-single-page="false">
+      <template #action>
+        <a-space>
+          <a-button type="primary" :loading="tableApi.state.loading" @click="tableApi.reload()">
+            刷新
+          </a-button>
+        </a-space>
+      </template>
+    </pro-table>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ProTable } from '@owl/components';
+import { createProTable, ProTable } from '@owl/components';
+import type { ProTableQueryState } from '@owl/components';
 import { request } from '@/utils/request';
 
 interface TableRow {
@@ -21,13 +24,6 @@ interface TableRow {
   name: string;
   role: string;
   status: string;
-}
-
-interface TableRequestQuery {
-  pagination: {
-    current: number;
-    pageSize: number;
-  };
 }
 
 interface TableRequestResult {
@@ -42,14 +38,19 @@ const columns = [
   { title: '状态', dataIndex: 'status' }
 ];
 
-const requestTable = async ({ pagination }: TableRequestQuery) => {
+const requestTable = async ({ pagination }: ProTableQueryState) => {
   const res = await request.get<TableRequestResult>('/examples/pro-table/users', {
     params: {
       current: pagination.current,
       pageSize: pagination.pageSize
     }
   });
-
   return res;
 };
+
+const [, tableApi] = createProTable<TableRow>({
+  rowKey: 'id',
+  pageSize: 5,
+  request: requestTable
+});
 </script>
