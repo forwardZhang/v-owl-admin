@@ -185,7 +185,6 @@ export default defineComponent({
         columns: props.columns ?? attrs.columns,
         dataSource: table.state.dataSource,
         loading: props.loading ?? table.state.loading,
-        rowKey: table.rowKey,
         rowSelection: innerRowSelection.value,
         pagination: innerPagination.value,
         showHeader: props.showHeader,

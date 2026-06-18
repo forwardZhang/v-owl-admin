@@ -33,9 +33,7 @@ const rows: UserRow[] = [
   { id: 3, name: 'Cindy', dept: '设计', status: '启用' }
 ];
 
-// 本地模式：仅传 initialData，不传 request
 const [, tableApi] = createProTable<UserRow>({
-  rowKey: 'id',
   initialData: rows
 });
 </script>

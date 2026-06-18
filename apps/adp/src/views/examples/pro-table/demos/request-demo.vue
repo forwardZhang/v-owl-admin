@@ -49,8 +49,6 @@ const requestTable = async ({ pagination }: ProTableQueryState) => {
 };
 
 const [, tableApi] = createProTable<TableRow>({
-  rowKey: 'id',
-  pageSize: 5,
   request: requestTable
 });
 </script>

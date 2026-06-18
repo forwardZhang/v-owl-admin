@@ -45,7 +45,6 @@ const rows: UserRow[] = [
 ];
 
 const [, tableApi] = createProTable<UserRow>({
-  rowKey: 'id',
   initialData: rows
 });
 
