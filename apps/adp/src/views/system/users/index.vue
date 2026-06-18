@@ -1,33 +1,51 @@
 <template>
   <AppProLayout title="用户管理">
-    <ProPage>
+    <ProPage :body-card="false">
       <template #search>
-        <div class="flex items-center justify-between gap-4">
-          <a-input
-            v-model:value="keyword"
+        <ProForm :form="searchApi" grid :cols="4" label-width="80" submit-text="查询">
+          <ProInput path="keyword" label="关键词" placeholder="用户名 / 昵称 / 部门" allow-clear />
+          <ProSelect
+            path="status"
+            label="状态"
+            placeholder="全部"
             allow-clear
-            class="max-w-xs"
-            placeholder="搜索用户名 / 昵称 / 部门"
+            :options="statusOptions"
           />
-          <a-tag color="processing">共 {{ filteredUsers.length }} 位成员</a-tag>
-        </div>
-      </template>
-
-      <template #toolbar>
-        <a-space wrap>
-          <a-button type="primary">新增用户</a-button>
-          <a-button ghost type="primary">批量导出</a-button>
-        </a-space>
+        </ProForm>
       </template>
 
       <template #main>
-        <a-table
+        <ProTable
           :columns="columns"
           :data-source="filteredUsers"
-          :loading="loading"
-          :pagination="{ pageSize: 5, showSizeChanger: false }"
+          :row-selection="{ type: 'checkbox' }"
+          :hide-on-single-page="false"
           row-key="id"
         >
+          <template #action>
+            <a-space wrap>
+              <a-button type="primary">新增用户</a-button>
+              <a-button>导入用户</a-button>
+            </a-space>
+          </template>
+
+          <template #extra>
+            <a-tag color="processing">共 {{ filteredUsers.length }} 位成员</a-tag>
+          </template>
+
+          <template #batch="{ selectedRows, clearSelection }">
+            <a-space wrap>
+              <a-tag color="blue">已选 {{ selectedRows.length }} 位成员</a-tag>
+              <a-button ghost type="primary" @click="onBatchExport(selectedRows, clearSelection)">
+                批量导出
+              </a-button>
+              <a-button danger @click="onBatchDisable(selectedRows, clearSelection)">
+                批量停用
+              </a-button>
+              <a-button @click="clearSelection">取消选择</a-button>
+            </a-space>
+          </template>
+
           <template #bodyCell="{ column, record }">
             <template v-if="column.key === 'status'">
               <a-tag :color="record.status === 'enabled' ? 'success' : 'default'">
@@ -42,7 +60,7 @@
               </a-space>
             </template>
           </template>
-        </a-table>
+        </ProTable>
       </template>
     </ProPage>
   </AppProLayout>
@@ -50,77 +68,72 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
-import { ProPage } from '@owl/components';
+import { message } from 'antdv-next';
+import { createProForm, ProForm, ProInput, ProPage, ProSelect, ProTable } from '@owl/components';
 import AppProLayout from '@/components/app-pro-layout/index.vue';
 import { fetchSystemUsersApi } from '@/api/system';
 import type { SystemUserRecord } from '@/types/system';
 
-const loading = ref(false);
-const keyword = ref('');
-const users = ref<SystemUserRecord[]>([]);
+interface UserSearchForm {
+  keyword?: string;
+  status?: SystemUserRecord['status'];
+}
 
-const columns = [
-  {
-    dataIndex: 'username',
-    key: 'username',
-    title: '用户名'
-  },
-  {
-    dataIndex: 'nickname',
-    key: 'nickname',
-    title: '昵称'
-  },
-  {
-    dataIndex: 'department',
-    key: 'department',
-    title: '所属部门'
-  },
-  {
-    dataIndex: 'roleName',
-    key: 'roleName',
-    title: '角色'
-  },
-  {
-    dataIndex: 'phone',
-    key: 'phone',
-    title: '手机号'
-  },
-  {
-    key: 'status',
-    title: '状态'
-  },
-  {
-    dataIndex: 'lastLoginAt',
-    key: 'lastLoginAt',
-    title: '最近登录'
-  },
-  {
-    key: 'action',
-    title: '操作'
-  }
+const users = ref<SystemUserRecord[]>([]);
+const searchState = ref<UserSearchForm>({});
+
+const statusOptions = [
+  { label: '启用中', value: 'enabled' },
+  { label: '已停用', value: 'disabled' }
 ];
 
-const filteredUsers = computed(() => {
-  if (!keyword.value) {
-    return users.value;
+const columns = [
+  { dataIndex: 'username', key: 'username', title: '用户名' },
+  { dataIndex: 'nickname', key: 'nickname', title: '昵称' },
+  { dataIndex: 'department', key: 'department', title: '所属部门' },
+  { dataIndex: 'roleName', key: 'roleName', title: '角色' },
+  { dataIndex: 'phone', key: 'phone', title: '手机号' },
+  { key: 'status', title: '状态' },
+  { dataIndex: 'lastLoginAt', key: 'lastLoginAt', title: '最近登录' },
+  { key: 'action', title: '操作', width: 150 }
+];
+
+const [, searchApi] = createProForm<UserSearchForm>({
+  onSubmit: (formData) => {
+    searchState.value = formData;
+  },
+  onReset: () => {
+    searchState.value = {};
   }
-
-  const normalizedKeyword = keyword.value.toLowerCase();
-
-  return users.value.filter((item) =>
-    [item.department, item.nickname, item.username].some((field) =>
-      field.toLowerCase().includes(normalizedKeyword)
-    )
-  );
 });
 
-onMounted(async () => {
-  loading.value = true;
+const filteredUsers = computed(() => {
+  const keyword = searchState.value.keyword?.trim().toLowerCase();
+  const status = searchState.value.status;
 
-  try {
-    users.value = await fetchSystemUsersApi();
-  } finally {
-    loading.value = false;
-  }
+  return users.value.filter((item) => {
+    const keywordMatched =
+      !keyword ||
+      [item.department, item.nickname, item.username].some((field) =>
+        field.toLowerCase().includes(keyword)
+      );
+    const statusMatched = !status || item.status === status;
+
+    return keywordMatched && statusMatched;
+  });
+});
+
+function onBatchExport(selectedRows: SystemUserRecord[], clearSelection: () => void) {
+  message.success(`已导出 ${selectedRows.length} 位成员`);
+  clearSelection();
+}
+
+function onBatchDisable(selectedRows: SystemUserRecord[], clearSelection: () => void) {
+  message.warning(`已提交停用 ${selectedRows.length} 位成员的操作`);
+  clearSelection();
+}
+
+onMounted(async () => {
+  users.value = await fetchSystemUsersApi();
 });
 </script>

@@ -152,5 +152,40 @@ export const examplesMockRoutes: MockRoute[] = [
         message: '生成方案成功'
       };
     }
+  },
+  {
+    method: 'GET',
+    path: '/examples/pro-table/users',
+    handler: ({ params, token }) => {
+      if (!isValidToken(token)) {
+        return {
+          code: 40102,
+          data: null,
+          message: '用户登录态失效，无法获取表格数据'
+        };
+      }
+
+      const current = Number((params as Record<string, string | string[]>)?.current ?? 1);
+      const pageSize = Number((params as Record<string, string | string[]>)?.pageSize ?? 5);
+      const allRows = Array.from({ length: 36 }).map((_, index) => ({
+        id: index + 1,
+        name: `User-${index + 1}`,
+        role: index % 2 === 0 ? '管理员' : '成员',
+        status: index % 3 === 0 ? '禁用' : '启用',
+        dept: index % 2 === 0 ? '研发' : '产品'
+      }));
+
+      const start = (current - 1) * pageSize;
+      const data = allRows.slice(start, start + pageSize);
+
+      return {
+        code: 0,
+        data: {
+          data,
+          total: allRows.length
+        },
+        message: '获取表格数据成功'
+      };
+    }
   }
 ];

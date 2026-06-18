@@ -171,6 +171,19 @@ export const menuMockRoutes: MockRoute[] = [
                   icon: 'roles',
                   requiresAuth: true
                 }
+              },
+              {
+                id: 'examples-pro-table',
+                name: 'ExamplesProTable',
+                path: '/examples/pro-table',
+                component: 'examples/pro-table/index',
+                icon: 'system',
+                meta: {
+                  title: 'ProTable',
+                  order: 3,
+                  icon: 'system',
+                  requiresAuth: true
+                }
               }
             ]
           }
