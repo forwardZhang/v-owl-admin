@@ -10,7 +10,7 @@
         path="province"
         label="省份"
         required
-        :field-props="{ allowClear: true }"
+        allow-clear
         :source="{
           data: fetchProvinces,
           resultField: 'data.list',
@@ -25,7 +25,7 @@
         label="城市"
         required
         :disabled="!formData.province"
-        :field-props="{ allowClear: true }"
+        allow-clear
         :source="{
           data: () => (formData.province ? fetchCities(formData.province) : []),
           resultField: 'data.list',
@@ -35,17 +35,13 @@
       />
 
       <!-- 直接传函数（返回 Promise<数组>），后端已是 label/value -->
-      <pro-select
-        path="role"
-        label="角色"
-        :field-props="{ mode: 'multiple' }"
-        :source="fetchRoles"
-      />
+      <pro-select path="role" label="角色" mode="multiple" :source="fetchRoles" />
 
       <pro-tree-select
         path="dept"
         label="部门"
-        :field-props="{ allowClear: true, treeDefaultExpandAll: true }"
+        allow-clear
+        tree-default-expand-all
         :source="{ data: fetchDeptTree, resultField: 'data' }"
       />
 

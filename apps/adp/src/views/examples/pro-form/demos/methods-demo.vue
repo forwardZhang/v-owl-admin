@@ -9,16 +9,14 @@
     </a-space>
     <pro-form :form="formApi" label-width="90" :disabled="disabled">
       <pro-input path="name" label="姓名" required placeholder="请输入姓名" />
-      <pro-number path="age" label="年龄" :field-props="{ min: 0, max: 150 }" />
+      <pro-number path="age" label="年龄" :min="0" :max="150" />
       <pro-radio
         path="gender"
         label="性别"
-        :field-props="{
-          options: [
-            { label: '男', value: 'male' },
-            { label: '女', value: 'female' }
-          ]
-        }"
+        :options="[
+          { label: '男', value: 'male' },
+          { label: '女', value: 'female' }
+        ]"
       />
     </pro-form>
   </div>

@@ -1,13 +1,11 @@
 <template>
   <div class="flex flex-col gap-4">
     <pro-form :form="formApi" label-width="110">
-      <pro-input path="name" label="名称" required :field-props="{ allowClear: true }" />
+      <pro-input path="name" label="名称" required allow-clear />
 
-      <pro-select
-        path="accountType"
-        label="账号类型"
-        :field-props="{ options: accountTypeOptions }"
-      />
+      <pro-select path="accountType" label="账号类型" :options="accountTypeOptions">
+        <template #label>账号类型 slot</template>
+      </pro-select>
 
       <!-- 联动：直接使用 createProForm 返回的 formData -->
       <pro-input
@@ -21,14 +19,15 @@
       <pro-number
         path="amount"
         :label="`额度（当前 ${formData.amount ?? 0}）`"
-        :field-props="{ min: 0, step: 100 }"
+        :min="0"
+        :step="100"
       />
 
       <pro-switch path="enabled" label="是否启用" />
 
       <pro-range-picker path="rangeTime" label="有效期" required />
 
-      <pro-textarea path="remark" label="备注" placeholder="可选" :field-props="{ rows: 3 }" />
+      <pro-textarea path="remark" label="备注" placeholder="可选" :rows="3" />
 
       <a-space>
         <a-button html-type="reset">重置</a-button>

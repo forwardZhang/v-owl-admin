@@ -15,35 +15,22 @@
         label-width="80"
         submit-text="查询"
       >
-        <pro-input
-          path="keyword"
-          label="关键词"
-          placeholder="名称 / 编号"
-          :field-props="{ allowClear: true }"
-        />
-        <pro-select
-          path="role"
-          label="角色"
-          placeholder="全部"
-          :source="fetchRoles"
-          :field-props="{ allowClear: true }"
-        />
+        <pro-input path="keyword" label="关键词" placeholder="名称 / 编号" allow-clear />
+        <pro-select path="role" label="角色" placeholder="全部" :source="fetchRoles" allow-clear />
         <pro-select
           path="status"
           label="状态"
           placeholder="全部"
-          :field-props="{
-            allowClear: true,
-            options: [
-              { label: '启用', value: 1 },
-              { label: '停用', value: 0 }
-            ]
-          }"
+          allow-clear
+          :options="[
+            { label: '启用', value: 1 },
+            { label: '停用', value: 0 }
+          ]"
         />
         <!-- 个性化：单独占 2 列（span 为 24 栅格制） -->
         <pro-range-picker path="createTime" label="创建时间" :span="16" />
-        <pro-number path="amountMin" label="最小额度" :field-props="{ min: 0 }" />
-        <pro-number path="amountMax" label="最大额度" :field-props="{ min: 0 }" />
+        <pro-number path="amountMin" label="最小额度" :min="0" />
+        <pro-number path="amountMax" label="最大额度" :min="0" />
       </pro-form>
     </a-card>
 

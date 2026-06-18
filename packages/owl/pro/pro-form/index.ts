@@ -10,6 +10,7 @@ export * from './components';
 
 // 远程 options 复用
 export { useFieldOptions } from './composables/use-field-options';
+export { useProField } from './composables/use-pro-field';
 
 // 类型
-export type * from './types';
+export type * from './shared/types';

@@ -77,11 +77,8 @@ export type ProFieldData = ProFieldDataSource | ProFormRequestConfig;
 /** label 可为字符串，或自定义渲染函数 */
 export type ProFieldLabel = string | (() => VNodeChild);
 
-/**
- * 字段组件共享 props（pro-input / pro-select 等都继承）。
- * 泛型 FP 为底层 antd 控件的 props 类型，用于 fieldProps 的类型提示。
- */
-export interface ProFieldProps<FP = Record<string, any>> {
+/** ProForm 自身消费的字段公共 props。 */
+export interface ProFieldBaseProps {
   /** 字段路径（对应 formData 上的 key，支持嵌套 'user.age'） */
   path: PathLike;
   /** 标签：字符串或自定义渲染函数 */
@@ -96,8 +93,6 @@ export interface ProFieldProps<FP = Record<string, any>> {
   help?: FormItemProps['help'];
   /** 额外提示文案（a-form-item extra） */
   extra?: FormItemProps['extra'];
-  /** 透传给底层控件的 props（按控件类型提示） */
-  fieldProps?: FP & Record<string, any>;
   /** 占位符（缺省由 label 生成） */
   placeholder?: string | [string, string];
   /** 禁用 */
@@ -114,11 +109,17 @@ export interface ProFieldProps<FP = Record<string, any>> {
   colProps?: ColProps;
 }
 
+/**
+ * 字段组件 props：公共字段属性 + 底层控件个性属性。
+ * 组件个性属性直接放一级，例如 `<ProInput allow-clear :maxlength="20" />`。
+ */
+export type ProFieldProps<FP = Record<string, any>> = ProFieldBaseProps & FP & Record<string, any>;
+
 /** 带远程 options 的字段 props（select / tree-select / checkbox / radio 等） */
-export interface ProDataFieldProps<FP = Record<string, any>> extends ProFieldProps<FP> {
+export type ProDataFieldProps<FP = Record<string, any>> = ProFieldProps<FP> & {
   /** options / treeData 数据源（数组 / Promise / 函数 / 带别名的配置） */
   source?: ProFieldData;
-}
+};
 
 /** pro-form 注入给字段的栅格 / 表单级配置上下文 */
 export interface ProFormConfigContext {

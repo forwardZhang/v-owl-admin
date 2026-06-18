@@ -1,4 +1,4 @@
-import type { FieldMappingTime, PathLike, ProFormValues } from './types';
+import type { FieldMappingTime, PathLike, ProFormValues } from './shared/types';
 
 const DEFAULT_TIME_FORMAT = 'YYYY-MM-DD HH:mm:ss';
 

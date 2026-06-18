@@ -1,6 +1,12 @@
 import type { PropType } from 'vue';
 import type { ColProps, FormItemProps } from 'antdv-next';
-import type { PathLike, ProFieldData, ProFieldLabel, ProFormRules } from '../../types';
+import type { PathLike, ProFieldData, ProFieldLabel, ProFormRules } from './types';
+
+export const DEFAULT_FIELD_RUNTIME_PROPS = {
+  disabled: undefined,
+  readonly: undefined,
+  visible: undefined
+} as const;
 
 /**
  * 所有字段组件（pro-input / pro-select 等）共享的运行时 props。
@@ -24,8 +30,6 @@ export const proFieldSharedProps = {
   help: null as unknown as PropType<any>,
   /** a-form-item extra 文案 */
   extra: null as unknown as PropType<any>,
-  /** 透传给底层控件的 props */
-  fieldProps: Object as PropType<Record<string, any>>,
   /** 占位符（缺省由各控件按 label 生成） */
   placeholder: [String, Array] as PropType<string | [string, string]>,
   /** 禁用 */

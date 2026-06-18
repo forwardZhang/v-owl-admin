@@ -1,6 +1,6 @@
 import { ref, watchEffect } from 'vue';
 import { get } from 'lodash-es';
-import type { ProFieldData, ProFormRequestConfig } from '../types';
+import type { ProFieldData, ProFormRequestConfig } from '../shared/types';
 
 interface NormalizedOption {
   label: any;
@@ -34,7 +34,10 @@ function parseSource(source: ProFieldData | undefined): {
  *
  * @param getSource 返回字段 source 属性的 getter
  */
-export function useFieldOptions(getSource: () => ProFieldData | undefined) {
+export function useFieldOptions(
+  getSource: () => ProFieldData | undefined,
+  getFallbackOptions: () => any[] | undefined = () => undefined
+) {
   const options = ref<NormalizedOption[]>([]);
   const loading = ref(false);
 
@@ -64,7 +67,7 @@ export function useFieldOptions(getSource: () => ProFieldData | undefined) {
     let res: any = typeof source === 'function' ? source() : source;
 
     if (res == null) {
-      options.value = [];
+      options.value = normalize(getFallbackOptions() ?? [], config);
       return;
     }
 

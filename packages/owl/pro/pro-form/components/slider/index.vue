@@ -1,31 +1,32 @@
 <template>
   <ProField v-bind="props">
-    <template #default="{ value, setValue, fieldProps, disabled }">
-      <a-slider
-        v-bind="{ ...$attrs, ...fieldProps }"
-        :value="value"
-        :disabled="disabled"
-        @update:value="setValue"
-      >
-        <template v-for="(_, s) in $slots" #[s]="sp">
-          <slot :name="s" v-bind="sp ?? {}" />
-        </template>
-      </a-slider>
+    <template v-if="$slots.label" #label>
+      <slot name="label" />
     </template>
+    <a-slider :value="value" :disabled="disabled" v-bind="controlProps" @update:value="setValue">
+      <template v-for="(_, s) in $slots" #[s]="sp">
+        <slot v-if="s !== 'label'" :name="s" v-bind="sp ?? {}" />
+      </template>
+    </a-slider>
   </ProField>
 </template>
 
 <script setup lang="ts">
 import { Slider as ASlider } from 'antdv-next';
 import type { SliderProps } from 'antdv-next';
-import { ProField } from '../field';
-import type { ProFieldProps } from '../../types';
+import { DEFAULT_FIELD_RUNTIME_PROPS, ProField, useProField } from '../field';
+import { useAttrs } from 'vue';
+import type { ProFieldBaseProps } from '../../shared/types';
 
 defineOptions({ name: 'ProSlider', inheritAttrs: false });
 
-const props = withDefaults(defineProps<ProFieldProps<SliderProps>>(), {
-  disabled: undefined,
-  readonly: undefined,
-  visible: undefined
+interface ProFieldRuntimeProps
+  extends /* @vue-ignore */ Omit<SliderProps, keyof ProFieldBaseProps>, ProFieldBaseProps {}
+
+const props = withDefaults(defineProps<ProFieldRuntimeProps>(), {
+  ...DEFAULT_FIELD_RUNTIME_PROPS
 });
+
+const attrs = useAttrs();
+const { value, setValue, mergedDisabled: disabled, controlProps } = useProField(props, attrs);
 </script>

@@ -1,33 +1,44 @@
 <template>
   <ProField v-bind="props">
-    <template #default="{ value, setValue, fieldProps, disabled, placeholder, label: lbl }">
-      <a-input-number
-        v-bind="{ ...$attrs, ...fieldProps }"
-        :value="value"
-        :disabled="disabled"
-        :placeholder="placeholder ?? fieldProps.placeholder ?? `请输入${lbl ?? ''}`"
-        :style="[{ width: '100%' }, fieldProps.style]"
-        @update:value="setValue"
-      >
-        <template v-for="(_, s) in $slots" #[s]="sp">
-          <slot :name="s" v-bind="sp ?? {}" />
-        </template>
-      </a-input-number>
+    <template v-if="$slots.label" #label>
+      <slot name="label" />
     </template>
+    <a-input-number
+      :value="value"
+      :disabled="disabled"
+      :placeholder="inputPlaceholder"
+      v-bind="controlProps"
+      @update:value="setValue"
+    >
+      <template v-for="(_, s) in $slots" #[s]="sp">
+        <slot v-if="s !== 'label'" :name="s" v-bind="sp ?? {}" />
+      </template>
+    </a-input-number>
   </ProField>
 </template>
 
 <script setup lang="ts">
 import { InputNumber as AInputNumber } from 'antdv-next';
 import type { InputNumberProps } from 'antdv-next';
-import { ProField } from '../field';
-import type { ProFieldProps } from '../../types';
+import { DEFAULT_FIELD_RUNTIME_PROPS, ProField, useProField } from '../field';
+import { useAttrs } from 'vue';
+import type { ProFieldBaseProps } from '../../shared/types';
 
 defineOptions({ name: 'ProNumber', inheritAttrs: false });
 
-const props = withDefaults(defineProps<ProFieldProps<InputNumberProps>>(), {
-  disabled: undefined,
-  readonly: undefined,
-  visible: undefined
+interface ProFieldRuntimeProps
+  extends /* @vue-ignore */ Omit<InputNumberProps, keyof ProFieldBaseProps>, ProFieldBaseProps {}
+
+const props = withDefaults(defineProps<ProFieldRuntimeProps>(), {
+  ...DEFAULT_FIELD_RUNTIME_PROPS
 });
+
+const attrs = useAttrs();
+const {
+  value,
+  setValue,
+  mergedDisabled: disabled,
+  controlProps,
+  inputPlaceholder
+} = useProField(props, attrs);
 </script>

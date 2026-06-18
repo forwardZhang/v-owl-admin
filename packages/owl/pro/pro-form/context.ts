@@ -1,6 +1,6 @@
 import type { ComputedRef, InjectionKey } from 'vue';
 import type { ProFormApi } from './create-pro-form';
-import type { ProFormConfigContext } from './types';
+import type { ProFormConfigContext } from './shared/types';
 
 /** 表单控制器注入 key（字段组件据此读写 formData、合并配置） */
 export const proFormKey: InjectionKey<ProFormApi<any>> = Symbol('pro-form');

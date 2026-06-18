@@ -1,18 +1,37 @@
 import { computed, inject } from 'vue';
 import type { ComputedRef } from 'vue';
 import type { ColProps } from 'antdv-next';
-import { get, set } from 'lodash-es';
-import { proFormConfigKey, proFormKey } from '../../context';
-import { normalizeRules, toPathArray } from '../../utils';
-import type { ProFieldProps, ProFormConfigContext } from '../../types';
+import { get, omit, set } from 'lodash-es';
+import { proFormConfigKey, proFormKey } from '../context';
+import { normalizeRules, toPathArray } from '../utils';
+import type { ProFieldBaseProps, ProFormConfigContext } from '../shared/types';
 
 const EMPTY_CONFIG: ProFormConfigContext = { grid: false, cols: 3, disabled: undefined };
+const FIELD_PROP_KEYS = [
+  'path',
+  'label',
+  'tooltip',
+  'required',
+  'rules',
+  'help',
+  'extra',
+  'disabled',
+  'readonly',
+  'visible',
+  'formItemProps',
+  'span',
+  'colProps',
+  'source'
+];
 
 /**
  * 字段派生逻辑：取值（按 path 读写 formData）、规则合并、栅格列、可见性、
  * 以及给 a-form-item / 控件的最终绑定。供 <ProField> 使用。
  */
-export function useField(props: ProFieldProps) {
+export function useProField(
+  props: ProFieldBaseProps & Record<string, any>,
+  attrs: Record<string, unknown> = {}
+) {
   const form = inject(proFormKey, null);
   const config: ComputedRef<ProFormConfigContext> = inject(
     proFormConfigKey,
@@ -42,14 +61,19 @@ export function useField(props: ProFieldProps) {
   const mergedDisabled = computed(() => props.disabled ?? config.value.disabled);
 
   /** label 为函数时走自定义渲染 */
-  const labelIsFn = computed(() => typeof props.label === 'function');
   const labelText = computed(() => (typeof props.label === 'string' ? props.label : ''));
+  const inputPlaceholder = computed(() =>
+    typeof props.placeholder === 'string' ? props.placeholder : `请输入${labelText.value}`
+  );
+  const selectPlaceholder = computed(() =>
+    typeof props.placeholder === 'string' ? props.placeholder : `请选择${labelText.value}`
+  );
 
   /** rules：required 简写 + 用户 rules */
   const mergedRules = computed(() => {
     const list: any[] = [];
     if (props.required) {
-      list.push({ required: true, message: `${labelText.value}不能为空` });
+      list.push({ required: true, message: `${labelText.value}是必填项` });
     }
     const userRules = normalizeRules(props.rules, labelText.value);
     if (userRules) list.push(...userRules);
@@ -67,12 +91,17 @@ export function useField(props: ProFieldProps) {
   /** a-form-item 的绑定（label 为函数时不走 label prop，改用 #label 插槽） */
   const formItemBindings = computed(() => ({
     name: namePath.value,
-    label: labelIsFn.value ? undefined : labelText.value || undefined,
+    label: labelText.value || undefined,
     rules: mergedRules.value,
     tooltip: props.tooltip,
     help: props.help,
     extra: props.extra,
     ...props.formItemProps
+  }));
+
+  const controlProps = computed<Record<string, any>>(() => ({
+    ...omit(props, FIELD_PROP_KEYS),
+    ...attrs
   }));
 
   return {
@@ -82,8 +111,11 @@ export function useField(props: ProFieldProps) {
     value,
     setValue,
     mergedDisabled,
-    labelIsFn,
+    labelText,
+    inputPlaceholder,
+    selectPlaceholder,
     colProps,
-    formItemBindings
+    formItemBindings,
+    controlProps
   };
 }

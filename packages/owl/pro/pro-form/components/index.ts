@@ -1,5 +1,5 @@
 // 字段基座
-export { ProField, proFieldSharedProps, proDataFieldSharedProps, useField } from './field';
+export { ProField, proFieldSharedProps, proDataFieldSharedProps, useProField } from './field';
 
 // 字段组件（命名对齐 antdv-next 控件）
 export { default as ProInput } from './input/index.vue';

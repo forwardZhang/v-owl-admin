@@ -26,31 +26,29 @@
 
 <script setup lang="ts">
 import { computed, useSlots } from 'vue';
-import { useField } from './use-field';
-import { proFieldSharedProps } from './shared-props';
+import { useProField } from '../../composables/use-pro-field';
+import { proFieldSharedProps } from '../../shared/shared-props';
 
 defineOptions({ name: 'ProField', inheritAttrs: false });
 
 const props = defineProps(proFieldSharedProps);
 const slots = useSlots();
 
-const { config, show, value, setValue, mergedDisabled, labelIsFn, colProps, formItemBindings } =
-  useField(props);
+const { config, show, value, setValue, mergedDisabled, colProps, formItemBindings } =
+  useProField(props);
 
 /** 自定义 label：函数式 label 或父级传入的 #label 插槽 */
 const label = computed(() => props.label);
-const hasLabelSlot = computed(() => labelIsFn.value || !!slots.label);
+const hasLabelSlot = computed(() => !!slots.label);
 
 /**
  * 传给默认插槽（即具体控件）的作用域：
  * - value / setValue：当前值与写值（控件按需绑定 value 或 checked）
- * - fieldProps：透传给控件的 props
  * - disabled / readonly / placeholder / label：常用透传
  */
 const slotScope = computed(() => ({
   value: value.value,
   setValue,
-  fieldProps: props.fieldProps ?? {},
   disabled: mergedDisabled.value,
   readonly: props.readonly,
   placeholder: props.placeholder,

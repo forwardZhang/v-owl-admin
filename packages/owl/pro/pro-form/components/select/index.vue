@@ -1,44 +1,56 @@
 <template>
   <ProField v-bind="props">
-    <template #default="{ value, setValue, fieldProps, disabled, placeholder, label: lbl }">
-      <a-select
-        v-bind="{ ...$attrs, ...fieldProps }"
-        :value="value"
-        :disabled="disabled"
-        :options="resolveOptions(fieldProps)"
-        :loading="loading || fieldProps.loading"
-        :placeholder="placeholder ?? fieldProps.placeholder ?? `请选择${lbl ?? ''}`"
-        :style="[{ width: '100%' }, fieldProps.style]"
-        @update:value="setValue"
-      >
-        <template v-for="(_, s) in $slots" #[s]="sp">
-          <slot :name="s" v-bind="sp ?? {}" />
-        </template>
-      </a-select>
+    <template v-if="$slots.label" #label>
+      <slot name="label" />
     </template>
+    <a-select
+      :allow-clear="true"
+      :disabled="disabled"
+      :options="options"
+      :loading="loading || controlProps.loading"
+      :placeholder="selectPlaceholder"
+      :style="[{ width: '100%' }, controlProps.style]"
+      :value="value"
+      v-bind="controlProps"
+      @update:value="setValue"
+    >
+      <template v-for="(_, s) in $slots" #[s]="sp">
+        <slot v-if="s !== 'label'" :name="s" v-bind="sp ?? {}" />
+      </template>
+    </a-select>
   </ProField>
 </template>
 
 <script setup lang="ts">
 import { Select as ASelect } from 'antdv-next';
 import type { SelectProps } from 'antdv-next';
-import { ProField } from '../field';
+import { DEFAULT_FIELD_RUNTIME_PROPS, ProField, useProField } from '../field';
+import { useAttrs } from 'vue';
 import { useFieldOptions } from '../../composables/use-field-options';
-import type { ProDataFieldProps } from '../../types';
+import type { ProFieldBaseProps, ProFieldData } from '../../shared/types';
 
 defineOptions({ name: 'ProSelect', inheritAttrs: false });
 
-const props = withDefaults(defineProps<ProDataFieldProps<SelectProps>>(), {
-  disabled: undefined,
-  readonly: undefined,
-  source: undefined,
-  visible: undefined
+interface ProFieldRuntimeProps
+  extends /* @vue-ignore */ Omit<SelectProps, keyof ProFieldBaseProps>, ProFieldBaseProps {
+  source?: ProFieldData;
+}
+
+const props = withDefaults(defineProps<ProFieldRuntimeProps>(), {
+  ...DEFAULT_FIELD_RUNTIME_PROPS,
+  source: undefined
 });
 
-const { options, loading } = useFieldOptions(() => props.source);
-
-/** 有 source 用其结果，否则回退 fieldProps.options */
-function resolveOptions(fieldProps: Record<string, any>) {
-  return props.source != null ? options.value : (fieldProps.options ?? []);
-}
+const attrs = useAttrs();
+const {
+  value,
+  setValue,
+  mergedDisabled: disabled,
+  controlProps,
+  selectPlaceholder
+} = useProField(props, attrs);
+const { options, loading } = useFieldOptions(
+  () => props.source,
+  () => controlProps.value.options
+);
 </script>

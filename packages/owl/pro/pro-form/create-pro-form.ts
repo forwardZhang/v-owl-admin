@@ -3,7 +3,7 @@ import type { Ref } from 'vue';
 import type { FormInstance } from 'antdv-next';
 import { get, set } from 'lodash-es';
 import { applyFieldMappingTime, cloneDeepSafe, toPathArray } from './utils';
-import type { CreateProFormOptions, PathLike, ProFormValues } from './types';
+import type { CreateProFormOptions, PathLike, ProFormValues } from './shared/types';
 
 /**
  * ProForm 控制器实例。

@@ -6,31 +6,21 @@
       message="演示：inline 行内布局、自定义按钮文案、值变化即触发查询"
     />
     <pro-form :form="formApi" layout="inline">
-      <pro-input
-        path="keyword"
-        label="关键词"
-        placeholder="名称/编号"
-        :field-props="{ allowClear: true }"
-      />
+      <pro-input path="keyword" label="关键词" placeholder="名称/编号" allow-clear />
       <pro-select
         path="role"
         label="角色"
         placeholder="全部"
         :source="fetchRoles"
-        :field-props="{ allowClear: true, style: { width: '160px' } }"
+        allow-clear
+        :style="{ width: '160px' }"
       />
       <pro-select
         path="status"
         label="状态"
         placeholder="全部"
-        :field-props="{
-          allowClear: true,
-          style: { width: '140px' },
-          options: [
-            { label: '启用', value: 1 },
-            { label: '停用', value: 0 }
-          ]
-        }"
+        allow-clear
+        :style="{ width: '140px' }"
       />
       <a-space>
         <a-button type="primary" html-type="submit">查询</a-button>
