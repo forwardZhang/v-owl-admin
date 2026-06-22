@@ -1,6 +1,6 @@
 <template>
   <AppProLayout title="角色管理">
-    <ProPage :body-card="false">
+    <ProPage>
       <template #search>
         <ProForm :form="searchApi" grid :cols="4" label-width="80" submit-text="查询">
           <ProInput path="keyword" label="关键词" placeholder="名称 / 编码 / 描述" allow-clear />

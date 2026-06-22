@@ -1,5 +1,5 @@
 <template>
-  <AppProLayout>
+  <AppProLayout content-class="bg-white dark:bg-[#141414] p-4 rounded-lg min-h-full">
     <template #extra>
       <a-button type="primary">操作按钮</a-button>
     </template>

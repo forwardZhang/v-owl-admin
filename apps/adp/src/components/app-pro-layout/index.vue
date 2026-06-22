@@ -65,7 +65,9 @@ const props = withDefaults(
   }>(),
   {
     hideHeader: false,
-    contentClass: 'bg-white dark:bg-[#141414] p-4 rounded-lg',
+    // 默认透明：让页面内容（ProPage 等）自行控制背景与卡片，
+    // 避免外层白卡与内部白卡嵌套。单页内容可显式传入 contentClass。
+    contentClass: '',
     tabs: () => [],
     queryKey: 'tab'
   }
