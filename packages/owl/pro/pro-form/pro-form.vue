@@ -6,6 +6,7 @@ import {
   Row as ARow,
   Space as ASpace
 } from 'antdv-next';
+import { SearchOutlined, ReloadOutlined, DownOutlined, UpOutlined } from '@antdv-next/icons';
 import {
   Comment,
   Fragment,
@@ -144,16 +145,25 @@ export default defineComponent({
       if (props.showActions === false) return null;
       const inner = slots.action
         ? slots.action()
-        : h(ASpace, null, () => {
+        : h(ASpace, { size: 8 }, () => {
             const btns = [
               h(
                 AButton,
-                { type: 'primary', htmlType: 'submit', loading: form.submitting.value },
+                {
+                  type: 'primary',
+                  htmlType: 'submit',
+                  loading: form.submitting.value,
+                  icon: h(SearchOutlined)
+                },
                 () => props.submitText
               ),
               h(
                 AButton,
-                { htmlType: 'button', onClick: () => form.resetFields() },
+                {
+                  htmlType: 'button',
+                  onClick: () => form.resetFields(),
+                  icon: h(ReloadOutlined)
+                },
                 () => props.resetText
               )
             ];
@@ -161,8 +171,15 @@ export default defineComponent({
               btns.push(
                 h(
                   AButton,
-                  { type: 'link', onClick: () => (collapsed.value = !collapsed.value) },
-                  () => (collapsed.value ? '展开 ∨' : '收起 ∧')
+                  {
+                    type: 'link',
+                    onClick: () => (collapsed.value = !collapsed.value),
+                    style: { display: 'inline-flex', alignItems: 'center', gap: '4px' }
+                  },
+                  () => [
+                    collapsed.value ? '展开' : '收起',
+                    h(collapsed.value ? DownOutlined : UpOutlined, { style: { fontSize: '10px' } })
+                  ]
                 )
               );
             }

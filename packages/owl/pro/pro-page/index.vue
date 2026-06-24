@@ -107,8 +107,12 @@ const onlyMain = computed(() => !slots.search);
 /* 白卡片区块 */
 .is-card {
   background-color: var(--color-bg-container, #ffffff);
-  border-radius: 8px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  border-radius: 12px;
+  box-shadow:
+    0 4px 18px -4px rgba(19, 35, 64, 0.04),
+    0 1px 4px rgba(19, 35, 64, 0.02);
+  border: 1px solid var(--app-border, #e3e8f2);
+  transition: all 0.3s ease;
 }
 :global(html.dark) .is-card {
   background-color: var(--color-bg-container, #141414);
